@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Platinum Lech Faktúry</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg1: #0f1726;
+      --bg2: #162235;
+      --card: rgba(255,255,255,.05);
+      --line: rgba(255,255,255,.08);
+      --text: #eef4fb;
+      --muted: #9fb1ca;
+      --accent: #59c9ff;
+      --accent2: #2f8dff;
+      --ok: #11b85a;
+      --warn: #d6a334;
+      --danger: #da3a3a;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(89,201,255,.10), transparent 22%),
+        radial-gradient(circle at top right, rgba(47,141,255,.10), transparent 18%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 14px 40px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 22px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(10,16,28,.72);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .logo::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 5px solid white;
+      border-left-color: transparent;
+      border-top-color: transparent;
+      border-radius: 50%;
+      transform: rotate(35deg);
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: .3px;
+    }
+
+    .hero {
+      margin-bottom: 22px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(17,24,39,.82), rgba(24,34,54,.84));
+      box-shadow: 0 18px 48px rgba(0,0,0,.24);
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 46px;
+      line-height: 1;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.4;
+      color: var(--text);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--card);
+      box-shadow: 0 18px 48px rgba(0,0,0,.20);
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      color: var(--accent);
+    }
+
+    .muted {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      background: linear-gradient(180deg, #1e293b, #0f172a);
+      border: 1px solid var(--line);
+    }
+
+    .ok { background: linear-gradient(180deg, #11b85a, #0f8b45); }
+    .warn { background: linear-gradient(180deg, #d6a334, #a86d10); }
+    .danger { background: linear-gradient(180deg, #da3a3a, #a81e1e); }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      color: white;
+      padding: 13px 16px;
+      border-radius: 14px;
+      font-size: 16px;
+      background: linear-gradient(180deg, #1d7dff, #0c4fd9);
+    }
+
+    button.secondary {
+      background: linear-gradient(180deg, #19c0d9, #1177b8);
+    }
+
+    pre {
+      margin: 12px 0 0;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.28);
+      border: 1px solid var(--line);
+      color: #dbeafe;
+      overflow: auto;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 760px) {
+      .hero h1 { font-size: 34px; }
+      .hero p { font-size: 18px; }
+      .grid { grid-template-columns: 1fr; }
+      .title { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div class="title">PLATINUM LECH FAKTÚRY</div>
+      </div>
+      <div id="appMode" class="status warn">Frontend test</div>
+    </div>
+
+    <section class="hero">
+      <h1>Spustenie projektu</h1>
+      <p>
+        Toto je prvý test nasadenia cez GitHub Pages. Keď sa stránka otvorí,
+        repozitár a web fungujú správne. Ďalší krok bude napojiť worker a databázu.
+      </p>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Stav webu</h2>
+        <div class="muted">
+          Táto stránka slúži ako kontrola, že GitHub Pages načítava správny
+          súbor <strong>index.html</strong> z koreňa repozitára.
+        </div>
+        <div id="pageStatus" class="status ok">Web beží</div>
+
+        <div class="btn-row">
+          <button id="testUiBtn">Test UI</button>
+          <button class="secondary" id="showInfoBtn">Zobraziť info</button>
+        </div>
+
+        <pre id="uiOutput">Čakám na akciu...</pre>
+      </div>
+
+      <div class="card">
+        <h2>Budúce backend API</h2>
+        <div class="muted">
+          Neskôr sem napojíme Cloudflare Worker. Zatiaľ je to len príprava.
+        </div>
+        <div id="apiStatus" class="status warn">API zatiaľ nepripojené</div>
+
+        <div class="btn-row">
+          <button id="testApiBtn">Skúsiť API</button>
+        </div>
+
+        <pre id="apiOutput">API ešte nie je nastavené.</pre>
+      </div>
+    </section>
+
+    <div class="footer">
+      Platinum Lech Faktúry • GitHub Pages test
+    </div>
+  </div>
+
+  <script>
+    const WORKER_API_BASE = ""; // neskôr sem dáme URL workeru
+
+    const appMode = document.getElementById("appMode");
+    const pageStatus = document.getElementById("pageStatus");
+    const apiStatus = document.getElementById("apiStatus");
+    const uiOutput = document.getElementById("uiOutput");
+    const apiOutput = document.getElementById("apiOutput");
+    const testUiBtn = document.getElementById("testUiBtn");
+    const showInfoBtn = document.getElementById("showInfoBtn");
+    const testApiBtn = document.getElementById("testApiBtn");
+
+    testUiBtn.addEventListener("click", () => {
+      const now = new Date();
+      uiOutput.textContent =
+        "UI test prebehol úspešne.\n" +
+        "Čas: " + now.toLocaleString("sk-SK") + "\n" +
+        "Adresa: " + window.location.href;
+      appMode.textContent = "Frontend pripravený";
+      appMode.className = "status ok";
+      pageStatus.textContent = "Web beží správne";
+      pageStatus.className = "status ok";
+    });
+
+    showInfoBtn.addEventListener("click", () => {
+      uiOutput.textContent =
+        "Repozitár je správne pripravený na ďalší krok.\n\n" +
+        "Ďalej budeme robiť:\n" +
+        "1. Cloudflare Worker\n" +
+        "2. API route pre firmy, klientov a faktúry\n" +
+        "3. Databázu\n" +
+        "4. Prepojenie s týmto frontendom";
+    });
+
+    testApiBtn.addEventListener("click", async () => {
+      if (!WORKER_API_BASE) {
+        apiStatus.textContent = "Najprv treba worker URL";
+        apiStatus.className = "status warn";
+        apiOutput.textContent =
+          "WORKER_API_BASE je zatiaľ prázdny.\n" +
+          "To je správne — worker ešte len založíme.";
+        return;
+      }
+
+      try {
+        const res = await fetch(WORKER_API_BASE + "/health");
+        const data = await res.json();
+        apiStatus.textContent = "API pripojené";
+        apiStatus.className = "status ok";
+        apiOutput.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        apiStatus.textContent = "API chyba";
+        apiStatus.className = "status danger";
+        apiOutput.textContent = String(error);
+      }
+    });
+  </script>
+</body>
+</html>
