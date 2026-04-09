@@ -3,405 +3,509 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fakturácia online</title>
-  <meta name="description" content="Jednoduchá online fakturácia, cenové ponuky, dodacie listy a ďalšie dokumenty." />
+  <title>Faktúry Online - Menu</title>
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f3f4f6;
+      --header-bg: linear-gradient(180deg, #2f2f31 0%, #1d1d1f 100%);
+      --card-bg: #ffffff;
+      --text: #2d2d2d;
+      --muted: #6a6a6a;
+      --primary: #0d84d8;
+      --primary-dark: #005fcb;
+      --primary-light: #4db7e5;
+      --border: #d9d9d9;
+      --shadow: 0 6px 18px rgba(0,0,0,0.08);
+      --radius: 16px;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f6f8fb;
-      color: #1f2937;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(0,0,0,0.02), transparent 30%),
+        repeating-linear-gradient(
+          -45deg,
+          #f7f7f7,
+          #f7f7f7 10px,
+          #f3f3f3 10px,
+          #f3f3f3 20px
+        );
+      color: var(--text);
     }
-    a { text-decoration: none; color: inherit; }
-    .container {
-      width: min(1200px, 92%);
-      margin: 0 auto;
+
+    .app {
+      width: 100%;
+      min-height: 100vh;
     }
-    header {
-      background: #ffffff;
-      border-bottom: 1px solid #e5e7eb;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
+
     .topbar {
+      background: var(--header-bg);
+      color: #fff;
+      padding: 18px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0b8ee8, #1f3d63);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .brand-logo::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 5px solid #fff;
+      border-left-color: transparent;
+      border-top-color: transparent;
+      border-radius: 50%;
+      transform: rotate(35deg);
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .menu-toggle {
+      border: 0;
+      background: linear-gradient(180deg, #101010, #000000);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .menu-panel {
+      display: none;
+      background: #252628;
+      color: #fff;
+      padding: 12px 16px 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .menu-panel.open {
+      display: block;
+    }
+
+    .menu-panel a {
+      display: block;
+      color: #e8edf3;
+      text-decoration: none;
+      padding: 12px 4px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 16px;
+    }
+
+    .content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 18px 14px 28px;
+    }
+
+    .hero {
+      position: relative;
+      padding: 18px 6px 10px;
+    }
+
+    .gear {
+      position: absolute;
+      top: 10px;
+      right: 6px;
+      font-size: 54px;
+      line-height: 1;
+      color: #2d2d2d;
+      opacity: 0.9;
+    }
+
+    .hero h1 {
+      margin: 30px 0 6px;
+      font-size: 34px;
+      line-height: 1.05;
+      color: var(--primary);
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    .hero p {
+      margin: 0 0 22px;
+      font-size: 28px;
+      color: #5d5d5d;
+      line-height: 1.1;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .action-btn {
+      min-height: 86px;
+      border: 0;
+      border-radius: 10px;
+      padding: 14px 12px;
+      color: #fff;
+      font-size: 18px;
+      line-height: 1.15;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 3px 8px rgba(0,0,0,0.12);
+      background: linear-gradient(180deg, #0f9cf2 0%, #0053d6 100%);
+    }
+
+    .action-btn.secondary {
+      background: linear-gradient(180deg, #73d0f0 0%, #2aa7db 100%);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      margin: 0 0 14px;
+      color: #1179c5;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .link-list a {
+      color: #0b8acf;
+      text-decoration: none;
+      font-size: 24px;
+      line-height: 1.18;
+    }
+
+    .link-list a:hover {
+      text-decoration: underline;
+    }
+
+    .stats-list {
+      display: grid;
+      gap: 8px;
+      font-size: 22px;
+      line-height: 1.25;
+    }
+
+    .stats-row strong {
+      font-weight: 800;
+    }
+
+    .section-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: #1281c8;
+      font-size: 22px;
+      margin-top: 14px;
+    }
+
+    .service-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .service-title {
+      color: #1179c5;
+      font-size: 28px;
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1.05;
+    }
+
+    .service-right {
+      font-size: 18px;
+      font-style: italic;
+      font-weight: 700;
+      text-align: left;
+      line-height: 1.05;
+      color: #313131;
+      min-width: 120px;
+    }
+
+    .service-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 0;
-      gap: 20px;
-      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 21px;
+      margin-bottom: 24px;
     }
-    .logo {
-      font-size: 24px;
-      font-weight: 700;
-      color: #0f172a;
-    }
-    nav {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      font-size: 14px;
-      color: #475569;
-    }
-    .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .btn {
+
+    .badge {
       display: inline-block;
-      padding: 12px 18px;
-      border-radius: 10px;
-      font-weight: 700;
-    }
-    .btn-primary {
-      background: #2563eb;
+      background: #61aa46;
       color: #fff;
-    }
-    .btn-outline {
-      border: 1px solid #cbd5e1;
-      color: #0f172a;
-      background: #fff;
-    }
-    .hero {
-      padding: 60px 0 30px;
-      background: linear-gradient(180deg, #ffffff 0%, #eef4ff 100%);
-      text-align: center;
-    }
-    .hero h1 {
-      margin: 0 0 12px;
-      font-size: 42px;
-      color: #0f172a;
-    }
-    .hero p {
-      max-width: 800px;
-      margin: 0 auto 24px;
-      color: #475569;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
       font-size: 18px;
-      line-height: 1.6;
+      white-space: nowrap;
     }
-    .doc-links {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 18px 0 24px;
-    }
-    .pill {
-      background: #fff;
-      border: 1px solid #dbeafe;
-      color: #1d4ed8;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-size: 14px;
+
+    .subheading {
+      color: #1179c5;
+      font-size: 18px;
+      font-style: italic;
       font-weight: 700;
-    }
-    .section {
-      padding: 50px 0;
-    }
-    .section h2 {
-      text-align: center;
-      margin: 0 0 26px;
-      font-size: 32px;
-      color: #0f172a;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 20px;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 18px;
-      padding: 22px;
-      box-shadow: 0 10px 24px rgba(15,23,42,.05);
-    }
-    .icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-      background: #dbeafe;
-      margin-bottom: 14px;
-    }
-    .card h3 {
       margin: 0 0 10px;
-      font-size: 20px;
     }
-    .card p {
-      margin: 0 0 16px;
-      color: #64748b;
-      line-height: 1.5;
-    }
-    .stats {
+
+    .history-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-top: 26px;
+      grid-template-columns: 1.2fr 1.1fr 0.9fr 0.9fr;
+      gap: 8px 10px;
+      align-items: start;
+      font-size: 18px;
     }
-    .stat {
-      background: #0f172a;
-      color: #fff;
-      border-radius: 18px;
-      padding: 24px;
-      text-align: center;
-    }
-    .stat strong {
-      display: block;
-      font-size: 34px;
-      margin-bottom: 8px;
-    }
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-    }
-    .pricing {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-    }
-    .price-card {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 18px;
-      padding: 26px;
-    }
-    .price {
-      font-size: 34px;
+
+    .history-grid .head {
+      font-style: italic;
       font-weight: 700;
-      margin: 10px 0 18px;
-      color: #0f172a;
+      line-height: 1.05;
+      color: #313131;
     }
-    ul {
-      padding-left: 18px;
-      color: #475569;
-      line-height: 1.7;
+
+    .pdf-icon {
+      width: 34px;
+      height: 42px;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #ffffff, #ececec);
+      border: 1px solid #cfcfcf;
+      position: relative;
+      margin-top: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
     }
-    footer {
-      background: #0f172a;
-      color: #cbd5e1;
-      padding: 30px 0;
-      margin-top: 30px;
+
+    .pdf-icon::before {
+      content: "PDF";
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      font-weight: 800;
+      color: #b40000;
     }
-    .footer-links {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
+
+    .pdf-icon::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      border-width: 0 10px 10px 0;
+      border-style: solid;
+      border-color: transparent #d9d9d9 transparent transparent;
+      width: 0;
+      height: 0;
+    }
+
+    @media (max-width: 520px) {
+      .brand-title {
+        font-size: 17px;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .hero p {
+        font-size: 23px;
+      }
+
+      .link-list a,
+      .stats-list,
+      .section-link {
+        font-size: 19px;
+      }
+
+      .history-grid {
+        font-size: 16px;
+      }
+
+      .service-title {
+        font-size: 22px;
+      }
+
+      .action-btn {
+        font-size: 17px;
+        min-height: 82px;
+      }
     }
   </style>
 </head>
 <body>
-
-  <header>
-    <div class="container topbar">
-      <div class="logo">Fakturácia online</div>
-
-      <nav>
-        <a href="#">Faktúra</a>
-        <a href="#">Príjmový doklad</a>
-        <a href="#">Výdavkový doklad</a>
-        <a href="#">Cenová ponuka</a>
-        <a href="#">Dodací list</a>
-        <a href="#">Objednávka</a>
-        <a href="#">API</a>
-        <a href="#">Kontakt</a>
-      </nav>
-
-      <div class="actions">
-        <a href="#" class="btn btn-outline">Prihlásiť sa</a>
-        <a href="#" class="btn btn-primary">Registrácia</a>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo"></div>
+        <div class="brand-title">FAKTÚRY ONLINE</div>
       </div>
-    </div>
-  </header>
+      <button class="menu-toggle" id="menuBtn">MENU</button>
+    </header>
 
-  <section class="hero">
-    <div class="container">
-      <h1>Vaša faktúra online</h1>
-      <p>
-        Jednoduché vystavenie faktúr, cenových ponúk, dodacích listov a ďalších dokumentov
-        v modernom online rozhraní.
-      </p>
+    <nav class="menu-panel" id="menuPanel">
+      <a href="#">Nová faktúra</a>
+      <a href="#">Nová cenová ponuka</a>
+      <a href="#">Príjmové doklady</a>
+      <a href="#">Výdavkové doklady</a>
+      <a href="#">Dodacie listy</a>
+      <a href="#">Objednávky</a>
+      <a href="#">Štatistika</a>
+      <a href="#">Nastavenia</a>
+      <a href="#">Odhlásiť sa</a>
+    </nav>
 
-      <div class="doc-links">
-        <span class="pill">Faktúry</span>
-        <span class="pill">Cenové ponuky</span>
-        <span class="pill">Dodacie listy</span>
-        <span class="pill">Príjmové doklady</span>
-        <span class="pill">Výdavkové doklady</span>
-        <span class="pill">Objednávky</span>
-      </div>
+    <main class="content">
+      <section class="hero">
+        <div class="gear">⚙</div>
+        <h1>Vitajte</h1>
+        <p>Vitajte vo Faktúrach online</p>
 
-      <div class="actions" style="justify-content:center;">
-        <a href="#" class="btn btn-primary">Vytvoriť konto zadarmo</a>
-        <a href="#" class="btn btn-outline">Prihlásiť sa</a>
-      </div>
-    </div>
-  </section>
+        <div class="action-grid">
+          <button class="action-btn">Nová faktúra</button>
+          <button class="action-btn">Nová cenová ponuka</button>
+          <button class="action-btn">Nový príjmový doklad</button>
+          <button class="action-btn secondary">Ako vytvoriť faktúru z cenovej ponuky</button>
+        </div>
+      </section>
 
-  <section class="section">
-    <div class="container">
-      <h2>Dokumenty</h2>
-      <div class="grid">
-        <div class="card">
-          <div class="icon"></div>
-          <h3>Faktúry</h3>
-          <p>Vytvorenie a odoslanie faktúry v profesionálnom vzhľade.</p>
-          <a href="#" class="btn btn-primary">Vytvoriť faktúru</a>
+      <section class="card">
+        <h2>Dokumenty</h2>
+        <div class="link-list">
+          <a href="#">Faktúry (vystavené)</a>
+          <a href="#">Faktúry (prijaté)</a>
+          <a href="#">Príjmové pokladničné doklady</a>
+          <a href="#">Výdavkové pokladničné doklady</a>
+          <a href="#">Cenové ponuky</a>
+          <a href="#">Dodacie listy</a>
+          <a href="#">Objednávky (vystavené)</a>
+          <a href="#">Objednávky (prijaté)</a>
+          <a href="#">Zákazkové listy</a>
+          <a href="#">Preberacie protokoly</a>
+          <a href="#">Montážne denníky</a>
+          <a href="#">Tlačivá</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Zoznamy</h2>
+        <div class="link-list">
+          <a href="#">Moje spoločnosti (3)</a>
+          <a href="#">Moji klienti (7)</a>
+          <a href="#">Moje fakturačné položky (11)</a>
+          <a href="#">Moje bankové účty (2)</a>
+          <a href="#">Moje označenia / tagy (0)</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Údaje o konte</h2>
+        <div class="stats-list">
+          <div>Email: <strong>example@gmail.com</strong></div>
+          <div>Konto vytvorené dňa: <strong>2.4.2025</strong></div>
+          <div>Obchodný názov: <strong>Moja Firma s. r. o.</strong></div>
+          <div>IČO: <strong>12345678</strong></div>
+          <div>API kľúč: <a href="#" style="color:#1181c8;text-decoration:none;">👁 Zobraziť</a></div>
+          <div><a href="#" style="color:#1181c8;text-decoration:none;">✎ Upraviť</a></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Štatistika</h2>
+        <div class="stats-list">
+          <div class="stats-row">Faktúry (vystavené): <strong>57</strong></div>
+          <div class="stats-row">Faktúry (prijaté): <strong>0</strong></div>
+          <div class="stats-row">Príjmové pokl. doklady: <strong>2</strong></div>
+          <div class="stats-row">Výdavkové pokl. doklady: <strong>1</strong></div>
+          <div class="stats-row">Cenové ponuky: <strong>1</strong></div>
+          <div class="stats-row">Dodacie listy: <strong>0</strong></div>
+          <div class="stats-row">Objednávky (prijaté): <strong>0</strong></div>
+          <div class="stats-row">Objednávky (vystavené): <strong>0</strong></div>
+          <div class="stats-row">Zákazkové listy: <strong>0</strong></div>
+          <div class="stats-row">Preberacie protokoly: <strong>0</strong></div>
+          <div class="stats-row">Montážne denníky: <strong>0</strong></div>
+        </div>
+        <a href="#" class="section-link">📊 Štatistika</a>
+      </section>
+
+      <section class="card">
+        <div class="service-header">
+          <div class="service-title">Služby vo Faktúrach online</div>
+          <div class="service-right">Dátum<br>platnosti</div>
         </div>
 
-        <div class="card">
-          <div class="icon"></div>
-          <h3>Príjmové doklady</h3>
-          <p>Jednoduché online vystavenie príjmových pokladničných dokladov.</p>
-          <a href="#" class="btn btn-primary">Vytvoriť doklad</a>
+        <div class="service-row">
+          <div>Prístup do Faktúr online</div>
+          <span class="badge">2.4.2027</span>
         </div>
 
-        <div class="card">
-          <div class="icon"></div>
-          <h3>Výdavkové doklady</h3>
-          <p>Online tvorba výdavkových pokladničných dokladov.</p>
-          <a href="#" class="btn btn-primary">Vytvoriť doklad</a>
-        </div>
+        <div class="subheading">História objednaných služieb</div>
 
-        <div class="card">
-          <div class="icon"></div>
-          <h3>Cenové ponuky</h3>
-          <p>Rýchla tvorba cenových ponúk pre klientov.</p>
-          <a href="#" class="btn btn-primary">Vytvoriť ponuku</a>
-        </div>
+        <div class="history-grid">
+          <div class="head">Dátum objednávky</div>
+          <div class="head">Variabilný symbol</div>
+          <div class="head">Zálohová faktúra</div>
+          <div class="head">Faktúra - doklad</div>
 
-        <div class="card">
-          <div class="icon"></div>
-          <h3>Dodacie listy</h3>
-          <p>Prehľadné dodacie listy pripravené na tlač a PDF export.</p>
-          <a href="#" class="btn btn-primary">Vytvoriť list</a>
+          <div>21.3.2026</div>
+          <div>1413044243</div>
+          <div><div class="pdf-icon"></div></div>
+          <div><div class="pdf-icon"></div></div>
         </div>
+      </section>
+    </main>
+  </div>
 
-        <div class="card">
-          <div class="icon"></div>
-          <h3>Objednávky</h3>
-          <p>Vystavenie objednávok v jednotnom firemnom štýle.</p>
-          <a href="#" class="btn btn-primary">Vytvoriť objednávku</a>
-        </div>
+  <script>
+    const menuBtn = document.getElementById("menuBtn");
+    const menuPanel = document.getElementById("menuPanel");
 
-        <div class="card">
-          <div class="icon"></div>
-          <h3>Zákazkové listy</h3>
-          <p>Podpora ďalších typov dokumentov pre služby a realizácie.</p>
-          <a href="#" class="btn btn-primary">Otvoriť</a>
-        </div>
-
-        <div class="card">
-          <div class="icon"></div>
-          <h3>Preberacie protokoly</h3>
-          <p>Dokumentácia k odovzdaniu a prevzatiu práce alebo tovaru.</p>
-          <a href="#" class="btn btn-primary">Otvoriť</a>
-        </div>
-
-        <div class="card">
-          <div class="icon"></div>
-          <h3>Montážny denník</h3>
-          <p>Evidencia montážnych úkonov a servisných činností.</p>
-          <a href="#" class="btn btn-primary">Otvoriť</a>
-        </div>
-      </div>
-
-      <div class="stats">
-        <div class="stat">
-          <strong>0</strong>
-          jedinečných používateľov
-        </div>
-        <div class="stat">
-          <strong>0</strong>
-          vytvorených dokumentov
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" style="background:#fff;">
-    <div class="container">
-      <h2>Prečo to používať</h2>
-      <div class="features">
-        <div class="card">
-          <h3>Profesionalita</h3>
-          <p>Dokumenty vyzerajú čisto, moderne a reprezentatívne pre zákazníka.</p>
-        </div>
-        <div class="card">
-          <h3>Úspora času</h3>
-          <p>Automatické dopĺňanie údajov a rýchle vystavenie dokumentu.</p>
-        </div>
-        <div class="card">
-          <h3>Prehľad</h3>
-          <p>Všetky dokumenty na jednom mieste, pripravené na úpravu, tlač a export.</p>
-        </div>
-        <div class="card">
-          <h3>Ďalšie funkcie</h3>
-          <p>QR platby, cudzie jazyky, logo, pečiatka a štatistiky dokumentov.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <h2>Cenník</h2>
-      <div class="pricing">
-        <div class="price-card">
-          <h3>Bez registrácie</h3>
-          <div class="price">Zadarmo</div>
-          <ul>
-            <li>vystavenie dokumentu bez registrácie</li>
-            <li>uloženie do PDF</li>
-            <li>základné použitie</li>
-          </ul>
-          <a href="#" class="btn btn-outline">Začať</a>
-        </div>
-
-        <div class="price-card">
-          <h3>S registráciou</h3>
-          <div class="price">Zadarmo</div>
-          <ul>
-            <li>automatické dopĺňanie údajov</li>
-            <li>zoznam klientov a spoločností</li>
-            <li>štatistiky a export dát</li>
-            <li>vlastné logo a cudzie jazyky</li>
-          </ul>
-          <a href="#" class="btn btn-primary">Registrácia</a>
-        </div>
-
-        <div class="price-card">
-          <h3>Platená verzia</h3>
-          <div class="price">2,50 € / mesiac</div>
-          <ul>
-            <li>po roku používania</li>
-            <li>rozšírené funkcie</li>
-            <li>vhodné pre pravidelné používanie</li>
-          </ul>
-          <a href="#" class="btn btn-outline">Pozrieť cenník</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="container">
-      <div class="footer-links">
-        <a href="#">E-faktúra</a>
-        <a href="#">Vzory dokumentov</a>
-        <a href="#">Video manuál</a>
-        <a href="#">Otázky a odpovede</a>
-        <a href="#">Cenník</a>
-        <a href="#">Podmienky používania</a>
-        <a href="#">Ochrana osobných údajov</a>
-      </div>
-      <div>© 2026 Fakturácia online</div>
-    </div>
-  </footer>
-
+    menuBtn.addEventListener("click", () => {
+      menuPanel.classList.toggle("open");
+    });
+  </script>
 </body>
-            </html>
+</html>
