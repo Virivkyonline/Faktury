@@ -98,7 +98,7 @@ export default {
           ORDER BY updated_at DESC
         `).all();
 
-        const companies = (result.results || []).map(row => {
+        const companies = (result.results || []).map((row) => {
           const parsed = safeParse(row.data, {});
           return {
             ...parsed,
@@ -190,7 +190,7 @@ export default {
           ORDER BY updated_at DESC
         `).bind(companyId).all();
 
-        const customers = (result.results || []).map(row => {
+        const customers = (result.results || []).map((row) => {
           const parsed = safeParse(row.data, {});
           return {
             ...parsed,
@@ -284,7 +284,7 @@ export default {
           ORDER BY updated_at DESC
         `).bind(companyId).all();
 
-        let invoices = (result.results || []).map(row => {
+        let invoices = (result.results || []).map((row) => {
           const parsed = safeParse(row.data, {});
           return {
             ...parsed,
@@ -296,7 +296,7 @@ export default {
         });
 
         if (q) {
-          invoices = invoices.filter(inv => {
+          invoices = invoices.filter((inv) => {
             const haystack = [
               inv.number || "",
               inv.customer?.name || "",
@@ -406,4 +406,4 @@ function safeParse(value, fallback) {
   } catch {
     return fallback;
   }
-          }
+        }
