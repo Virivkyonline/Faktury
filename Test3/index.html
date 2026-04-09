@@ -1,0 +1,3322 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Platinum Lech Faktúry</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg-page: #0f1726;
+      --bg-page-2: #162235;
+      --header-border: rgba(255,255,255,.08);
+
+      --card-border: rgba(255,255,255,.08);
+      --card-shadow: 0 18px 48px rgba(0,0,0,.28);
+
+      --text-main: #eef4fb;
+      --text-soft: #c9d5e7;
+      --text-muted: #8da2bf;
+
+      --accent: #59c9ff;
+      --accent-2: #2f8dff;
+      --accent-3: #7be0ff;
+
+      --btn-primary-1: #1d7dff;
+      --btn-primary-2: #0c4fd9;
+      --btn-secondary-1: #19c0d9;
+      --btn-secondary-2: #1177b8;
+      --btn-dark: #131a28;
+      --btn-dark-2: #0b101a;
+
+      --field-bg: #111827;
+      --field-bg-2: #1b2437;
+      --field-border: rgba(255,255,255,.08);
+      --field-text: #f5f9ff;
+      --field-placeholder: #7e90aa;
+
+      --success: #11b85a;
+      --success-2: #0f8b45;
+      --danger: #da3a3a;
+      --danger-2: #a81e1e;
+      --warning: #d6a334;
+      --warning-2: #a86d10;
+
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at top left, rgba(89,201,255,.09), transparent 22%),
+        radial-gradient(circle at top right, rgba(47,141,255,.09), transparent 18%),
+        linear-gradient(180deg, var(--bg-page) 0%, var(--bg-page-2) 100%);
+    }
+
+    body { min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+
+    .hidden { display: none !important; }
+    .hidden-tab { display: none !important; }
+    .collapsed { display: none !important; }
+
+    .app-shell { min-height: 100vh; }
+    .top-status-bar { height: 20px; background: #000; }
+    .page { max-width: 980px; margin: 0 auto; padding: 0 14px 34px; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      margin: 0 -14px 18px;
+      padding: 14px;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(11,18,32,.92), rgba(18,28,48,.88));
+      border-bottom: 1px solid var(--header-border);
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+    }
+
+    .topbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      position: relative;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 24px rgba(89,201,255,.25);
+    }
+
+    .brand-logo::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 6px solid #fff;
+      border-left-color: transparent;
+      border-top-color: transparent;
+      border-radius: 50%;
+      transform: rotate(35deg);
+    }
+
+    .brand-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: .4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .menu-btn,
+    .gear-btn,
+    .small-square,
+    .small-add,
+    .toggle-details,
+    .collapse-btn,
+    .tab-btn,
+    .btn,
+    .to-top,
+    .action-btn {
+      border: 0;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .menu-btn {
+      min-width: 90px;
+      padding: 12px 16px;
+      font-size: 16px;
+      color: #fff;
+      border-radius: 14px;
+      background: linear-gradient(180deg, var(--btn-dark), var(--btn-dark-2));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 20px rgba(0,0,0,.16);
+    }
+
+    .gear-btn {
+      width: 48px;
+      height: 48px;
+      font-size: 24px;
+      color: #fff;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #162034, #0d1320);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 20px rgba(0,0,0,.16);
+    }
+
+    .menu-btn:hover, .gear-btn:hover, .small-square:hover, .small-add:hover,
+    .toggle-details:hover, .collapse-btn:hover, .tab-btn:hover, .btn:hover,
+    .to-top:hover, .action-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+    }
+
+    .menu-panel {
+      display: none;
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(8,12,20,.96), rgba(16,23,36,.96));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 18px 48px rgba(0,0,0,.28);
+    }
+
+    .menu-panel.open {
+      display: block;
+      animation: fadeIn .18s ease;
+    }
+
+    .menu-list { display: grid; gap: 10px; }
+
+    .menu-link {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 12px;
+      border-radius: 16px;
+      font-size: 18px;
+      color: var(--accent);
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .menu-link span:first-child {
+      text-align: center;
+      font-size: 24px;
+      color: #fff;
+    }
+
+    .screen { animation: fadeIn .22s ease; }
+
+    .hero {
+      position: relative;
+      padding: 8px 4px 10px;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      margin: 8px 0 8px;
+      font-size: 52px;
+      line-height: .98;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--accent);
+      text-shadow: 0 0 24px rgba(89,201,255,.15);
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 760px;
+      color: var(--text-soft);
+      font-size: 28px;
+      line-height: 1.08;
+    }
+
+    .hero-sub {
+      margin-top: 16px;
+      color: var(--text-muted);
+      font-size: 17px;
+    }
+
+    .breadcrumbs {
+      margin: 16px 0 0;
+      color: var(--text-muted);
+      font-size: 17px;
+    }
+
+    .breadcrumbs a { color: var(--accent); }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 26px 0;
+    }
+
+    .action-btn {
+      min-height: 96px;
+      padding: 16px 14px;
+      font-size: 18px;
+      line-height: 1.15;
+      color: #fff;
+      border-radius: 18px;
+      background: linear-gradient(180deg, var(--btn-primary-1), var(--btn-primary-2));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 16px 32px rgba(10,44,104,.22);
+    }
+
+    .action-btn.secondary {
+      background: linear-gradient(180deg, var(--btn-secondary-1), var(--btn-secondary-2));
+    }
+
+    .section-card {
+      margin-bottom: 18px;
+      padding: 18px 18px 20px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, rgba(17,24,39,.82), rgba(24,34,54,.84));
+      border: 1px solid var(--card-border);
+      box-shadow: var(--card-shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.1;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .card-subtitle {
+      margin: 4px 0 0;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .toggle-details {
+      min-width: 134px;
+      padding: 12px 14px;
+      font-size: 16px;
+      color: #fff;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #1a2437, #0f1522);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    .collapse-btn {
+      width: 46px;
+      height: 46px;
+      font-size: 20px;
+      color: #fff;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #192334, #101722);
+    }
+
+    .link-list,
+    .profile-grid,
+    .service-box,
+    .doc-style-grid,
+    .security-box,
+    .company-list,
+    .quick-actions-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .link-row,
+    .profile-item,
+    .service-row,
+    .company-card,
+    .quick-card {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.04);
+      color: var(--text-soft);
+      font-size: 17px;
+      align-items: center;
+    }
+
+    .link-row {
+      color: var(--accent);
+      font-size: 19px;
+    }
+
+    .link-count {
+      font-size: 15px;
+      color: var(--text-soft);
+    }
+
+    .profile-item strong {
+      color: #fff;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      background: linear-gradient(180deg, var(--success), var(--success-2));
+      box-shadow: 0 10px 18px rgba(17,184,90,.18);
+    }
+
+    .draft-badge {
+      background: linear-gradient(180deg, var(--warning), var(--warning-2));
+      box-shadow: 0 10px 18px rgba(214,163,52,.18);
+    }
+
+    .screen-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      padding: 13px 16px;
+      font-size: 16px;
+      color: #fff;
+      border-radius: 14px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, var(--btn-primary-1), var(--btn-primary-2));
+      box-shadow: 0 14px 28px rgba(13,79,217,.24);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(180deg, var(--btn-secondary-1), var(--btn-secondary-2));
+      box-shadow: 0 14px 28px rgba(17,119,184,.22);
+    }
+
+    .btn-dark {
+      background: linear-gradient(180deg, var(--btn-dark), var(--btn-dark-2));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    }
+
+    .btn-green { background: linear-gradient(180deg, var(--success), var(--success-2)); }
+    .btn-red { background: linear-gradient(180deg, var(--danger), var(--danger-2)); }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 18px;
+      align-items: start;
+    }
+
+    .field { display: contents; }
+
+    label {
+      padding-top: 12px;
+      font-size: 17px;
+      line-height: 1.2;
+      color: var(--text-soft);
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="password"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 14px 14px;
+      font-size: 17px;
+      color: var(--field-text);
+      outline: none;
+      border-radius: 16px;
+      border: 1px solid var(--field-border);
+      background: linear-gradient(180deg, var(--field-bg), #0e1523);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+      transition: .18s ease;
+    }
+    select {
+      background: linear-gradient(180deg, var(--field-bg-2), #232d42);
+    }
+
+    textarea {
+      min-height: 98px;
+      resize: vertical;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--field-placeholder);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(89,201,255,.38);
+      box-shadow: 0 0 0 4px rgba(89,201,255,.10);
+    }
+
+    .row-inline {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .small-square {
+      width: 46px;
+      height: 46px;
+      flex-shrink: 0;
+      font-size: 24px;
+      color: #fff;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #1b2537, #111826);
+    }
+
+    .small-add {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      font-size: 26px;
+      color: #fff;
+      background: linear-gradient(180deg, var(--success), var(--success-2));
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .items-toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .items-toolbar select {
+      flex: 1;
+    }
+
+    .item-box {
+      padding: 12px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: 1.4fr .6fr .6fr .9fr .55fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .item-grid textarea {
+      min-height: 92px;
+    }
+
+    .totals {
+      margin-top: 14px;
+      text-align: right;
+      font-size: 20px;
+      line-height: 1.7;
+      color: var(--text-soft);
+    }
+
+    .totals strong {
+      display: inline-block;
+      min-width: 120px;
+      text-align: right;
+      color: #fff;
+    }
+
+    .thumb-list {
+      display: flex;
+      gap: 14px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .thumb-wrap {
+      text-align: center;
+    }
+
+    .thumb {
+      width: 50px;
+      height: 82px;
+      margin: 0 auto 8px;
+      border-radius: 8px;
+      border: 3px solid #0f1218;
+      background:
+        linear-gradient(#dcdcdc, #dcdcdc),
+        linear-gradient(#b2b2b2, #b2b2b2),
+        linear-gradient(#c3c3c3, #c3c3c3);
+      background-size: 70% 11px, 80% 4px, 55% 4px;
+      background-repeat: no-repeat;
+      background-position: center 18px, center 40px, center 53px;
+      box-shadow: 0 8px 18px rgba(255,255,255,.04);
+    }
+
+    .radio-dot {
+      width: 22px;
+      height: 22px;
+      display: inline-block;
+      border-radius: 50%;
+      border: 3px solid #50607c;
+      background: #37465e;
+    }
+
+    .radio-dot.active {
+      border-color: var(--accent-3);
+      box-shadow: inset 0 0 0 4px #bfeeff;
+    }
+
+    .settings-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 20px 0 18px;
+    }
+
+    .tab-btn {
+      padding: 13px 18px;
+      font-size: 17px;
+      color: var(--accent);
+      border-radius: 16px;
+      background: transparent;
+    }
+
+    .tab-btn.active {
+      color: #fff;
+      background: linear-gradient(180deg, var(--btn-primary-1), var(--btn-primary-2));
+      box-shadow: 0 12px 26px rgba(13,79,217,.22);
+    }
+
+    .settings-section-title {
+      margin: 8px 0 10px;
+      font-size: 18px;
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .doc-style-card {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .doc-style-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 16px 18px;
+      align-items: start;
+    }
+
+    .doc-style-preview {
+      font-size: 16px;
+      line-height: 1.3;
+      color: var(--text-soft);
+    }
+
+    .doc-style-preview .thumb-list {
+      margin-top: 12px;
+    }
+
+    .info-note {
+      padding: 14px;
+      border-radius: 16px;
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--text-soft);
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.04);
+    }
+
+    .company-card {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .company-card-top {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .company-name {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .company-meta {
+      margin-top: 6px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-soft);
+    }
+
+    .company-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      width: 100%;
+    }
+
+    .company-empty {
+      padding: 18px;
+      text-align: center;
+      border-radius: 18px;
+      color: var(--text-muted);
+      background: rgba(255,255,255,.03);
+      border: 1px dashed rgba(255,255,255,.10);
+    }
+
+    .active-company-card {
+      border: 1px solid rgba(89,201,255,.24);
+      box-shadow: 0 0 0 1px rgba(89,201,255,.08), 0 18px 48px rgba(0,0,0,.28);
+    }
+
+    .active-company-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .active-company-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.04);
+      color: var(--text-soft);
+      font-size: 16px;
+    }
+
+    .active-company-line strong {
+      color: #fff;
+      text-align: right;
+    }
+
+    .customer-card,
+    .invoice-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.04);
+      color: var(--text-soft);
+    }
+
+    .customer-card-main,
+    .invoice-card-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .customer-name,
+    .invoice-title {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .customer-meta,
+    .invoice-meta {
+      margin-top: 6px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-soft);
+      word-break: break-word;
+    }
+
+    .customer-actions,
+    .invoice-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .quick-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .quick-card-title {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .quick-card-text {
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .invoice-helper-text {
+      margin-top: 8px;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .image-preview-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .image-preview-box img {
+      max-width: 160px;
+      max-height: 120px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      object-fit: contain;
+    }
+
+    .pdf-preview {
+      background: #fff;
+      color: #111;
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0,0,0,.24);
+    }
+
+    .pdf-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 28px;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .pdf-brand {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .pdf-logo {
+      width: 120px;
+      height: 80px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .pdf-stamp {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .pdf-preview h2,
+    .pdf-preview h3 {
+      margin-top: 0;
+      color: #0f1726;
+    }
+
+    .pdf-preview .pdf-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 8px;
+      color: #1f2937;
+    }
+
+    .pdf-preview .pdf-label {
+      font-weight: 700;
+    }
+
+    .to-top {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      z-index: 90;
+      width: 74px;
+      height: 74px;
+      font-size: 32px;
+      color: #fff;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, rgba(31,45,70,.96), rgba(16,23,36,.96));
+      backdrop-filter: blur(10px);
+      box-shadow: 0 16px 34px rgba(0,0,0,.26);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 760px) {
+      .hero h1 { font-size: 42px; }
+      .hero p { font-size: 24px; }
+      .action-grid { grid-template-columns: 1fr 1fr; }
+      .doc-style-inner { grid-template-columns: 1fr; }
+      .customer-card,
+      .invoice-card,
+      .pdf-header { flex-direction: column; }
+      .customer-actions,
+      .invoice-actions { justify-content: flex-start; }
+    }
+
+    @media (max-width: 620px) {
+      .brand-title { font-size: 18px; }
+      .hero h1 { font-size: 34px; }
+      .hero p { font-size: 20px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field { display: block; }
+      label {
+        display: block;
+        padding-top: 0;
+        margin-bottom: 8px;
+      }
+      .item-grid { grid-template-columns: 1fr; }
+      .bottom-actions { flex-direction: column; }
+      .action-grid,
+      .quick-actions-grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body {
+        background: #fff !important;
+        color: #111 !important;
+      }
+
+      .topbar,
+      .top-status-bar,
+      .to-top,
+      .screen-toolbar,
+      .bottom-actions,
+      .menu-panel,
+      .settings-tabs,
+      .action-grid,
+      .section-card:not(#pdfPrintableWrap),
+      #dashboardScreen,
+      #invoiceScreen,
+      #settingsScreen,
+      #companiesScreen,
+      #customersScreen,
+      #invoicesScreen {
+        display: none !important;
+      }
+
+      #pdfScreen {
+        display: block !important;
+      }
+
+      .page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      #pdfScreen .hero {
+        display: none !important;
+      }
+
+      #pdfPrintableWrap {
+        display: block !important;
+        box-shadow: none !important;
+        border: 0 !important;
+        background: #fff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      #pdfPreviewContainer {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        color: #111 !important;
+      }
+
+      #pdfPreviewContainer h2,
+      #pdfPreviewContainer h3,
+      #pdfPreviewContainer .pdf-row,
+      #pdfPreviewContainer .pdf-label {
+        color: #111 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="top-status-bar"></div>
+
+    <div class="page">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div class="brand">
+            <div class="brand-logo"></div>
+            <div class="brand-title">PLATINUM LECH FAKTÚRY</div>
+          </div>
+
+          <div class="top-actions">
+            <button class="gear-btn nav-settings" title="Nastavenia">⚙</button>
+            <button class="menu-btn" id="menuBtn">MENU</button>
+          </div>
+        </div>
+
+        <div class="menu-panel" id="menuPanel">
+          <div class="menu-list">
+            <a href="#" class="menu-link nav-dashboard"><span>🏠</span><span>Dashboard</span></a>
+            <a href="#" class="menu-link nav-new-invoice"><span>🧾</span><span>Nová faktúra</span></a>
+            <a href="#" class="menu-link nav-settings"><span>⚙</span><span>Nastavenia</span></a>
+            <a href="#" class="menu-link nav-companies"><span>🏢</span><span>Firmy</span></a>
+            <a href="#" class="menu-link nav-customers"><span>👥</span><span>Klienti</span></a>
+            <a href="#" class="menu-link nav-invoices"><span>📁</span><span>Faktúry</span></a>
+          </div>
+        </div>
+      </header>
+
+      <!-- DASHBOARD -->
+      <section id="dashboardScreen" class="screen">
+        <div class="hero">
+          <h1>Vitajte</h1>
+          <p>Moderný prehľad faktúr, dokumentov, klientov a firiem pripravený ako základ pre budúcu appku.</p>
+          <div class="hero-sub">Firmy, klienti, faktúry aj rozpracovaný draft sa ukladajú lokálne v zariadení cez localStorage.</div>
+        </div>
+
+        <div class="action-grid">
+          <button class="action-btn nav-new-invoice">Nová faktúra</button>
+          <button class="action-btn nav-companies">Moje firmy</button>
+          <button class="action-btn nav-customers">Klienti</button>
+          <button class="action-btn secondary nav-settings">Nastavenia</button>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Rýchle akcie</h2>
+              <div class="card-subtitle">Priamy vstup do najčastejších úloh</div>
+            </div>
+          </div>
+
+          <div class="quick-actions-grid">
+            <div class="quick-card">
+              <div class="quick-card-title">Nová faktúra</div>
+              <div class="quick-card-text">Vytvor novú faktúru pre aktuálne zvolenú firmu.</div>
+              <button class="btn btn-primary nav-new-invoice">Otvoriť</button>
+            </div>
+
+            <div class="quick-card">
+              <div class="quick-card-title">Pridať klienta</div>
+              <div class="quick-card-text">Ulož klienta a priraď ho k aktívnej firme.</div>
+              <button class="btn btn-secondary nav-customers">Otvoriť</button>
+            </div>
+
+            <div class="quick-card">
+              <div class="quick-card-title">Spravovať firmy</div>
+              <div class="quick-card-text">Pridaj firmu, uprav ju alebo nastav ako aktívnu.</div>
+              <button class="btn btn-primary nav-companies">Otvoriť</button>
+            </div>
+
+            <div class="quick-card">
+              <div class="quick-card-title">Zoznam faktúr</div>
+              <div class="quick-card-text">Pozri uložené faktúry patriace k aktívnej firme.</div>
+              <button class="btn btn-secondary nav-invoices">Otvoriť</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card active-company-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Aktívna firma</h2>
+              <div class="card-subtitle">Táto firma sa použije ako dodávateľ pri novej faktúre</div>
+            </div>
+            <span class="badge" id="dashboardCompanyBadge">Nezvolená</span>
+          </div>
+
+          <div id="activeCompanyDashboard" class="active-company-grid">
+            <div class="company-empty">Zatiaľ nemáš zvolenú aktívnu firmu.</div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary nav-new-invoice">Nová faktúra pre aktívnu firmu</button>
+            <button class="btn btn-secondary nav-companies">Spravovať firmy</button>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Dokumenty</h2>
+              <div class="card-subtitle">Rýchly vstup do hlavných sekcií</div>
+            </div>
+          </div>
+
+          <div class="link-list">
+            <a href="#" class="link-row nav-new-invoice"><span>Faktúry (vystavené)</span><span class="link-count">nová</span></a>
+            <a href="#" class="link-row nav-invoices"><span>Uložené faktúry</span><span class="link-count" id="invoiceCountBadge">0</span></a>
+            <a href="#" class="link-row nav-customers"><span>Klienti aktívnej firmy</span><span class="link-count" id="customerCountBadge">0</span></a>
+            <a href="#" class="link-row nav-companies"><span>Moje firmy</span><span class="link-count" id="companyCountBadgeMini">0</span></a>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Údaje o konte</h2>
+              <div class="card-subtitle">Lokálna testovacia verzia</div>
+            </div>
+          </div>
+
+          <div class="profile-grid">
+            <div class="profile-item"><span>Režim</span><strong>Frontend + localStorage</strong></div>
+            <div class="profile-item"><span>Počet uložených firiem</span><strong id="companyCountValue">0</strong></div>
+            <div class="profile-item"><span>Počet klientov aktívnej firmy</span><strong id="customerCountValue">0</strong></div>
+            <div class="profile-item"><span>Počet faktúr aktívnej firmy</span><strong id="invoiceCountValue">0</strong></div>
+            <div class="profile-item"><span>Aktívna firma</span><strong id="activeCompanyNameValue">Žiadna</strong></div>
+            <div class="profile-item"><span>Draft faktúry</span><strong id="draftStatusValue">Žiadny</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INVOICE -->
+      <section id="invoiceScreen" class="screen hidden">
+        <input type="hidden" id="editingInvoiceId">
+
+        <div class="hero">
+          <h1>Vložiť faktúru</h1>
+          <p>Dodávateľ sa predvyplní podľa aktuálne zvolenej firmy, klient sa môže uložiť k firme a draft sa ukladá automaticky.</p>
+          <div class="breadcrumbs">
+            <a href="#" class="nav-dashboard">Dashboard</a> › Vložiť faktúru
+          </div>
+        </div>
+
+        <div class="screen-toolbar">
+          <button class="btn btn-dark nav-dashboard">← Späť na menu</button>
+          <button class="btn btn-secondary nav-companies">Firmy</button>
+          <button class="btn btn-secondary nav-customers">Klienti</button>
+          <span class="draft-badge" id="invoiceModeBadge">Nová faktúra</span>
+        </div>
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Použitá firma</h2>
+              <div class="card-subtitle">Aktívny dodávateľ pre túto faktúru</div>
+            </div>
+          </div>
+
+          <div id="invoiceActiveCompanyInfo" class="active-company-grid">
+            <div class="company-empty">Najprv si ulož a zvoľ aktívnu firmu.</div>
+          </div>
+
+          <div class="invoice-helper-text" id="invoiceDraftInfo">
+            Rozpracovaná faktúra sa bude priebežne ukladať lokálne v tomto zariadení.
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Údaje dodávateľa</h2>
+              <div class="card-subtitle">Predvyplní sa z aktívnej firmy</div>
+            </div>
+            <button class="toggle-details toggle-section" data-target="supplierBody">Podrobnosti</button>
+          </div>
+
+          <div id="supplierBody">
+            <div class="form-grid">
+              <div class="field"><label>Spoločnosť / osoba</label><input type="text" id="supplierName"></div>
+              <div class="field"><label>Ulica</label><input type="text" id="supplierStreet"></div>
+              <div class="field"><label>Mesto</label><input type="text" id="supplierCity"></div>
+              <div class="field"><label>PSČ</label><input type="text" id="supplierZip"></div>
+              <div class="field"><label>Štát</label><input type="text" id="supplierCountry"></div>
+              <div class="field"><label>IČO</label><input type="text" id="supplierIco"></div>
+              <div class="field"><label>DIČ</label><input type="text" id="supplierDic"></div>
+              <div class="field"><label>IČ DPH</label><input type="text" id="supplierVat"></div>
+              <div class="field"><label>Telefón</label><input type="text" id="supplierPhone"></div>
+              <div class="field"><label>Email</label><input type="text" id="supplierEmail"></div>
+              <div class="field"><label>Web</label><input type="text" id="supplierWeb"></div>
+              <div class="field"><label>Banka</label><input type="text" id="supplierBank"></div>
+              <div class="field"><label>IBAN</label><input type="text" id="supplierIban"></div>
+              <div class="field"><label>SWIFT</label><input type="text" id="supplierSwift"></div>
+              <div class="field"><label>Info o dodávateľovi</label><textarea id="supplierNote"></textarea></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Údaje odberateľa</h2>
+              <div class="card-subtitle">Možnosť vybrať uloženého klienta alebo uložiť nového</div>
+            </div>
+            <button class="toggle-details toggle-section" data-target="customerBody">Podrobnosti</button>
+          </div>
+
+          <div id="customerBody">
+            <div class="form-grid">
+              <div class="field">
+                <label>Vybrať uloženého klienta</label>
+                <select id="invoiceCustomerSelect">
+                  <option value="">-- Vyberte klienta --</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Názov klienta / osoba</label>
+                <input type="text" id="customerName">
+              </div>
+              <div class="field">
+                <label>Ulica</label>
+                <input type="text" id="customerStreet">
+              </div>
+              <div class="field">
+                <label>Mesto</label>
+                <input type="text" id="customerCity">
+              </div>
+              <div class="field">
+                <label>PSČ</label>
+                <input type="text" id="customerZip">
+              </div>
+              <div class="field">
+                <label>Štát</label>
+                <input type="text" id="customerCountry" value="Slovensko">
+              </div>
+              <div class="field">
+                <label>IČO</label>
+                <input type="text" id="customerIco">
+              </div>
+              <div class="field">
+                <label>DIČ</label>
+                <input type="text" id="customerDic">
+              </div>
+              <div class="field">
+                <label>IČ DPH</label>
+                <input type="text" id="customerVat">
+              </div>
+              <div class="field">
+                <label>Email odberateľa</label>
+                <input type="text" id="customerEmail">
+              </div>
+              <div class="field">
+                <label>Telefón odberateľa</label>
+                <input type="text" id="customerPhone">
+              </div>
+              <div class="field">
+                <label>Info o odberateľovi</label>
+                <textarea id="customerNote"></textarea>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-secondary" type="button" id="saveCustomerBtn">Uložiť / upraviť klienta</button>
+              <button class="btn btn-dark" type="button" id="clearCustomerBtn">Vyčistiť klienta</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Základné údaje</h2>
+              <div class="card-subtitle">Čísla a dátumy dokladu</div>
+            </div>
+            <button class="collapse-btn toggle-section" data-target="basicBody">⌃</button>
+          </div>
+
+          <div id="basicBody">
+            <div class="form-grid">
+              <div class="field"><label>Číslo faktúry</label><input type="text" id="invoiceNumber"></div>
+              <div class="field"><label>Typ faktúry</label><select id="invoiceType"><option>Faktúra</option><option>Zálohová faktúra</option><option>Dobropis</option></select></div>
+              <div class="field"><label>Variabilný symbol</label><input type="text" id="invoiceVariable"></div>
+              <div class="field"><label>Konštantný symbol</label><input type="text" id="invoiceConstant"></div>
+              <div class="field"><label>Dátum vystavenia</label><input type="date" id="invoiceIssuedDate"></div>
+              <div class="field"><label>Dátum dodania</label><input type="date" id="invoiceDeliveryDate"></div>
+              <div class="field"><label>Dátum splatnosti</label><input type="date" id="invoiceDueDate"></div>
+              <div class="field"><label>Číslo objednávky</label><input type="text" id="invoiceOrderNumber"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Peňažné údaje</h2>
+              <div class="card-subtitle">Platba, mena a zľava</div>
+            </div>
+            <button class="collapse-btn toggle-section" data-target="moneyBody">⌃</button>
+          </div>
+
+          <div id="moneyBody">
+            <div class="form-grid">
+              <div class="field"><label>Mena faktúry</label><select id="invoiceCurrency"><option>EUR</option></select></div>
+              <div class="field"><label>Forma úhrady</label><select id="invoicePayment"><option>peňažný prevod</option><option>hotovosť</option></select></div>
+              <div class="field"><label>Zaokrúhlenie k úhrade</label><select id="invoiceRounding"><option>žiadne</option></select></div>
+              <div class="field"><label>Zobraziť QR kód</label><select id="invoiceQr"><option>pay-by-square</option><option>nie</option></select></div>
+              <div class="field"><label>Už uhradené</label><input type="number" id="invoicePaid" value="0"></div>
+              <div class="field"><label>Celková zľava (%)</label><input type="number" id="invoiceDiscount" value="0"></div>
+            </div>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Položky faktúry</h2>
+              <div class="card-subtitle">Jednoduchá testovacia položka</div>
+            </div>
+            <button class="collapse-btn toggle-section" data-target="itemsBody">⌃</button>
+          </div>
+
+          <div id="itemsBody">
+            <div class="items-toolbar">
+              <select>
+                <option>-- Vyberte fakturačnú položku --</option>
+              </select>
+              <button class="small-add" type="button">+</button>
+            </div>
+
+            <div class="item-box">
+              <div class="item-grid">
+                <textarea placeholder="Popis položky" id="itemDescription"></textarea>
+                <input type="text" value="ks" placeholder="MJ" id="itemUnit">
+                <input type="number" value="1" placeholder="Množstvo" id="itemQuantity">
+                <input type="number" placeholder="Cena za MJ bez DPH" id="itemPrice">
+                <select id="itemCurrency">
+                  <option>EUR</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-green" type="button" id="recalcInvoiceBtn">Prepočítať</button>
+              <button class="btn btn-dark" type="button" id="clearInvoiceBtn">Vyčistiť faktúru</button>
+              <button class="btn btn-secondary" type="button" id="clearDraftBtn">Zmazať draft</button>
+            </div>
+
+            <div class="totals">
+              Spolu: <strong id="invoiceTotalValue">0.00 EUR</strong><br>
+              K úhrade: <strong id="invoiceDueValue">0.00 EUR</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-actions">
+          <button class="btn btn-primary" type="button" id="saveInvoiceBtn">Uložiť</button>
+          <button class="btn btn-secondary" type="button" id="previewInvoiceBtn">Uložiť a zobraziť PDF</button>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="settingsScreen" class="screen hidden">
+        <div class="hero">
+          <h1>Nastavenia</h1>
+          <p>Moderná verzia nastavení pripravená ako základ pre budúcu plnohodnotnú appku.</p>
+          <div class="breadcrumbs">
+            <a href="#" class="nav-dashboard">Dashboard</a> › Nastavenia
+          </div>
+        </div>
+
+        <div class="screen-toolbar">
+          <button class="btn btn-dark nav-dashboard">← Späť na menu</button>
+          <button class="btn btn-primary nav-new-invoice">Nová faktúra</button>
+        </div>
+
+        <div class="settings-tabs">
+          <button class="tab-btn active" data-tab="tabGeneral">Všeobecné</button>
+          <button class="tab-btn" data-tab="tabDocuments">Dokumenty</button>
+          <button class="tab-btn" data-tab="tabItems">Položky</button>
+          <button class="tab-btn" data-tab="tabSecurity">Bezpečnosť</button>
+          <button class="tab-btn nav-companies">Firmy</button>
+        </div>
+
+        <div id="tabGeneral" class="tab-panel">
+          <div class="section-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Všeobecné nastavenia</h2>
+                <div class="card-subtitle">Systém, zobrazenie a správanie</div>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label>Jazyk systému</label>
+                <select><option>slovenčina</option></select>
+              </div>
+              <div class="field">
+                <label>Počet riadkov v zoznamoch</label>
+                <select><option>15</option><option>25</option><option>50</option></select>
+              </div>
+              <div class="field">
+                <label>Predvolená sadzba DPH</label>
+                <select><option>Štandardná</option></select>
+              </div>
+              <div class="field">
+                <label>Predvolená merná jednotka</label>
+                <input type="text" value="ks">
+              </div>
+              <div class="field">
+                <label>Zaokrúhlenie</label>
+                <select><option>žiadne</option></select>
+              </div>
+              <div class="field">
+                <label>Formát názvu stiahnutého súboru</label>
+                <select><option>SPOLOCNOST_CISLO</option></select>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-primary" type="button">Nastaviť</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="tabDocuments" class="tab-panel hidden-tab">
+          <div class="doc-style-grid">
+            <div class="section-card">
+              <h3 class="settings-section-title">Faktúry (vystavené)</h3>
+              <div class="doc-style-card">
+                <div class="doc-style-inner">
+                  <div class="doc-style-preview">
+                    Predvolený štýl faktúry
+                    <div class="thumb-list">
+                      <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot active"></span></div>
+                      <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot"></span></div>
+                      <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot"></span></div>
+                    </div>
+                  </div>
+
+                  <div class="form-grid">
+                    <div class="field">
+                      <label>Splatnosť faktúry v dňoch</label>
+                      <input type="number" value="14">
+                    </div>
+                    <div class="field">
+                      <label>Predvolene zobraziť QR kód</label>
+                      <select><option>áno</option></select>
+                    </div>
+                    <div class="field">
+                      <label>Predvolený dátum pri tvorbe faktúry</label>
+                      <select><option>Dátum dodania</option></select>
+                    </div>
+                    <div class="field">
+                      <label>Text pri už uhradenej faktúre</label>
+                      <input type="text" value="UŽ UHRADENÉ">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-primary" type="button">Nastaviť</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="tabItems" class="tab-panel hidden-tab">
+          <div class="section-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Položky a cenníky</h2>
+                <div class="card-subtitle">Cenové hladiny a vlastné polia</div>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field"><label>1. cenová hladina</label><input type="text" value="A"></div>
+              <div class="field"><label>2. cenová hladina</label><input type="text" value="B"></div>
+              <div class="field"><label>3. cenová hladina</label><input type="text" value="C"></div>
+              <div class="field"><label>4. cenová hladina</label><input type="text" value="D"></div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-primary" type="button">Nastaviť</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="tabSecurity" class="tab-panel hidden-tab">
+          <div class="section-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Bezpečnosť</h2>
+                <div class="card-subtitle">Frontend príprava pre budúci login</div>
+              </div>
+            </div>
+
+            <div class="security-box">
+              <div class="info-note">
+                Tu neskôr napojíme reálne heslo, relácie a prístup používateľa.
+              </div>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label>Aktuálne heslo</label>
+                  <input type="password" placeholder="Zadaj aktuálne heslo">
+                </div>
+                <div class="field">
+                  <label>Nové heslo</label>
+                  <input type="password" placeholder="Zadaj nové heslo">
+                </div>
+                <div class="field">
+                  <label>Potvrdiť nové heslo</label>
+                  <input type="password" placeholder="Zopakuj nové heslo">
+                </div>
+                <div class="field">
+                  <label>Automatické odhlásenie</label>
+                  <select><option>30 minút</option><option>60 minút</option></select>
+                </div>
+              </div>
+
+              <div class="btn-row">
+                <button class="btn btn-primary" type="button">Uložiť bezpečnosť</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- COMPANIES -->
+      <section id="companiesScreen" class="screen hidden">
+        <div class="hero">
+          <h1>Moje firmy</h1>
+          <p>Tu si uložíš všetky firmy, nastavíš aktívnu firmu, logo, pečiatku a automatiku číslovania dokladov.</p>
+          <div class="breadcrumbs">
+            <a href="#" class="nav-dashboard">Dashboard</a> › Firmy
+          </div>
+        </div>
+
+        <div class="screen-toolbar">
+          <button class="btn btn-dark nav-dashboard">← Späť na menu</button>
+          <button class="btn btn-primary nav-new-invoice">Nová faktúra</button>
+        </div>
+
+        <div class="section-card active-company-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Aktívna firma</h2>
+              <div class="card-subtitle">Používa sa automaticky ako dodávateľ a pre číslovanie dokladov</div>
+            </div>
+            <span class="badge" id="companiesActiveBadge">Nezvolená</span>
+          </div>
+
+          <div id="activeCompanyCompaniesScreen" class="active-company-grid">
+            <div class="company-empty">Zatiaľ nemáš nastavenú aktívnu firmu.</div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Pridať / upraviť firmu</h2>
+              <div class="card-subtitle">Uložené firmy sa držia v localStorage v tomto zariadení</div>
+            </div>
+          </div>
+
+          <form id="companyForm">
+            <input type="hidden" id="companyId">
+
+            <div class="form-grid">
+              <div class="field"><label>Názov firmy</label><input type="text" id="companyNameInput" required></div>
+              <div class="field"><label>Ulica</label><input type="text" id="companyStreetInput"></div>
+              <div class="field"><label>Mesto</label><input type="text" id="companyCityInput"></div>
+              <div class="field"><label>PSČ</label><input type="text" id="companyZipInput"></div>
+              <div class="field"><label>Štát</label><input type="text" id="companyCountryInput" value="Slovensko"></div>
+              <div class="field"><label>IČO</label><input type="text" id="companyIcoInput"></div>
+              <div class="field"><label>DIČ</label><input type="text" id="companyDicInput"></div>
+              <div class="field"><label>IČ DPH</label><input type="text" id="companyVatInput"></div>
+              <div class="field"><label>Telefón</label><input type="text" id="companyPhoneInput"></div>
+              <div class="field"><label>Email</label><input type="text" id="companyEmailInput"></div>
+              <div class="field"><label>Web</label><input type="text" id="companyWebInput"></div>
+              <div class="field"><label>Banka</label><input type="text" id="companyBankInput"></div>
+              <div class="field"><label>IBAN</label><input type="text" id="companyIbanInput"></div>
+              <div class="field"><label>SWIFT</label><input type="text" id="companySwiftInput"></div>
+              <div class="field"><label>Poznámka o dodávateľovi</label><textarea id="companyNoteInput"></textarea></div>
+
+              <div class="field"><label>Prefix číslovania faktúr</label><input type="text" id="companyInvoicePrefixInput" placeholder="napr. 2026-"></div>
+              <div class="field"><label>Posledné číslo faktúry</label><input type="number" id="companyInvoiceCounterInput" value="0"></div>
+              <div class="field"><label>Prefix dodacích listov</label><input type="text" id="companyDeliveryPrefixInput" placeholder="napr. DL-2026-"></div>
+              <div class="field"><label>Posledné číslo dodacieho listu</label><input type="number" id="companyDeliveryCounterInput" value="0"></div>
+
+              <div class="field">
+                <label>Logo firmy</label>
+                <input type="file" id="companyLogoInput" accept="image/*">
+              </div>
+              <div class="field">
+                <label>Pečiatka firmy</label>
+                <input type="file" id="companyStampInput" accept="image/*">
+              </div>
+            </div>
+
+            <div class="image-preview-box">
+              <div>
+                <div class="card-subtitle">Náhľad loga</div>
+                <img id="companyLogoPreview" alt="Náhľad loga" class="hidden">
+              </div>
+              <div>
+                <div class="card-subtitle">Náhľad pečiatky</div>
+                <img id="companyStampPreview" alt="Náhľad pečiatky" class="hidden">
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button type="submit" class="btn btn-primary">Uložiť firmu</button>
+              <button type="button" class="btn btn-secondary" id="resetCompanyFormBtn">Vyčistiť formulár</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Zoznam firiem</h2>
+              <div class="card-subtitle">Upraviť, zmazať alebo nastaviť ako aktívnu</div>
+            </div>
+          </div>
+
+          <div id="companiesList" class="company-list">
+            <div class="company-empty">Zatiaľ nemáš uloženú žiadnu firmu.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CUSTOMERS -->
+      <section id="customersScreen" class="screen hidden">
+        <div class="hero">
+          <h1>Klienti</h1>
+          <p>Klienti sú viazaní na aktívnu firmu. Keď prepneš firmu, uvidíš len jej klientov.</p>
+          <div class="breadcrumbs">
+            <a href="#" class="nav-dashboard">Dashboard</a> › Klienti
+          </div>
+        </div>
+
+        <div class="screen-toolbar">
+          <button class="btn btn-dark nav-dashboard">← Späť na menu</button>
+          <button class="btn btn-primary nav-new-invoice">Nová faktúra</button>
+          <button class="btn btn-secondary nav-companies">Firmy</button>
+        </div>
+
+        <div class="section-card active-company-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Aktívna firma pre klientov</h2>
+              <div class="card-subtitle">Ku tejto firme sa klienti ukladajú</div>
+            </div>
+            <span class="badge" id="customersCompanyBadge">Nezvolená</span>
+          </div>
+
+          <div id="customersActiveCompanyInfo" class="active-company-grid">
+            <div class="company-empty">Najprv si nastav aktívnu firmu.</div>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Pridať / upraviť klienta</h2>
+              <div class="card-subtitle">Klient sa uloží len k aktívnej firme</div>
+            </div>
+          </div>
+
+          <form id="customerForm">
+            <input type="hidden" id="customerId">
+
+            <div class="form-grid">
+              <div class="field"><label>Názov klienta / osoba</label><input type="text" id="customerFormName" required></div>
+              <div class="field"><label>Ulica</label><input type="text" id="customerFormStreet"></div>
+              <div class="field"><label>Mesto</label><input type="text" id="customerFormCity"></div>
+              <div class="field"><label>PSČ</label><input type="text" id="customerFormZip"></div>
+              <div class="field"><label>Štát</label><input type="text" id="customerFormCountry" value="Slovensko"></div>
+              <div class="field"><label>IČO</label><input type="text" id="customerFormIco"></div>
+              <div class="field"><label>DIČ</label><input type="text" id="customerFormDic"></div>
+              <div class="field"><label>IČ DPH</label><input type="text" id="customerFormVat"></div>
+              <div class="field"><label>Email</label><input type="text" id="customerFormEmail"></div>
+              <div class="field"><label>Telefón</label><input type="text" id="customerFormPhone"></div>
+              <div class="field"><label>Poznámka</label><textarea id="customerFormNote"></textarea></div>
+            </div>
+
+            <div class="btn-row">
+              <button type="submit" class="btn btn-primary">Uložiť klienta</button>
+              <button type="button" class="btn btn-secondary" id="resetCustomerFormBtn">Vyčistiť formulár</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Zoznam klientov</h2>
+              <div class="card-subtitle">Klienti patriaci k aktívnej firme</div>
+            </div>
+          </div>
+
+          <div id="customersList" class="company-list">
+            <div class="company-empty">Zatiaľ nemáš uloženého žiadneho klienta.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INVOICES LIST -->
+      <section id="invoicesScreen" class="screen hidden">
+        <div class="hero">
+          <h1>Faktúry</h1>
+          <p>Tu nájdeš faktúry uložené k aktívnej firme. Vieš ich zobraziť, načítať späť do formulára, upraviť alebo vytlačiť.</p>
+          <div class="breadcrumbs">
+            <a href="#" class="nav-dashboard">Dashboard</a> › Faktúry
+          </div>
+        </div>
+
+        <div class="screen-toolbar">
+          <button class="btn btn-dark nav-dashboard">← Späť na menu</button>
+          <button class="btn btn-primary nav-new-invoice">Nová faktúra</button>
+          <button class="btn btn-secondary nav-companies">Firmy</button>
+        </div>
+
+        <div class="section-card active-company-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Aktívna firma pre faktúry</h2>
+              <div class="card-subtitle">Zobrazené sú len jej dokumenty</div>
+            </div>
+            <span class="badge" id="invoicesCompanyBadge">Nezvolená</span>
+          </div>
+
+          <div id="invoicesActiveCompanyInfo" class="active-company-grid">
+            <div class="company-empty">Najprv si nastav aktívnu firmu.</div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Zoznam uložených faktúr</h2>
+              <div class="card-subtitle">Uložené dokumenty pre aktívnu firmu</div>
+            </div>
+          </div>
+
+          <div id="invoicesList" class="company-list">
+            <div class="company-empty">Zatiaľ nemáš uloženú žiadnu faktúru.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PDF PREVIEW -->
+      <section id="pdfScreen" class="screen hidden">
+        <div class="hero">
+          <h1>Náhľad PDF</h1>
+          <p>Tu vidíš tlačový náhľad faktúry. Môžeš ho vytlačiť alebo uložiť cez systémový PDF výstup.</p>
+          <div class="breadcrumbs">
+            <a href="#" class="nav-dashboard">Dashboard</a> › Náhľad PDF
+          </div>
+        </div>
+
+        <div class="screen-toolbar">
+          <button class="btn btn-dark nav-dashboard">← Späť na menu</button>
+          <button class="btn btn-secondary nav-invoices">Zoznam faktúr</button>
+          <button class="btn btn-primary" type="button" id="printPdfBtn">Tlačiť / Uložiť PDF</button>
+        </div>
+
+        <div class="section-card" id="pdfPrintableWrap">
+          <div id="pdfPreviewContainer" class="pdf-preview">
+            <h2>Faktúra</h2>
+            <p>Najprv ulož faktúru alebo zvoľ uloženú faktúru zo zoznamu.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <button class="to-top" id="toTop">⌃</button>
+  </div>
+
+  <script>
+    const STORAGE_KEYS = {
+      companies: "plf_companies",
+      activeCompanyId: "plf_active_company_id",
+      customersByCompany: "plf_customers_by_company",
+      invoicesByCompany: "plf_invoices_by_company",
+      lastPreviewInvoice: "plf_last_preview_invoice",
+      draftInvoiceByCompany: "plf_draft_invoice_by_company"
+    };
+
+    const state = {
+      companies: [],
+      activeCompanyId: null,
+      customersByCompany: {},
+      invoicesByCompany: {},
+      lastPreviewInvoice: null,
+      draftInvoiceByCompany: {}
+    };
+
+    const screens = {
+      dashboard: document.getElementById("dashboardScreen"),
+      invoice: document.getElementById("invoiceScreen"),
+      settings: document.getElementById("settingsScreen"),
+      companies: document.getElementById("companiesScreen"),
+      customers: document.getElementById("customersScreen"),
+      invoices: document.getElementById("invoicesScreen"),
+      pdf: document.getElementById("pdfScreen")
+    };
+
+    const menuBtn = document.getElementById("menuBtn");
+    const menuPanel = document.getElementById("menuPanel");
+    const toTop = document.getElementById("toTop");
+    const printPdfBtn = document.getElementById("printPdfBtn");
+    const editingInvoiceId = document.getElementById("editingInvoiceId");
+    const clearDraftBtn = document.getElementById("clearDraftBtn");
+
+    const companyForm = document.getElementById("companyForm");
+    const companyIdInput = document.getElementById("companyId");
+    const companyNameInput = document.getElementById("companyNameInput");
+    const companyStreetInput = document.getElementById("companyStreetInput");
+    const companyCityInput = document.getElementById("companyCityInput");
+    const companyZipInput = document.getElementById("companyZipInput");
+    const companyCountryInput = document.getElementById("companyCountryInput");
+    const companyIcoInput = document.getElementById("companyIcoInput");
+    const companyDicInput = document.getElementById("companyDicInput");
+    const companyVatInput = document.getElementById("companyVatInput");
+    const companyPhoneInput = document.getElementById("companyPhoneInput");
+    const companyEmailInput = document.getElementById("companyEmailInput");
+    const companyWebInput = document.getElementById("companyWebInput");
+    const companyBankInput = document.getElementById("companyBankInput");
+    const companyIbanInput = document.getElementById("companyIbanInput");
+    const companySwiftInput = document.getElementById("companySwiftInput");
+    const companyNoteInput = document.getElementById("companyNoteInput");
+    const companyInvoicePrefixInput = document.getElementById("companyInvoicePrefixInput");
+    const companyInvoiceCounterInput = document.getElementById("companyInvoiceCounterInput");
+    const companyDeliveryPrefixInput = document.getElementById("companyDeliveryPrefixInput");
+    const companyDeliveryCounterInput = document.getElementById("companyDeliveryCounterInput");
+    const companyLogoInput = document.getElementById("companyLogoInput");
+    const companyStampInput = document.getElementById("companyStampInput");
+    const companyLogoPreview = document.getElementById("companyLogoPreview");
+    const companyStampPreview = document.getElementById("companyStampPreview");
+    const resetCompanyFormBtn = document.getElementById("resetCompanyFormBtn");
+    const companiesList = document.getElementById("companiesList");
+
+    const customerForm = document.getElementById("customerForm");
+    const customerId = document.getElementById("customerId");
+    const customerFormName = document.getElementById("customerFormName");
+    const customerFormStreet = document.getElementById("customerFormStreet");
+    const customerFormCity = document.getElementById("customerFormCity");
+    const customerFormZip = document.getElementById("customerFormZip");
+    const customerFormCountry = document.getElementById("customerFormCountry");
+    const customerFormIco = document.getElementById("customerFormIco");
+    const customerFormDic = document.getElementById("customerFormDic");
+    const customerFormVat = document.getElementById("customerFormVat");
+    const customerFormEmail = document.getElementById("customerFormEmail");
+    const customerFormPhone = document.getElementById("customerFormPhone");
+    const customerFormNote = document.getElementById("customerFormNote");
+    const resetCustomerFormBtn = document.getElementById("resetCustomerFormBtn");
+    const customersList = document.getElementById("customersList");
+    const dashboardCompanyBadge = document.getElementById("dashboardCompanyBadge");
+    const activeCompanyDashboard = document.getElementById("activeCompanyDashboard");
+    const companyCountValue = document.getElementById("companyCountValue");
+    const customerCountValue = document.getElementById("customerCountValue");
+    const invoiceCountValue = document.getElementById("invoiceCountValue");
+    const activeCompanyNameValue = document.getElementById("activeCompanyNameValue");
+    const draftStatusValue = document.getElementById("draftStatusValue");
+    const invoiceCountBadge = document.getElementById("invoiceCountBadge");
+    const customerCountBadge = document.getElementById("customerCountBadge");
+    const companyCountBadgeMini = document.getElementById("companyCountBadgeMini");
+
+    const companiesActiveBadge = document.getElementById("companiesActiveBadge");
+    const activeCompanyCompaniesScreen = document.getElementById("activeCompanyCompaniesScreen");
+
+    const customersCompanyBadge = document.getElementById("customersCompanyBadge");
+    const customersActiveCompanyInfo = document.getElementById("customersActiveCompanyInfo");
+
+    const invoicesCompanyBadge = document.getElementById("invoicesCompanyBadge");
+    const invoicesActiveCompanyInfo = document.getElementById("invoicesActiveCompanyInfo");
+    const invoicesList = document.getElementById("invoicesList");
+
+    const invoiceActiveCompanyInfo = document.getElementById("invoiceActiveCompanyInfo");
+    const invoiceModeBadge = document.getElementById("invoiceModeBadge");
+    const invoiceDraftInfo = document.getElementById("invoiceDraftInfo");
+    const invoiceCustomerSelect = document.getElementById("invoiceCustomerSelect");
+    const saveCustomerBtn = document.getElementById("saveCustomerBtn");
+    const clearCustomerBtn = document.getElementById("clearCustomerBtn");
+    const saveInvoiceBtn = document.getElementById("saveInvoiceBtn");
+    const previewInvoiceBtn = document.getElementById("previewInvoiceBtn");
+    const recalcInvoiceBtn = document.getElementById("recalcInvoiceBtn");
+    const clearInvoiceBtn = document.getElementById("clearInvoiceBtn");
+    const pdfPreviewContainer = document.getElementById("pdfPreviewContainer");
+
+    const supplierFields = {
+      name: document.getElementById("supplierName"),
+      street: document.getElementById("supplierStreet"),
+      city: document.getElementById("supplierCity"),
+      zip: document.getElementById("supplierZip"),
+      country: document.getElementById("supplierCountry"),
+      ico: document.getElementById("supplierIco"),
+      dic: document.getElementById("supplierDic"),
+      vat: document.getElementById("supplierVat"),
+      phone: document.getElementById("supplierPhone"),
+      email: document.getElementById("supplierEmail"),
+      web: document.getElementById("supplierWeb"),
+      bank: document.getElementById("supplierBank"),
+      iban: document.getElementById("supplierIban"),
+      swift: document.getElementById("supplierSwift"),
+      note: document.getElementById("supplierNote")
+    };
+
+    const customerFields = {
+      name: document.getElementById("customerName"),
+      street: document.getElementById("customerStreet"),
+      city: document.getElementById("customerCity"),
+      zip: document.getElementById("customerZip"),
+      country: document.getElementById("customerCountry"),
+      ico: document.getElementById("customerIco"),
+      dic: document.getElementById("customerDic"),
+      vat: document.getElementById("customerVat"),
+      email: document.getElementById("customerEmail"),
+      phone: document.getElementById("customerPhone"),
+      note: document.getElementById("customerNote")
+    };
+
+    const invoiceFields = {
+      number: document.getElementById("invoiceNumber"),
+      type: document.getElementById("invoiceType"),
+      variable: document.getElementById("invoiceVariable"),
+      constant: document.getElementById("invoiceConstant"),
+      issuedDate: document.getElementById("invoiceIssuedDate"),
+      deliveryDate: document.getElementById("invoiceDeliveryDate"),
+      dueDate: document.getElementById("invoiceDueDate"),
+      orderNumber: document.getElementById("invoiceOrderNumber"),
+      currency: document.getElementById("invoiceCurrency"),
+      payment: document.getElementById("invoicePayment"),
+      rounding: document.getElementById("invoiceRounding"),
+      qr: document.getElementById("invoiceQr"),
+      paid: document.getElementById("invoicePaid"),
+      discount: document.getElementById("invoiceDiscount"),
+      itemDescription: document.getElementById("itemDescription"),
+      itemUnit: document.getElementById("itemUnit"),
+      itemQuantity: document.getElementById("itemQuantity"),
+      itemPrice: document.getElementById("itemPrice"),
+      itemCurrency: document.getElementById("itemCurrency")
+    };
+
+    const invoiceTotalValue = document.getElementById("invoiceTotalValue");
+    const invoiceDueValue = document.getElementById("invoiceDueValue");
+
+    let pendingLogoData = "";
+    let pendingStampData = "";
+
+    function safeParse(json, fallback) {
+      try {
+        const parsed = JSON.parse(json);
+        return parsed ?? fallback;
+      } catch (error) {
+        return fallback;
+      }
+    }
+
+    function todayISO() {
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function addDaysISO(isoDate, days) {
+      const d = isoDate ? new Date(isoDate) : new Date();
+      d.setDate(d.getDate() + days);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function ensureInvoiceDefaults() {
+      if (!invoiceFields.issuedDate.value) invoiceFields.issuedDate.value = todayISO();
+      if (!invoiceFields.deliveryDate.value) invoiceFields.deliveryDate.value = todayISO();
+      if (!invoiceFields.dueDate.value) invoiceFields.dueDate.value = addDaysISO(todayISO(), 14);
+      if (!invoiceFields.itemUnit.value) invoiceFields.itemUnit.value = "ks";
+      if (!invoiceFields.itemQuantity.value) invoiceFields.itemQuantity.value = "1";
+      if (!invoiceFields.paid.value) invoiceFields.paid.value = "0";
+      if (!invoiceFields.discount.value) invoiceFields.discount.value = "0";
+    }
+
+    function loadState() {
+      state.companies = safeParse(localStorage.getItem(STORAGE_KEYS.companies), []);
+      state.activeCompanyId = localStorage.getItem(STORAGE_KEYS.activeCompanyId) || null;
+      state.customersByCompany = safeParse(localStorage.getItem(STORAGE_KEYS.customersByCompany), {});
+      state.invoicesByCompany = safeParse(localStorage.getItem(STORAGE_KEYS.invoicesByCompany), {});
+      state.lastPreviewInvoice = safeParse(localStorage.getItem(STORAGE_KEYS.lastPreviewInvoice), null);
+      state.draftInvoiceByCompany = safeParse(localStorage.getItem(STORAGE_KEYS.draftInvoiceByCompany), {});
+
+      if (state.activeCompanyId && !state.companies.some(c => c.id === state.activeCompanyId)) {
+        state.activeCompanyId = null;
+      }
+
+      if (!state.activeCompanyId && state.companies.length > 0) {
+        state.activeCompanyId = state.companies[0].id;
+      }
+
+      saveState();
+      ensureInvoiceDefaults();
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEYS.companies, JSON.stringify(state.companies));
+      localStorage.setItem(STORAGE_KEYS.customersByCompany, JSON.stringify(state.customersByCompany));
+      localStorage.setItem(STORAGE_KEYS.invoicesByCompany, JSON.stringify(state.invoicesByCompany));
+      localStorage.setItem(STORAGE_KEYS.lastPreviewInvoice, JSON.stringify(state.lastPreviewInvoice));
+      localStorage.setItem(STORAGE_KEYS.draftInvoiceByCompany, JSON.stringify(state.draftInvoiceByCompany));
+
+      if (state.activeCompanyId) {
+        localStorage.setItem(STORAGE_KEYS.activeCompanyId, state.activeCompanyId);
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.activeCompanyId);
+      }
+    }
+
+    function getActiveCompany() {
+      return state.companies.find(company => company.id === state.activeCompanyId) || null;
+    }
+
+    function getCustomersForActiveCompany() {
+      if (!state.activeCompanyId) return [];
+      return state.customersByCompany[state.activeCompanyId] || [];
+    }
+
+    function getInvoicesForActiveCompany() {
+      if (!state.activeCompanyId) return [];
+      return state.invoicesByCompany[state.activeCompanyId] || [];
+    }
+
+    function getDraftForActiveCompany() {
+      if (!state.activeCompanyId) return null;
+      return state.draftInvoiceByCompany[state.activeCompanyId] || null;
+    }
+
+    function setDraftForActiveCompany(draft) {
+      if (!state.activeCompanyId) return;
+      state.draftInvoiceByCompany[state.activeCompanyId] = draft;
+      saveState();
+    }
+
+    function clearDraftForActiveCompany() {
+      if (!state.activeCompanyId) return;
+      delete state.draftInvoiceByCompany[state.activeCompanyId];
+      saveState();
+    }
+
+    function closeMenu() {
+      menuPanel.classList.remove("open");
+    }
+
+    function showScreen(screenName) {
+      Object.values(screens).forEach(screen => screen.classList.add("hidden"));
+
+      if (screens[screenName]) {
+        screens[screenName].classList.remove("hidden");
+      }
+
+      closeMenu();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      if (screenName === "invoice") {
+        renderInvoiceActiveCompany();
+        renderInvoiceCustomerSelect();
+        loadDraftIntoInvoiceForm();
+        recalcInvoiceTotals();
+      }
+
+      if (screenName === "customers") {
+        renderCustomersScreen();
+      }
+
+      if (screenName === "invoices") {
+        renderInvoicesScreen();
+      }
+
+      if (screenName === "pdf") {
+        renderPdfPreview();
+      }
+    }
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function currencyFormat(amount, currency = "EUR") {
+      const safeAmount = Number(amount || 0);
+      return `${safeAmount.toFixed(2)} ${currency}`;
+    }
+
+    function setImagePreview(imgEl, dataUrl) {
+      if (!dataUrl) {
+        imgEl.src = "";
+        imgEl.classList.add("hidden");
+        return;
+      }
+      imgEl.src = dataUrl;
+      imgEl.classList.remove("hidden");
+    }
+
+    function readFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function nextInvoiceNumber(company) {
+      const prefix = company.invoicePrefix || "";
+      const nextCounter = Number(company.invoiceCounter || 0) + 1;
+      return {
+        number: `${prefix}${nextCounter}`,
+        counter: nextCounter
+      };
+    }
+
+    function createCompanyPayloadFromForm() {
+      return {
+        id: companyIdInput.value || `company_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+        name: companyNameInput.value.trim(),
+        street: companyStreetInput.value.trim(),
+        city: companyCityInput.value.trim(),
+        zip: companyZipInput.value.trim(),
+        country: companyCountryInput.value.trim(),
+        ico: companyIcoInput.value.trim(),
+        dic: companyDicInput.value.trim(),
+        vat: companyVatInput.value.trim(),
+        phone: companyPhoneInput.value.trim(),
+        email: companyEmailInput.value.trim(),
+        web: companyWebInput.value.trim(),
+        bank: companyBankInput.value.trim(),
+        iban: companyIbanInput.value.trim(),
+        swift: companySwiftInput.value.trim(),
+        note: companyNoteInput.value.trim(),
+        invoicePrefix: companyInvoicePrefixInput.value.trim(),
+        invoiceCounter: Number(companyInvoiceCounterInput.value || 0),
+        deliveryPrefix: companyDeliveryPrefixInput.value.trim(),
+        deliveryCounter: Number(companyDeliveryCounterInput.value || 0),
+        logoDataUrl: pendingLogoData || "",
+        stampDataUrl: pendingStampData || ""
+      };
+    }
+
+    function resetCompanyForm() {
+      companyIdInput.value = "";
+      companyForm.reset();
+      companyCountryInput.value = "Slovensko";
+      companyInvoiceCounterInput.value = "0";
+      companyDeliveryCounterInput.value = "0";
+      pendingLogoData = "";
+      pendingStampData = "";
+      setImagePreview(companyLogoPreview, "");
+      setImagePreview(companyStampPreview, "");
+      companyLogoInput.value = "";
+      companyStampInput.value = "";
+    }
+
+    function fillCompanyForm(company) {
+      companyIdInput.value = company.id || "";
+      companyNameInput.value = company.name || "";
+      companyStreetInput.value = company.street || "";
+      companyCityInput.value = company.city || "";
+      companyZipInput.value = company.zip || "";
+      companyCountryInput.value = company.country || "Slovensko";
+      companyIcoInput.value = company.ico || "";
+      companyDicInput.value = company.dic || "";
+      companyVatInput.value = company.vat || "";
+      companyPhoneInput.value = company.phone || "";
+      companyEmailInput.value = company.email || "";
+      companyWebInput.value = company.web || "";
+      companyBankInput.value = company.bank || "";
+      companyIbanInput.value = company.iban || "";
+      companySwiftInput.value = company.swift || "";
+      companyNoteInput.value = company.note || "";
+      companyInvoicePrefixInput.value = company.invoicePrefix || "";
+      companyInvoiceCounterInput.value = String(company.invoiceCounter || 0);
+      companyDeliveryPrefixInput.value = company.deliveryPrefix || "";
+      companyDeliveryCounterInput.value = String(company.deliveryCounter || 0);
+      pendingLogoData = company.logoDataUrl || "";
+      pendingStampData = company.stampDataUrl || "";
+      setImagePreview(companyLogoPreview, pendingLogoData);
+      setImagePreview(companyStampPreview, pendingStampData);
+      companyLogoInput.value = "";
+      companyStampInput.value = "";
+    }
+
+    function createCustomerPayloadFromForm() {
+      return {
+        id: customerId.value || `customer_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+        name: customerFormName.value.trim(),
+        street: customerFormStreet.value.trim(),
+        city: customerFormCity.value.trim(),
+        zip: customerFormZip.value.trim(),
+        country: customerFormCountry.value.trim(),
+        ico: customerFormIco.value.trim(),
+        dic: customerFormDic.value.trim(),
+        vat: customerFormVat.value.trim(),
+        email: customerFormEmail.value.trim(),
+        phone: customerFormPhone.value.trim(),
+        note: customerFormNote.value.trim()
+      };
+    }
+
+    function resetCustomerForm() {
+      customerId.value = "";
+      customerForm.reset();
+      customerFormCountry.value = "Slovensko";
+    }
+
+    function fillCustomerForm(customer) {
+      customerId.value = customer.id || "";
+      customerFormName.value = customer.name || "";
+      customerFormStreet.value = customer.street || "";
+      customerFormCity.value = customer.city || "";
+      customerFormZip.value = customer.zip || "";
+      customerFormCountry.value = customer.country || "Slovensko";
+      customerFormIco.value = customer.ico || "";
+      customerFormDic.value = customer.dic || "";
+      customerFormVat.value = customer.vat || "";
+      customerFormEmail.value = customer.email || "";
+      customerFormPhone.value = customer.phone || "";
+      customerFormNote.value = customer.note || "";
+    }
+
+    function fillInvoiceCustomerFields(customer) {
+      customerFields.name.value = customer?.name || "";
+      customerFields.street.value = customer?.street || "";
+      customerFields.city.value = customer?.city || "";
+      customerFields.zip.value = customer?.zip || "";
+      customerFields.country.value = customer?.country || "Slovensko";
+      customerFields.ico.value = customer?.ico || "";
+      customerFields.dic.value = customer?.dic || "";
+      customerFields.vat.value = customer?.vat || "";
+      customerFields.email.value = customer?.email || "";
+      customerFields.phone.value = customer?.phone || "";
+      customerFields.note.value = customer?.note || "";
+    }
+
+    function clearInvoiceCustomerFields() {
+      fillInvoiceCustomerFields(null);
+      invoiceCustomerSelect.value = "";
+    }
+
+    function setInvoiceModeBadge() {
+      if (editingInvoiceId.value) {
+        invoiceModeBadge.textContent = "Editácia faktúry";
+        invoiceModeBadge.className = "draft-badge";
+      } else {
+        invoiceModeBadge.textContent = "Nová faktúra";
+        invoiceModeBadge.className = "badge";
+      }
+    }
+
+    function updateDraftInfoText() {
+      const draft = getDraftForActiveCompany();
+      if (!state.activeCompanyId) {
+        invoiceDraftInfo.textContent = "Najprv si nastav aktívnu firmu.";
+        return;
+      }
+      if (draft) {
+        invoiceDraftInfo.textContent = "Rozpracovaná faktúra je uložená lokálne a po otvorení sa znovu načíta.";
+      } else {
+        invoiceDraftInfo.textContent = "Rozpracovaná faktúra sa bude priebežne ukladať lokálne v tomto zariadení.";
+      }
+    }
+    function upsertCompany(company) {
+      const existingIndex = state.companies.findIndex(item => item.id === company.id);
+
+      if (existingIndex >= 0) {
+        state.companies[existingIndex] = company;
+      } else {
+        state.companies.unshift(company);
+      }
+
+      if (!state.activeCompanyId) {
+        state.activeCompanyId = company.id;
+      }
+
+      saveState();
+      renderAll();
+    }
+
+    function setActiveCompany(companyId) {
+      state.activeCompanyId = companyId;
+      saveState();
+      renderAll();
+    }
+
+    function deleteCompany(companyId) {
+      state.companies = state.companies.filter(company => company.id !== companyId);
+
+      if (state.activeCompanyId === companyId) {
+        state.activeCompanyId = state.companies.length ? state.companies[0].id : null;
+      }
+
+      if (state.customersByCompany[companyId]) {
+        delete state.customersByCompany[companyId];
+      }
+
+      if (state.invoicesByCompany[companyId]) {
+        delete state.invoicesByCompany[companyId];
+      }
+
+      if (state.draftInvoiceByCompany[companyId]) {
+        delete state.draftInvoiceByCompany[companyId];
+      }
+
+      saveState();
+      renderAll();
+    }
+
+    function upsertCustomerForActiveCompany(customer) {
+      if (!state.activeCompanyId) return false;
+
+      if (!state.customersByCompany[state.activeCompanyId]) {
+        state.customersByCompany[state.activeCompanyId] = [];
+      }
+
+      const list = state.customersByCompany[state.activeCompanyId];
+      const existingIndex = list.findIndex(item => item.id === customer.id);
+
+      if (existingIndex >= 0) {
+        list[existingIndex] = customer;
+      } else {
+        list.unshift(customer);
+      }
+
+      saveState();
+      renderAll();
+      return true;
+    }
+
+    function deleteCustomerForActiveCompany(customerIdValue) {
+      if (!state.activeCompanyId) return;
+
+      const list = state.customersByCompany[state.activeCompanyId] || [];
+      state.customersByCompany[state.activeCompanyId] = list.filter(item => item.id !== customerIdValue);
+      saveState();
+      renderAll();
+    }
+
+    function upsertInvoiceForActiveCompany(invoice) {
+      if (!state.activeCompanyId) return false;
+
+      if (!state.invoicesByCompany[state.activeCompanyId]) {
+        state.invoicesByCompany[state.activeCompanyId] = [];
+      }
+
+      const list = state.invoicesByCompany[state.activeCompanyId];
+      const existingIndex = list.findIndex(item => item.id === invoice.id);
+
+      if (existingIndex >= 0) {
+        list[existingIndex] = invoice;
+      } else {
+        list.unshift(invoice);
+      }
+
+      state.lastPreviewInvoice = invoice;
+      clearDraftForActiveCompany();
+      saveState();
+      renderAll();
+      return true;
+    }
+
+    function deleteInvoiceForActiveCompany(invoiceId) {
+      if (!state.activeCompanyId) return;
+
+      const list = state.invoicesByCompany[state.activeCompanyId] || [];
+      state.invoicesByCompany[state.activeCompanyId] = list.filter(item => item.id !== invoiceId);
+
+      if (state.lastPreviewInvoice?.id === invoiceId) {
+        state.lastPreviewInvoice = null;
+      }
+
+      saveState();
+      renderAll();
+    }
+
+    function companyCardMeta(company) {
+      const parts = [
+        company.ico ? `IČO: ${company.ico}` : "",
+        company.city || "",
+        company.invoicePrefix ? `Prefix FA: ${company.invoicePrefix}` : ""
+      ].filter(Boolean);
+
+      return parts.join(" • ");
+    }
+
+    function customerCardMeta(customer) {
+      const parts = [
+        customer.ico ? `IČO: ${customer.ico}` : "",
+        customer.city || "",
+        customer.email || ""
+      ].filter(Boolean);
+
+      return parts.join(" • ");
+    }
+
+    function invoiceCardMeta(invoice) {
+      const parts = [
+        invoice.number ? `Číslo: ${invoice.number}` : "",
+        invoice.customer?.name ? `Klient: ${invoice.customer.name}` : "",
+        invoice.totals?.due ? `K úhrade: ${currencyFormat(invoice.totals.due, invoice.currency)}` : ""
+      ].filter(Boolean);
+
+      return parts.join(" • ");
+    }
+
+    function renderActiveCompanyBlock(company) {
+      if (!company) {
+        return `<div class="company-empty">Zatiaľ nemáš nastavenú aktívnu firmu.</div>`;
+      }
+
+      return `
+        <div class="active-company-line"><span>Názov firmy</span><strong>${escapeHtml(company.name || "")}</strong></div>
+        <div class="active-company-line"><span>IČO</span><strong>${escapeHtml(company.ico || "—")}</strong></div>
+        <div class="active-company-line"><span>Mesto</span><strong>${escapeHtml(company.city || "—")}</strong></div>
+        <div class="active-company-line"><span>IBAN</span><strong>${escapeHtml(company.iban || "—")}</strong></div>
+      `;
+    }
+
+    function renderDashboard() {
+      const activeCompany = getActiveCompany();
+      const customerCount = getCustomersForActiveCompany().length;
+      const invoiceCount = getInvoicesForActiveCompany().length;
+      const draft = getDraftForActiveCompany();
+
+      companyCountValue.textContent = String(state.companies.length);
+      customerCountValue.textContent = String(customerCount);
+      invoiceCountValue.textContent = String(invoiceCount);
+      activeCompanyNameValue.textContent = activeCompany ? activeCompany.name : "Žiadna";
+      draftStatusValue.textContent = draft ? "Uložený draft" : "Žiadny";
+
+      invoiceCountBadge.textContent = String(invoiceCount);
+      customerCountBadge.textContent = String(customerCount);
+      companyCountBadgeMini.textContent = String(state.companies.length);
+
+      dashboardCompanyBadge.textContent = activeCompany ? "Aktívna" : "Nezvolená";
+      activeCompanyDashboard.innerHTML = renderActiveCompanyBlock(activeCompany);
+    }
+
+    function renderCompaniesHeader() {
+      const activeCompany = getActiveCompany();
+      companiesActiveBadge.textContent = activeCompany ? "Aktívna" : "Nezvolená";
+      activeCompanyCompaniesScreen.innerHTML = renderActiveCompanyBlock(activeCompany);
+    }
+
+    function renderCompaniesList() {
+      if (!state.companies.length) {
+        companiesList.innerHTML = `<div class="company-empty">Zatiaľ nemáš uloženú žiadnu firmu.</div>`;
+        return;
+      }
+
+      companiesList.innerHTML = state.companies.map(company => {
+        const isActive = company.id === state.activeCompanyId;
+
+        return `
+          <div class="company-card ${isActive ? "active-company-card" : ""}">
+            <div class="company-card-top">
+              <div>
+                <div class="company-name">${escapeHtml(company.name || "Bez názvu")}</div>
+                <div class="company-meta">${escapeHtml(companyCardMeta(company) || "Bez doplňujúcich údajov")}</div>
+              </div>
+              <span class="badge">${isActive ? "Aktívna" : "Neaktívna"}</span>
+            </div>
+
+            <div class="company-actions">
+              <button class="btn btn-primary company-use-btn" data-id="${escapeHtml(company.id)}">Použiť</button>
+              <button class="btn btn-secondary company-edit-btn" data-id="${escapeHtml(company.id)}">Upraviť</button>
+              <button class="btn btn-red company-delete-btn" data-id="${escapeHtml(company.id)}">Zmazať</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      companiesList.querySelectorAll(".company-use-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          setActiveCompany(btn.dataset.id);
+        });
+      });
+
+      companiesList.querySelectorAll(".company-edit-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const company = state.companies.find(item => item.id === btn.dataset.id);
+          if (!company) return;
+          fillCompanyForm(company);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
+
+      companiesList.querySelectorAll(".company-delete-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const company = state.companies.find(item => item.id === btn.dataset.id);
+          const companyName = company?.name || "túto firmu";
+          const ok = window.confirm(`Naozaj chceš zmazať firmu ${companyName}?`);
+          if (!ok) return;
+          deleteCompany(btn.dataset.id);
+        });
+      });
+    }
+    function renderCustomersHeader() {
+      const activeCompany = getActiveCompany();
+      customersCompanyBadge.textContent = activeCompany ? "Aktívna" : "Nezvolená";
+      customersActiveCompanyInfo.innerHTML = renderActiveCompanyBlock(activeCompany);
+    }
+
+    function renderCustomersList() {
+      const customers = getCustomersForActiveCompany();
+
+      if (!customers.length) {
+        customersList.innerHTML = `<div class="company-empty">Zatiaľ nemáš uloženého žiadneho klienta.</div>`;
+        return;
+      }
+
+      customersList.innerHTML = customers.map(customer => `
+        <div class="customer-card">
+          <div class="customer-card-main">
+            <div class="customer-name">${escapeHtml(customer.name || "Bez názvu")}</div>
+            <div class="customer-meta">${escapeHtml(customerCardMeta(customer) || "Bez doplňujúcich údajov")}</div>
+          </div>
+
+          <div class="customer-actions">
+            <button class="btn btn-secondary customer-edit-btn" data-id="${escapeHtml(customer.id)}">Upraviť</button>
+            <button class="btn btn-red customer-delete-btn" data-id="${escapeHtml(customer.id)}">Zmazať</button>
+          </div>
+        </div>
+      `).join("");
+
+      customersList.querySelectorAll(".customer-edit-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const customer = customers.find(item => item.id === btn.dataset.id);
+          if (!customer) return;
+          fillCustomerForm(customer);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
+
+      customersList.querySelectorAll(".customer-delete-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const customer = customers.find(item => item.id === btn.dataset.id);
+          const customerName = customer?.name || "tohto klienta";
+          const ok = window.confirm(`Naozaj chceš zmazať klienta ${customerName}?`);
+          if (!ok) return;
+          deleteCustomerForActiveCompany(btn.dataset.id);
+        });
+      });
+    }
+
+    function renderInvoicesHeader() {
+      const activeCompany = getActiveCompany();
+      invoicesCompanyBadge.textContent = activeCompany ? "Aktívna" : "Nezvolená";
+      invoicesActiveCompanyInfo.innerHTML = renderActiveCompanyBlock(activeCompany);
+    }
+
+    function renderInvoicesList() {
+      const invoices = getInvoicesForActiveCompany();
+
+      if (!invoices.length) {
+        invoicesList.innerHTML = `<div class="company-empty">Zatiaľ nemáš uloženú žiadnu faktúru.</div>`;
+        return;
+      }
+
+      invoicesList.innerHTML = invoices.map(invoice => `
+        <div class="invoice-card">
+          <div class="invoice-card-main">
+            <div class="invoice-title">${escapeHtml(invoice.number || "Bez čísla")} • ${escapeHtml(invoice.type || "Faktúra")}</div>
+            <div class="invoice-meta">${escapeHtml(invoiceCardMeta(invoice) || "Bez doplňujúcich údajov")}</div>
+          </div>
+
+          <div class="invoice-actions">
+            <button class="btn btn-secondary invoice-load-btn" data-id="${escapeHtml(invoice.id)}">Načítať</button>
+            <button class="btn btn-primary invoice-preview-btn" data-id="${escapeHtml(invoice.id)}">PDF</button>
+            <button class="btn btn-red invoice-delete-btn" data-id="${escapeHtml(invoice.id)}">Zmazať</button>
+          </div>
+        </div>
+      `).join("");
+
+      invoicesList.querySelectorAll(".invoice-load-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const invoice = invoices.find(item => item.id === btn.dataset.id);
+          if (!invoice) return;
+          loadInvoiceIntoForm(invoice);
+          showScreen("invoice");
+        });
+      });
+
+      invoicesList.querySelectorAll(".invoice-preview-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const invoice = invoices.find(item => item.id === btn.dataset.id);
+          if (!invoice) return;
+          state.lastPreviewInvoice = invoice;
+          saveState();
+          renderPdfPreview();
+          showScreen("pdf");
+        });
+      });
+
+      invoicesList.querySelectorAll(".invoice-delete-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const invoice = invoices.find(item => item.id === btn.dataset.id);
+          const invoiceName = invoice?.number || "túto faktúru";
+          const ok = window.confirm(`Naozaj chceš zmazať faktúru ${invoiceName}?`);
+          if (!ok) return;
+          deleteInvoiceForActiveCompany(btn.dataset.id);
+        });
+      });
+    }
+
+    function renderInvoiceActiveCompany() {
+      const company = getActiveCompany();
+
+      if (!company) {
+        invoiceActiveCompanyInfo.innerHTML = `<div class="company-empty">Najprv si ulož a zvoľ aktívnu firmu.</div>`;
+        fillSupplierFields(null);
+        return;
+      }
+
+      invoiceActiveCompanyInfo.innerHTML = `
+        <div class="active-company-line"><span>Názov firmy</span><strong>${escapeHtml(company.name || "")}</strong></div>
+        <div class="active-company-line"><span>IČO</span><strong>${escapeHtml(company.ico || "—")}</strong></div>
+        <div class="active-company-line"><span>Mesto</span><strong>${escapeHtml(company.city || "—")}</strong></div>
+        <div class="active-company-line"><span>IBAN</span><strong>${escapeHtml(company.iban || "—")}</strong></div>
+      `;
+
+      fillSupplierFields(company);
+      updateDraftInfoText();
+      setInvoiceModeBadge();
+    }
+
+    function fillSupplierFields(company) {
+      if (!company) {
+        Object.values(supplierFields).forEach(field => {
+          field.value = "";
+        });
+        return;
+      }
+
+      supplierFields.name.value = company.name || "";
+      supplierFields.street.value = company.street || "";
+      supplierFields.city.value = company.city || "";
+      supplierFields.zip.value = company.zip || "";
+      supplierFields.country.value = company.country || "";
+      supplierFields.ico.value = company.ico || "";
+      supplierFields.dic.value = company.dic || "";
+      supplierFields.vat.value = company.vat || "";
+      supplierFields.phone.value = company.phone || "";
+      supplierFields.email.value = company.email || "";
+      supplierFields.web.value = company.web || "";
+      supplierFields.bank.value = company.bank || "";
+      supplierFields.iban.value = company.iban || "";
+      supplierFields.swift.value = company.swift || "";
+      supplierFields.note.value = company.note || "";
+    }
+
+    function renderInvoiceCustomerSelect() {
+      const customers = getCustomersForActiveCompany();
+
+      invoiceCustomerSelect.innerHTML = `
+        <option value="">-- Vyberte klienta --</option>
+        ${customers.map(customer => `<option value="${escapeHtml(customer.id)}">${escapeHtml(customer.name || "Bez názvu")}</option>`).join("")}
+      `;
+    }
+
+    function getSelectedCustomerFromInvoiceForm() {
+      const customerName = customerFields.name.value.trim();
+      if (!customerName) return null;
+
+      return {
+        id: invoiceCustomerSelect.value || `customer_inline_${Date.now()}`,
+        name: customerFields.name.value.trim(),
+        street: customerFields.street.value.trim(),
+        city: customerFields.city.value.trim(),
+        zip: customerFields.zip.value.trim(),
+        country: customerFields.country.value.trim(),
+        ico: customerFields.ico.value.trim(),
+        dic: customerFields.dic.value.trim(),
+        vat: customerFields.vat.value.trim(),
+        email: customerFields.email.value.trim(),
+        phone: customerFields.phone.value.trim(),
+        note: customerFields.note.value.trim()
+      };
+    }
+    function calculateInvoiceTotals() {
+      const quantity = Number(invoiceFields.itemQuantity.value || 0);
+      const unitPrice = Number(invoiceFields.itemPrice.value || 0);
+      const discount = Number(invoiceFields.discount.value || 0);
+      const paid = Number(invoiceFields.paid.value || 0);
+
+      const subtotal = quantity * unitPrice;
+      const discountAmount = subtotal * (discount / 100);
+      const total = Math.max(0, subtotal - discountAmount);
+      const due = Math.max(0, total - paid);
+
+      return {
+        subtotal,
+        discountAmount,
+        total,
+        due
+      };
+    }
+
+    function recalcInvoiceTotals() {
+      const totals = calculateInvoiceTotals();
+      const currency = invoiceFields.currency.value || "EUR";
+      invoiceTotalValue.textContent = currencyFormat(totals.total, currency);
+      invoiceDueValue.textContent = currencyFormat(totals.due, currency);
+    }
+
+    function createDraftPayloadFromForm() {
+      return {
+        editingInvoiceId: editingInvoiceId.value || "",
+        customerId: invoiceCustomerSelect.value || "",
+        number: invoiceFields.number.value.trim(),
+        type: invoiceFields.type.value,
+        variable: invoiceFields.variable.value.trim(),
+        constant: invoiceFields.constant.value.trim(),
+        issuedDate: invoiceFields.issuedDate.value,
+        deliveryDate: invoiceFields.deliveryDate.value,
+        dueDate: invoiceFields.dueDate.value,
+        orderNumber: invoiceFields.orderNumber.value.trim(),
+        currency: invoiceFields.currency.value,
+        payment: invoiceFields.payment.value,
+        rounding: invoiceFields.rounding.value,
+        qr: invoiceFields.qr.value,
+        paid: invoiceFields.paid.value,
+        discount: invoiceFields.discount.value,
+        itemDescription: invoiceFields.itemDescription.value.trim(),
+        itemUnit: invoiceFields.itemUnit.value.trim(),
+        itemQuantity: invoiceFields.itemQuantity.value,
+        itemPrice: invoiceFields.itemPrice.value,
+        itemCurrency: invoiceFields.itemCurrency.value,
+        customer: {
+          name: customerFields.name.value.trim(),
+          street: customerFields.street.value.trim(),
+          city: customerFields.city.value.trim(),
+          zip: customerFields.zip.value.trim(),
+          country: customerFields.country.value.trim(),
+          ico: customerFields.ico.value.trim(),
+          dic: customerFields.dic.value.trim(),
+          vat: customerFields.vat.value.trim(),
+          email: customerFields.email.value.trim(),
+          phone: customerFields.phone.value.trim(),
+          note: customerFields.note.value.trim()
+        },
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function saveCurrentDraft() {
+      if (!state.activeCompanyId) return;
+      const draft = createDraftPayloadFromForm();
+      const hasAnyContent =
+        draft.number ||
+        draft.itemDescription ||
+        draft.customer.name ||
+        draft.orderNumber ||
+        draft.variable ||
+        Number(draft.itemPrice || 0) > 0;
+
+      if (!hasAnyContent) {
+        clearDraftForActiveCompany();
+        updateDraftInfoText();
+        renderDashboard();
+        return;
+      }
+
+      setDraftForActiveCompany(draft);
+      updateDraftInfoText();
+      renderDashboard();
+    }
+
+    function loadDraftIntoInvoiceForm() {
+      const draft = getDraftForActiveCompany();
+      if (!draft) {
+        setInvoiceModeBadge();
+        updateDraftInfoText();
+        return;
+      }
+
+      editingInvoiceId.value = draft.editingInvoiceId || "";
+      invoiceFields.number.value = draft.number || "";
+      invoiceFields.type.value = draft.type || "Faktúra";
+      invoiceFields.variable.value = draft.variable || "";
+      invoiceFields.constant.value = draft.constant || "";
+      invoiceFields.issuedDate.value = draft.issuedDate || todayISO();
+      invoiceFields.deliveryDate.value = draft.deliveryDate || todayISO();
+      invoiceFields.dueDate.value = draft.dueDate || addDaysISO(todayISO(), 14);
+      invoiceFields.orderNumber.value = draft.orderNumber || "";
+      invoiceFields.currency.value = draft.currency || "EUR";
+      invoiceFields.payment.value = draft.payment || "peňažný prevod";
+      invoiceFields.rounding.value = draft.rounding || "žiadne";
+      invoiceFields.qr.value = draft.qr || "pay-by-square";
+      invoiceFields.paid.value = draft.paid || "0";
+      invoiceFields.discount.value = draft.discount || "0";
+      invoiceFields.itemDescription.value = draft.itemDescription || "";
+      invoiceFields.itemUnit.value = draft.itemUnit || "ks";
+      invoiceFields.itemQuantity.value = draft.itemQuantity || "1";
+      invoiceFields.itemPrice.value = draft.itemPrice || "";
+      invoiceFields.itemCurrency.value = draft.itemCurrency || "EUR";
+
+      fillInvoiceCustomerFields(draft.customer || null);
+      renderInvoiceCustomerSelect();
+      if (draft.customerId) {
+        invoiceCustomerSelect.value = draft.customerId;
+      }
+
+      setInvoiceModeBadge();
+      updateDraftInfoText();
+    }
+
+    function createInvoicePayload() {
+      const activeCompany = getActiveCompany();
+      const totals = calculateInvoiceTotals();
+      const selectedCustomer = getSelectedCustomerFromInvoiceForm();
+
+      return {
+        id: editingInvoiceId.value || `invoice_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+        companyId: state.activeCompanyId,
+        company: activeCompany,
+        customer: selectedCustomer,
+        number: invoiceFields.number.value.trim(),
+        type: invoiceFields.type.value,
+        variable: invoiceFields.variable.value.trim(),
+        constant: invoiceFields.constant.value.trim(),
+        issuedDate: invoiceFields.issuedDate.value,
+        deliveryDate: invoiceFields.deliveryDate.value,
+        dueDate: invoiceFields.dueDate.value,
+        orderNumber: invoiceFields.orderNumber.value.trim(),
+        currency: invoiceFields.currency.value,
+        payment: invoiceFields.payment.value,
+        rounding: invoiceFields.rounding.value,
+        qr: invoiceFields.qr.value,
+        paid: Number(invoiceFields.paid.value || 0),
+        discount: Number(invoiceFields.discount.value || 0),
+        item: {
+          description: invoiceFields.itemDescription.value.trim(),
+          unit: invoiceFields.itemUnit.value.trim(),
+          quantity: Number(invoiceFields.itemQuantity.value || 0),
+          price: Number(invoiceFields.itemPrice.value || 0),
+          currency: invoiceFields.itemCurrency.value
+        },
+        totals,
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function loadInvoiceIntoForm(invoice) {
+      if (!invoice) return;
+
+      editingInvoiceId.value = invoice.id || "";
+      invoiceFields.number.value = invoice.number || "";
+      invoiceFields.type.value = invoice.type || "Faktúra";
+      invoiceFields.variable.value = invoice.variable || "";
+      invoiceFields.constant.value = invoice.constant || "";
+      invoiceFields.issuedDate.value = invoice.issuedDate || todayISO();
+      invoiceFields.deliveryDate.value = invoice.deliveryDate || todayISO();
+      invoiceFields.dueDate.value = invoice.dueDate || addDaysISO(todayISO(), 14);
+      invoiceFields.orderNumber.value = invoice.orderNumber || "";
+      invoiceFields.currency.value = invoice.currency || "EUR";
+      invoiceFields.payment.value = invoice.payment || "peňažný prevod";
+      invoiceFields.rounding.value = invoice.rounding || "žiadne";
+      invoiceFields.qr.value = invoice.qr || "pay-by-square";
+      invoiceFields.paid.value = String(invoice.paid || 0);
+      invoiceFields.discount.value = String(invoice.discount || 0);
+      invoiceFields.itemDescription.value = invoice.item?.description || "";
+      invoiceFields.itemUnit.value = invoice.item?.unit || "ks";
+      invoiceFields.itemQuantity.value = String(invoice.item?.quantity || 1);
+      invoiceFields.itemPrice.value = String(invoice.item?.price || 0);
+      invoiceFields.itemCurrency.value = invoice.item?.currency || "EUR";
+
+      fillInvoiceCustomerFields(invoice.customer || null);
+      renderInvoiceCustomerSelect();
+      if (invoice.customer?.id) {
+        invoiceCustomerSelect.value = invoice.customer.id;
+      }
+
+      setInvoiceModeBadge();
+      recalcInvoiceTotals();
+      saveCurrentDraft();
+    }
+    function clearInvoiceForm() {
+      editingInvoiceId.value = "";
+      invoiceFields.number.value = "";
+      invoiceFields.type.value = "Faktúra";
+      invoiceFields.variable.value = "";
+      invoiceFields.constant.value = "";
+      invoiceFields.issuedDate.value = todayISO();
+      invoiceFields.deliveryDate.value = todayISO();
+      invoiceFields.dueDate.value = addDaysISO(todayISO(), 14);
+      invoiceFields.orderNumber.value = "";
+      invoiceFields.currency.value = "EUR";
+      invoiceFields.payment.value = "peňažný prevod";
+      invoiceFields.rounding.value = "žiadne";
+      invoiceFields.qr.value = "pay-by-square";
+      invoiceFields.paid.value = "0";
+      invoiceFields.discount.value = "0";
+      invoiceFields.itemDescription.value = "";
+      invoiceFields.itemUnit.value = "ks";
+      invoiceFields.itemQuantity.value = "1";
+      invoiceFields.itemPrice.value = "";
+      invoiceFields.itemCurrency.value = "EUR";
+      clearInvoiceCustomerFields();
+      recalcInvoiceTotals();
+      renderInvoiceCustomerSelect();
+      renderInvoiceActiveCompany();
+      setInvoiceModeBadge();
+    }
+
+    function renderPdfPreview() {
+      const invoice = state.lastPreviewInvoice;
+
+      if (!invoice) {
+        pdfPreviewContainer.innerHTML = `
+          <h2>Faktúra</h2>
+          <p>Najprv ulož faktúru alebo zvoľ uloženú faktúru zo zoznamu.</p>
+        `;
+        return;
+      }
+
+      const logoHtml = invoice.company?.logoDataUrl
+        ? `<img class="pdf-logo" src="${invoice.company.logoDataUrl}" alt="Logo firmy">`
+        : "";
+
+      const stampHtml = invoice.company?.stampDataUrl
+        ? `<img class="pdf-stamp" src="${invoice.company.stampDataUrl}" alt="Pečiatka firmy">`
+        : "";
+
+      pdfPreviewContainer.innerHTML = `
+        <div class="pdf-header">
+          <div class="pdf-brand">
+            ${logoHtml}
+            <div>
+              <h2>Faktúra ${escapeHtml(invoice.number || "")}</h2>
+              <div>${escapeHtml(invoice.company?.name || "—")}</div>
+              <div>${escapeHtml([invoice.company?.street, invoice.company?.city, invoice.company?.zip, invoice.company?.country].filter(Boolean).join(", ") || "—")}</div>
+            </div>
+          </div>
+          <div>${stampHtml}</div>
+        </div>
+
+        <h3>Dodávateľ</h3>
+        <div class="pdf-row"><span class="pdf-label">Firma</span><span>${escapeHtml(invoice.company?.name || "—")}</span></div>
+        <div class="pdf-row"><span class="pdf-label">Adresa</span><span>${escapeHtml([invoice.company?.street, invoice.company?.city, invoice.company?.zip, invoice.company?.country].filter(Boolean).join(", ") || "—")}</span></div>
+        <div class="pdf-row"><span class="pdf-label">IČO / DIČ / IČ DPH</span><span>${escapeHtml([invoice.company?.ico, invoice.company?.dic, invoice.company?.vat].filter(Boolean).join(" / ") || "—")}</span></div>
+        <div class="pdf-row"><span class="pdf-label">IBAN</span><span>${escapeHtml(invoice.company?.iban || "—")}</span></div>
+
+        <h3>Odberateľ</h3>
+        <div class="pdf-row"><span class="pdf-label">Klient</span><span>${escapeHtml(invoice.customer?.name || "—")}</span></div>
+        <div class="pdf-row"><span class="pdf-label">Adresa</span><span>${escapeHtml([invoice.customer?.street, invoice.customer?.city, invoice.customer?.zip, invoice.customer?.country].filter(Boolean).join(", ") || "—")}</span></div>
+        <div class="pdf-row"><span class="pdf-label">Email / Telefón</span><span>${escapeHtml([invoice.customer?.email, invoice.customer?.phone].filter(Boolean).join(" / ") || "—")}</span></div>
+
+        <h3>Doklad</h3>
+        <div class="pdf-row"><span class="pdf-label">Typ</span><span>${escapeHtml(invoice.type || "Faktúra")}</span></div>
+        <div class="pdf-row"><span class="pdf-label">Variabilný symbol</span><span>${escapeHtml(invoice.variable || "—")}</span></div>
+        <div class="pdf-row"><span class="pdf-label">Dátum vystavenia</span><span>${escapeHtml(invoice.issuedDate || "—")}</span></div>
+        <div class="pdf-row"><span class="pdf-label">Dátum dodania</span><span>${escapeHtml(invoice.deliveryDate || "—")}</span></div>
+        <div class="pdf-row"><span class="pdf-label">Dátum splatnosti</span><span>${escapeHtml(invoice.dueDate || "—")}</span></div>
+
+        <h3>Položka</h3>
+        <div class="pdf-row"><span class="pdf-label">Popis</span><span>${escapeHtml(invoice.item?.description || "—")}</span></div>
+        <div class="pdf-row"><span class="pdf-label">MJ / množstvo</span><span>${escapeHtml(`${invoice.item?.unit || "ks"} / ${invoice.item?.quantity || 0}`)}</span></div>
+        <div class="pdf-row"><span class="pdf-label">Cena za MJ</span><span>${escapeHtml(currencyFormat(invoice.item?.price || 0, invoice.currency || "EUR"))}</span></div>
+
+        <h3>Sumy</h3>
+        <div class="pdf-row"><span class="pdf-label">Spolu</span><span>${escapeHtml(currencyFormat(invoice.totals?.total || 0, invoice.currency || "EUR"))}</span></div>
+        <div class="pdf-row"><span class="pdf-label">Už uhradené</span><span>${escapeHtml(currencyFormat(invoice.paid || 0, invoice.currency || "EUR"))}</span></div>
+        <div class="pdf-row"><span class="pdf-label">K úhrade</span><span>${escapeHtml(currencyFormat(invoice.totals?.due || 0, invoice.currency || "EUR"))}</span></div>
+      `;
+    }
+
+    function renderCustomersScreen() {
+      renderCustomersHeader();
+      renderCustomersList();
+    }
+
+    function renderInvoicesScreen() {
+      renderInvoicesHeader();
+      renderInvoicesList();
+    }
+
+    function renderAll() {
+      renderDashboard();
+      renderCompaniesHeader();
+      renderCompaniesList();
+      renderCustomersScreen();
+      renderInvoicesScreen();
+      renderInvoiceActiveCompany();
+      renderInvoiceCustomerSelect();
+      renderPdfPreview();
+      recalcInvoiceTotals();
+      setInvoiceModeBadge();
+      updateDraftInfoText();
+    }
+    companyLogoInput.addEventListener("change", async () => {
+      const file = companyLogoInput.files?.[0];
+      if (!file) return;
+      pendingLogoData = await readFileAsDataUrl(file);
+      setImagePreview(companyLogoPreview, pendingLogoData);
+    });
+
+    companyStampInput.addEventListener("change", async () => {
+      const file = companyStampInput.files?.[0];
+      if (!file) return;
+      pendingStampData = await readFileAsDataUrl(file);
+      setImagePreview(companyStampPreview, pendingStampData);
+    });
+
+    menuBtn.addEventListener("click", () => {
+      menuPanel.classList.toggle("open");
+    });
+
+    document.querySelectorAll(".nav-dashboard").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        showScreen("dashboard");
+      });
+    });
+
+    document.querySelectorAll(".nav-new-invoice").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        showScreen("invoice");
+      });
+    });
+
+    document.querySelectorAll(".nav-settings").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        showScreen("settings");
+      });
+    });
+
+    document.querySelectorAll(".nav-companies").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        showScreen("companies");
+      });
+    });
+
+    document.querySelectorAll(".nav-customers").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        showScreen("customers");
+      });
+    });
+
+    document.querySelectorAll(".nav-invoices").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        showScreen("invoices");
+      });
+    });
+
+    document.querySelectorAll(".toggle-section").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = document.getElementById(btn.dataset.target);
+        if (target) {
+          target.classList.toggle("collapsed");
+        }
+      });
+    });
+
+    const tabButtons = document.querySelectorAll(".tab-btn[data-tab]");
+    const tabPanels = document.querySelectorAll(".tab-panel");
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabButtons.forEach(item => item.classList.remove("active"));
+        tabPanels.forEach(panel => panel.classList.add("hidden-tab"));
+
+        btn.classList.add("active");
+        const targetPanel = document.getElementById(btn.dataset.tab);
+        if (targetPanel) {
+          targetPanel.classList.remove("hidden-tab");
+        }
+      });
+    });
+
+    companyForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const payload = createCompanyPayloadFromForm();
+
+      if (!payload.name) {
+        window.alert("Vyplň názov firmy.");
+        return;
+      }
+
+      upsertCompany(payload);
+      resetCompanyForm();
+      setActiveCompany(payload.id);
+    });
+
+    customerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      if (!state.activeCompanyId) {
+        window.alert("Najprv si nastav aktívnu firmu.");
+        return;
+      }
+
+      const payload = createCustomerPayloadFromForm();
+
+      if (!payload.name) {
+        window.alert("Vyplň názov klienta.");
+        return;
+      }
+
+      upsertCustomerForActiveCompany(payload);
+      resetCustomerForm();
+    });
+
+    invoiceCustomerSelect.addEventListener("change", () => {
+      const selectedId = invoiceCustomerSelect.value;
+      const customers = getCustomersForActiveCompany();
+      const customer = customers.find(item => item.id === selectedId) || null;
+      fillInvoiceCustomerFields(customer);
+      saveCurrentDraft();
+    });
+
+    saveCustomerBtn.addEventListener("click", () => {
+      if (!state.activeCompanyId) {
+        window.alert("Najprv si nastav aktívnu firmu.");
+        return;
+      }
+
+      const payload = {
+        id: invoiceCustomerSelect.value || `customer_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+        name: customerFields.name.value.trim(),
+        street: customerFields.street.value.trim(),
+        city: customerFields.city.value.trim(),
+        zip: customerFields.zip.value.trim(),
+        country: customerFields.country.value.trim(),
+        ico: customerFields.ico.value.trim(),
+        dic: customerFields.dic.value.trim(),
+        vat: customerFields.vat.value.trim(),
+        email: customerFields.email.value.trim(),
+        phone: customerFields.phone.value.trim(),
+        note: customerFields.note.value.trim()
+      };
+
+      if (!payload.name) {
+        window.alert("Vyplň názov klienta.");
+        return;
+      }
+
+      upsertCustomerForActiveCompany(payload);
+      renderInvoiceCustomerSelect();
+      invoiceCustomerSelect.value = payload.id;
+      window.alert("Klient bol uložený k aktívnej firme.");
+      saveCurrentDraft();
+    });
+
+    clearCustomerBtn.addEventListener("click", () => {
+      clearInvoiceCustomerFields();
+      saveCurrentDraft();
+    });
+
+    resetCompanyFormBtn.addEventListener("click", () => {
+      resetCompanyForm();
+    });
+
+    resetCustomerFormBtn.addEventListener("click", () => {
+      resetCustomerForm();
+    });
+
+    recalcInvoiceBtn.addEventListener("click", () => {
+      recalcInvoiceTotals();
+      saveCurrentDraft();
+    });
+
+    clearInvoiceBtn.addEventListener("click", () => {
+      clearInvoiceForm();
+      saveCurrentDraft();
+    });
+
+    clearDraftBtn.addEventListener("click", () => {
+      clearDraftForActiveCompany();
+      clearInvoiceForm();
+      updateDraftInfoText();
+      renderDashboard();
+      window.alert("Draft faktúry bol zmazaný.");
+    });
+    saveInvoiceBtn.addEventListener("click", () => {
+      if (!state.activeCompanyId) {
+        window.alert("Najprv si nastav aktívnu firmu.");
+        return;
+      }
+
+      const activeCompany = getActiveCompany();
+      if (!activeCompany) {
+        window.alert("Aktívna firma neexistuje.");
+        return;
+      }
+
+      if (!invoiceFields.itemDescription.value.trim()) {
+        window.alert("Vyplň popis položky.");
+        return;
+      }
+
+      if (!Number(invoiceFields.itemQuantity.value || 0)) {
+        window.alert("Množstvo musí byť väčšie ako 0.");
+        return;
+      }
+
+      if (!Number(invoiceFields.itemPrice.value || 0)) {
+        window.alert("Cena za MJ musí byť väčšia ako 0.");
+        return;
+      }
+
+      if (!editingInvoiceId.value && !invoiceFields.number.value.trim()) {
+        const next = nextInvoiceNumber(activeCompany);
+        invoiceFields.number.value = next.number;
+
+        const companyIndex = state.companies.findIndex(item => item.id === activeCompany.id);
+        if (companyIndex >= 0) {
+          state.companies[companyIndex].invoiceCounter = next.counter;
+        }
+      }
+
+      if (!invoiceFields.number.value.trim()) {
+        window.alert("Vyplň číslo faktúry.");
+        return;
+      }
+
+      const payload = createInvoicePayload();
+      const ok = upsertInvoiceForActiveCompany(payload);
+
+      if (!ok) {
+        window.alert("Faktúru sa nepodarilo uložiť.");
+        return;
+      }
+
+      editingInvoiceId.value = payload.id;
+      setInvoiceModeBadge();
+      window.alert("Faktúra bola uložená.");
+      recalcInvoiceTotals();
+      renderInvoicesScreen();
+      renderDashboard();
+    });
+
+    previewInvoiceBtn.addEventListener("click", () => {
+      if (!state.activeCompanyId) {
+        window.alert("Najprv si nastav aktívnu firmu.");
+        return;
+      }
+
+      const activeCompany = getActiveCompany();
+      if (!activeCompany) {
+        window.alert("Aktívna firma neexistuje.");
+        return;
+      }
+
+      if (!invoiceFields.itemDescription.value.trim()) {
+        window.alert("Vyplň popis položky.");
+        return;
+      }
+
+      if (!Number(invoiceFields.itemQuantity.value || 0)) {
+        window.alert("Množstvo musí byť väčšie ako 0.");
+        return;
+      }
+
+      if (!Number(invoiceFields.itemPrice.value || 0)) {
+        window.alert("Cena za MJ musí byť väčšia ako 0.");
+        return;
+      }
+
+      if (!editingInvoiceId.value && !invoiceFields.number.value.trim()) {
+        const next = nextInvoiceNumber(activeCompany);
+        invoiceFields.number.value = next.number;
+
+        const companyIndex = state.companies.findIndex(item => item.id === activeCompany.id);
+        if (companyIndex >= 0) {
+          state.companies[companyIndex].invoiceCounter = next.counter;
+        }
+      }
+
+      if (!invoiceFields.number.value.trim()) {
+        window.alert("Vyplň číslo faktúry.");
+        return;
+      }
+
+      const payload = createInvoicePayload();
+      const ok = upsertInvoiceForActiveCompany(payload);
+
+      if (!ok) {
+        window.alert("Faktúru sa nepodarilo uložiť.");
+        return;
+      }
+
+      editingInvoiceId.value = payload.id;
+      state.lastPreviewInvoice = payload;
+      saveState();
+      renderPdfPreview();
+      renderDashboard();
+      showScreen("pdf");
+    });
+
+    printPdfBtn.addEventListener("click", () => {
+      window.print();
+    });
+
+    Object.values(invoiceFields).forEach(field => {
+      if (!field) return;
+      field.addEventListener("input", () => {
+        recalcInvoiceTotals();
+        saveCurrentDraft();
+      });
+      field.addEventListener("change", () => {
+        recalcInvoiceTotals();
+        saveCurrentDraft();
+      });
+    });
+
+    toTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    loadState();
+    renderAll();
+    showScreen("dashboard");
+  </script>
+</body>
+</html>
