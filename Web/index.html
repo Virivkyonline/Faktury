@@ -3,669 +3,971 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Faktúry Online</title>
+  <title>Platinum Lech Faktúry</title>
+
   <style>
     * { box-sizing: border-box; }
 
-    :root{
-      --bg:#c9c9c9;
-      --bg-dark:#111;
-      --card:#bdbdbd;
-      --border:#8c8c8c;
-      --title:#73d0ff;
-      --text:#f0f0f0;
-      --text-dark:#2d2d2d;
-      --field:#232427;
-      --select:#59595c;
-      --blue1:#0063ff;
-      --blue2:#004fda;
-      --green:#0a7f0a;
-      --red:#ad0000;
-      --shadow:0 3px 12px rgba(0,0,0,.18);
-      --radius:12px;
+    :root {
+      /* =========================================================
+         HLAVNÉ FARBY - MENÍŠ LEN TU
+         ========================================================= */
+
+      /* Pozadie stránky */
+      --bg-page: #0f1726;                 /* hlavné tmavé pozadie */
+      --bg-page-2: #162235;               /* druhá vrstva pozadia */
+      --bg-soft: #edf3f8;                 /* svetlé plochy / karty */
+
+      /* Header / horný panel */
+      --header-bg-1: #0b1220;             /* horný panel 1 */
+      --header-bg-2: #121c30;             /* horný panel 2 */
+      --header-border: rgba(255,255,255,.08);
+
+      /* Karty */
+      --card-bg: rgba(20, 30, 48, 0.88);  /* hlavná karta */
+      --card-bg-2: rgba(29, 43, 68, 0.82);/* sekundárna karta */
+      --card-border: rgba(255,255,255,.08);
+      --card-shadow: 0 18px 48px rgba(0,0,0,.28);
+
+      /* Texty */
+      --text-main: #eef4fb;               /* hlavný text */
+      --text-soft: #c9d5e7;               /* mäkší text */
+      --text-muted: #8da2bf;              /* slabší text */
+      --text-dark: #0f1726;               /* tmavý text na svetlom */
+
+      /* Akcent / značka */
+      --accent: #59c9ff;                  /* hlavná akcentová modrá */
+      --accent-2: #2f8dff;                /* druhá modrá */
+      --accent-3: #7be0ff;                /* svetlejší akcent */
+      --accent-glow: rgba(89,201,255,.28);
+
+      /* Tlačidlá */
+      --btn-primary-1: #1d7dff;           /* hlavné tlačidlo vrch */
+      --btn-primary-2: #0c4fd9;           /* hlavné tlačidlo spodok */
+      --btn-secondary-1: #19c0d9;         /* druhé tlačidlo vrch */
+      --btn-secondary-2: #1177b8;         /* druhé tlačidlo spodok */
+      --btn-dark: #131a28;                /* tmavé tlačidlo */
+      --btn-dark-2: #0b101a;              /* tmavé tlačidlo 2 */
+
+      /* Inputy */
+      --field-bg: #111827;                /* pozadie inputu */
+      --field-bg-2: #1b2437;              /* select */
+      --field-border: rgba(255,255,255,.08);
+      --field-text: #f5f9ff;
+      --field-placeholder: #7e90aa;
+
+      /* Stavy */
+      --success: #11b85a;                 /* zelená */
+      --success-2: #0f8b45;
+      --danger: #da3a3a;                  /* červená */
+      --danger-2: #a81e1e;
+      --warning: #d6a334;                 /* zlatá */
+
+      /* Ostatné */
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
     }
 
-    body{
-      margin:0;
+    html, body {
+      margin: 0;
+      padding: 0;
       font-family: Arial, Helvetica, sans-serif;
+      color: var(--text-main);
       background:
-        linear-gradient(rgba(190,190,190,.93), rgba(190,190,190,.93)),
-        repeating-linear-gradient(-45deg,#d6d6d6 0,#d6d6d6 10px,#d0d0d0 10px,#d0d0d0 20px);
-      color:var(--text);
+        radial-gradient(circle at top left, rgba(89,201,255,.09), transparent 22%),
+        radial-gradient(circle at top right, rgba(47,141,255,.09), transparent 18%),
+        linear-gradient(180deg, var(--bg-page) 0%, var(--bg-page-2) 100%);
+      min-height: 100%;
     }
 
-    .hidden { display:none !important; }
+    a { color: inherit; text-decoration: none; }
 
-    .topbar{
-      height:24px;
-      background:#000;
+    .hidden { display: none !important; }
+
+    .app-shell {
+      min-height: 100vh;
     }
 
-    .page{
-      max-width:760px;
-      margin:0 auto;
-      padding:18px 14px 36px;
+    .top-status-bar {
+      height: 20px;
+      background: #000;
     }
 
-    .header-brand{
-      background:linear-gradient(180deg,#2c2d30 0%, #1b1c1f 100%);
-      color:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:14px 16px;
-      box-shadow:0 2px 8px rgba(0,0,0,.28);
-      margin:0 -14px 16px;
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 14px 34px;
     }
 
-    .brand-left{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:0;
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(11,18,32,.92), rgba(18,28,48,.88));
+      border-bottom: 1px solid var(--header-border);
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      margin: 0 -14px 18px;
+      padding: 14px;
     }
 
-    .brand-logo{
-      width:42px;
-      height:42px;
-      border-radius:50%;
-      background:linear-gradient(135deg,#0f8fe8,#15345f);
-      position:relative;
-      flex-shrink:0;
+    .topbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
     }
 
-    .brand-logo::before{
-      content:"";
-      position:absolute;
-      inset:8px;
-      border:6px solid #fff;
-      border-left-color:transparent;
-      border-top-color:transparent;
-      border-radius:50%;
-      transform:rotate(35deg);
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
     }
 
-    .brand-title{
-      font-size:22px;
-      font-weight:800;
-      letter-spacing:.5px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      position: relative;
+      flex-shrink: 0;
+      box-shadow: 0 0 24px rgba(89,201,255,.25);
     }
 
-    .menu-btn{
-      border:0;
-      border-radius:8px;
-      background:linear-gradient(180deg,#121212,#020202);
-      color:#fff;
-      padding:12px 14px;
-      font-size:16px;
-      min-width:90px;
-      cursor:pointer;
+    .brand-logo::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 6px solid #fff;
+      border-left-color: transparent;
+      border-top-color: transparent;
+      border-radius: 50%;
+      transform: rotate(35deg);
     }
 
-    .menu-panel{
-      display:none;
-      background:#222326;
-      margin:-16px -14px 16px;
-      padding:10px 14px 14px;
-      border-top:1px solid rgba(255,255,255,.08);
+    .brand-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: .4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .menu-panel.open{
-      display:block;
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .menu-panel a{
-      display:block;
-      color:#ebebeb;
-      text-decoration:none;
-      padding:12px 2px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      font-size:18px;
+    .gear-btn,
+    .menu-btn,
+    .mini-btn {
+      border: 0;
+      cursor: pointer;
+      color: #fff;
+      border-radius: 14px;
+      transition: .2s ease;
     }
 
-    .hero{
-      position:relative;
-      margin-bottom:18px;
+    .menu-btn {
+      background: linear-gradient(180deg, var(--btn-dark), var(--btn-dark-2));
+      padding: 12px 16px;
+      font-size: 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 20px rgba(0,0,0,.16);
     }
 
-    .hero h1{
-      margin:8px 0 6px;
-      font-size:42px;
-      font-weight:400;
-      font-style:italic;
-      color:var(--title);
-      line-height:1;
+    .gear-btn {
+      width: 48px;
+      height: 48px;
+      font-size: 24px;
+      background: linear-gradient(180deg, #162034, #0d1320);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 20px rgba(0,0,0,.16);
     }
 
-    .hero p{
-      margin:0 0 18px;
-      color:#d8d8d8;
-      font-size:28px;
-      line-height:1.05;
+    .menu-btn:hover,
+    .gear-btn:hover,
+    .mini-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
     }
 
-    .gear{
-      position:absolute;
-      right:2px;
-      top:-4px;
-      font-size:54px;
-      color:#f3f3f3;
+    .menu-panel {
+      display: none;
+      margin-top: 12px;
+      background: linear-gradient(180deg, rgba(8,12,20,.96), rgba(16,23,36,.96));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 18px 48px rgba(0,0,0,.28);
     }
 
-    .breadcrumbs{
-      font-size:18px;
-      color:#d2d2d2;
-      margin:12px 0 18px;
+    .menu-panel.open {
+      display: block;
+      animation: fadeIn .18s ease;
     }
 
-    .breadcrumbs a{
-      color:#60c6ff;
-      text-decoration:none;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .breadcrumbs span{
-      margin:0 6px;
-      opacity:.85;
+    .menu-list {
+      display: grid;
+      gap: 10px;
     }
 
-    .action-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin:18px 0 24px;
+    .menu-link {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+      color: var(--accent);
+      font-size: 18px;
     }
 
-    .action-btn{
-      border:0;
-      border-radius:10px;
-      min-height:88px;
-      color:#fff;
-      font-size:18px;
-      line-height:1.15;
-      cursor:pointer;
-      padding:14px 12px;
-      background:linear-gradient(180deg,#0e9cf2 0%, #0052d8 100%);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 3px 8px rgba(0,0,0,.12);
+    .menu-link span:first-child {
+      font-size: 24px;
+      text-align: center;
+      color: #fff;
     }
 
-    .action-btn.secondary{
-      background:linear-gradient(180deg,#6ccdf0 0%, #2da8dc 100%);
+    .hero {
+      position: relative;
+      padding: 8px 4px 10px;
+      margin-bottom: 12px;
     }
 
-    .card{
-      background:rgba(186,186,186,.9);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:18px 16px 20px;
-      margin-bottom:16px;
+    .hero h1 {
+      margin: 8px 0 8px;
+      font-size: 52px;
+      line-height: .98;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--accent);
+      text-shadow: 0 0 24px rgba(89,201,255,.15);
     }
 
-    .card-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:14px;
+    .hero p {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 28px;
+      line-height: 1.08;
+      max-width: 680px;
     }
 
-    .card-title{
-      font-size:28px;
-      color:#117fca;
-      font-weight:700;
-      line-height:1.05;
+    .hero-sub {
+      margin-top: 16px;
+      color: var(--text-muted);
+      font-size: 17px;
     }
 
-    .link-list{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+    .breadcrumbs {
+      margin: 16px 0 0;
+      color: var(--text-muted);
+      font-size: 17px;
     }
 
-    .link-list a{
-      color:#0d89cf;
-      text-decoration:none;
-      font-size:22px;
-      line-height:1.15;
+    .breadcrumbs a {
+      color: var(--accent);
     }
 
-    .stats-list{
-      display:grid;
-      gap:8px;
-      font-size:21px;
-      color:#f0f0f0;
+    .screen {
+      animation: fadeIn .22s ease;
     }
 
-    .section-link{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      color:#0f81c7;
-      text-decoration:none;
-      font-size:22px;
-      margin-top:12px;
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 26px 0;
     }
 
-    .detail-btn,.collapse-icon{
-      border:0;
-      border-radius:8px;
-      cursor:pointer;
+    .action-btn {
+      min-height: 96px;
+      border: 0;
+      border-radius: 18px;
+      color: #fff;
+      cursor: pointer;
+      padding: 16px 14px;
+      font-size: 18px;
+      line-height: 1.15;
+      background: linear-gradient(180deg, var(--btn-primary-1), var(--btn-primary-2));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 16px 32px rgba(10,44,104,.22);
+      transition: .18s ease;
     }
 
-    .detail-btn{
-      background:#17181a;
-      color:#ddd;
-      min-width:148px;
-      padding:14px 16px;
-      font-size:20px;
+    .action-btn.secondary {
+      background: linear-gradient(180deg, var(--btn-secondary-1), var(--btn-secondary-2));
     }
 
-    .collapse-icon{
-      background:transparent;
-      color:#111;
-      font-size:30px;
-      line-height:1;
-      padding:0 6px;
+    .action-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.03);
     }
 
-    .section-body.collapsed{
-      display:none;
+    .section-card {
+      background: linear-gradient(180deg, rgba(17,24,39,.82), rgba(24,34,54,.84));
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--card-shadow);
+      padding: 18px 18px 20px;
+      margin-bottom: 18px;
+      backdrop-filter: blur(10px);
     }
 
-    .form-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px 18px;
-      align-items:start;
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
-    .field{ display:contents; }
+    .card-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.1;
+      color: var(--accent);
+      font-weight: 800;
+    }
 
-    label{
-      font-size:22px;
-      color:#efefef;
-      line-height:1.15;
-      padding-top:10px;
+    .card-subtitle {
+      margin: 4px 0 0;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .icon-btn,
+    .toggle-details,
+    .collapse-btn,
+    .tab-btn,
+    .btn,
+    .small-square {
+      border: 0;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .toggle-details {
+      background: linear-gradient(180deg, #1a2437, #0f1522);
+      color: #fff;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 16px;
+      min-width: 134px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    .collapse-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #192334, #101722);
+      color: #fff;
+      font-size: 20px;
+    }
+
+    .toggle-details:hover,
+    .collapse-btn:hover,
+    .tab-btn:hover,
+    .btn:hover,
+    .small-square:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+    }
+
+    .collapsed {
+      display: none !important;
+    }
+
+    .link-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .link-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.04);
+      border-radius: 16px;
+      padding: 12px 14px;
+      color: var(--accent);
+      font-size: 19px;
+    }
+
+    .link-count {
+      color: var(--text-soft);
+      font-size: 15px;
+    }
+
+    .stats-list {
+      display: grid;
+      gap: 10px;
+      font-size: 18px;
+    }
+
+    .stats-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.04);
+      border-radius: 16px;
+      padding: 12px 14px;
+      color: var(--text-soft);
+    }
+
+    .stats-line strong {
+      color: #fff;
+    }
+
+    .profile-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .profile-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.04);
+      color: var(--text-soft);
+      font-size: 17px;
+    }
+
+    .profile-item strong {
+      color: #fff;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .service-box {
+      display: grid;
+      gap: 12px;
+    }
+
+    .service-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.04);
+      color: var(--text-soft);
+      font-size: 18px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--success), var(--success-2));
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 10px 18px rgba(17,184,90,.18);
+      white-space: nowrap;
+    }
+
+    .history-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr .8fr .8fr;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .history-head {
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .history-cell {
+      color: var(--text-soft);
+      font-size: 16px;
+      padding: 10px 0;
+    }
+
+    .pdf-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #ffffff, #e8edf2);
+      color: #c91d1d;
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(255,255,255,.08);
+    }
+
+    .screen-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, var(--btn-primary-1), var(--btn-primary-2));
+      box-shadow: 0 14px 28px rgba(13,79,217,.24);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(180deg, var(--btn-secondary-1), var(--btn-secondary-2));
+      box-shadow: 0 14px 28px rgba(17,119,184,.22);
+    }
+
+    .btn-dark {
+      background: linear-gradient(180deg, var(--btn-dark), var(--btn-dark-2));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    }
+
+    .btn-green {
+      background: linear-gradient(180deg, var(--success), var(--success-2));
+    }
+
+    .btn-red {
+      background: linear-gradient(180deg, var(--danger), var(--danger-2));
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 18px;
+      align-items: start;
+    }
+
+    .field {
+      display: contents;
+    }
+
+    label {
+      font-size: 17px;
+      color: var(--text-soft);
+      line-height: 1.2;
+      padding-top: 12px;
     }
 
     input[type="text"],
-    input[type="date"],
     input[type="number"],
+    input[type="date"],
+    input[type="password"],
     select,
-    textarea{
-      width:100%;
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:8px;
-      background:var(--field);
-      color:#f0f0f0;
-      padding:12px;
-      font-size:20px;
-      outline:none;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+    textarea {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid var(--field-border);
+      background: linear-gradient(180deg, var(--field-bg), #0e1523);
+      color: var(--field-text);
+      padding: 14px 14px;
+      font-size: 17px;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+      transition: .18s ease;
     }
 
-    select{ background:var(--select); }
-
-    textarea{
-      min-height:92px;
-      resize:vertical;
+    select {
+      background: linear-gradient(180deg, var(--field-bg-2), #232d42);
     }
 
-    .row-inline{
-      display:flex;
-      gap:8px;
-      align-items:center;
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--field-placeholder);
     }
 
-    .small{ width:102px !important; }
-
-    .tiny-btn{
-      background:#0d6f0d;
-      color:#fff;
-      border:0;
-      border-radius:6px;
-      width:38px;
-      height:38px;
-      font-size:28px;
-      cursor:pointer;
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(89,201,255,.38);
+      box-shadow: 0 0 0 4px rgba(89,201,255,.10);
     }
 
-    .tiny-grey{
-      background:#6a6a6a;
-      color:#fff;
-      border:0;
-      border-radius:8px;
-      width:52px;
-      height:52px;
-      font-size:28px;
-      cursor:pointer;
+    textarea {
+      min-height: 98px;
+      resize: vertical;
     }
 
-    .btn-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:14px;
+    .row-inline {
+      display: flex;
+      gap: 8px;
+      align-items: center;
     }
 
-    .btn{
-      border:0;
-      border-radius:6px;
-      color:#fff;
-      font-size:19px;
-      padding:12px 16px;
-      cursor:pointer;
+    .small-square {
+      width: 46px;
+      height: 46px;
+      flex-shrink: 0;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 24px;
+      background: linear-gradient(180deg, #1b2537, #111826);
     }
 
-    .btn-green{ background:var(--green); }
-    .btn-red{ background:var(--red); }
-    .btn-blue{ background:linear-gradient(180deg,var(--blue1),var(--blue2)); }
-    .btn-dark{ background:#1b1c1e; }
-
-    .checkline{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      font-size:18px;
-      color:#efefef;
-      margin-top:8px;
+    .checkline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      color: var(--text-soft);
+      font-size: 15px;
     }
 
-    input[type="checkbox"]{
-      width:22px;
-      height:22px;
-      accent-color:#9fcfff;
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent);
     }
 
-    .items-toolbar{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      margin-bottom:14px;
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
     }
 
-    .items-toolbar select{ flex:1; }
-
-    .item-box{
-      border:1px solid rgba(0,0,0,.28);
-      border-radius:10px;
-      padding:10px;
-      background:rgba(60,60,60,.06);
+    .items-toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
     }
 
-    .item-grid{
-      display:grid;
-      grid-template-columns:1.4fr .6fr .6fr .9fr .55fr;
-      gap:8px;
-      align-items:start;
+    .items-toolbar select {
+      flex: 1;
     }
 
-    .item-grid textarea{ min-height:86px; }
-
-    .totals{
-      margin-top:12px;
-      font-size:24px;
-      line-height:1.6;
-      text-align:right;
-      color:#ededed;
+    .small-add {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 26px;
+      background: linear-gradient(180deg, var(--success), var(--success-2));
     }
 
-    .totals strong{
-      min-width:130px;
-      display:inline-block;
-      text-align:right;
-      color:#fff;
+    .item-box {
+      border-radius: 20px;
+      padding: 12px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
     }
 
-    .subnote{
-      color:#f0f0f0;
-      font-size:19px;
-      margin:14px 0 6px;
+    .item-grid {
+      display: grid;
+      grid-template-columns: 1.4fr .6fr .6fr .9fr .55fr;
+      gap: 10px;
+      align-items: start;
     }
 
-    .tags-line{
-      display:flex;
-      gap:10px;
-      align-items:flex-end;
-      flex-wrap:wrap;
+    .item-grid textarea {
+      min-height: 92px;
     }
 
-    .tags-line .grow{
-      flex:1;
-      min-width:200px;
+    .totals {
+      margin-top: 14px;
+      text-align: right;
+      color: var(--text-soft);
+      font-size: 20px;
+      line-height: 1.7;
     }
 
-    .layout-row{
-      display:flex;
-      gap:14px;
-      align-items:flex-end;
-      flex-wrap:wrap;
+    .totals strong {
+      color: #fff;
+      display: inline-block;
+      min-width: 120px;
+      text-align: right;
     }
 
-    .layout-thumbs{
-      display:flex;
-      gap:14px;
-      align-items:flex-end;
-      flex-wrap:wrap;
+    .tags-line {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-wrap: wrap;
     }
 
-    .thumb-wrap{ text-align:center; }
+    .tags-line .grow {
+      flex: 1;
+      min-width: 220px;
+    }
 
-    .thumb{
-      width:42px;
-      height:70px;
-      border:3px solid #111;
+    .thumb-list {
+      display: flex;
+      gap: 14px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .thumb-wrap {
+      text-align: center;
+    }
+
+    .thumb {
+      width: 50px;
+      height: 82px;
+      border-radius: 8px;
+      border: 3px solid #0f1218;
       background:
-        linear-gradient(#dedede,#dedede),
-        linear-gradient(#a1a1a1,#a1a1a1),
-        linear-gradient(#b9b9b9,#b9b9b9);
-      background-size:70% 10px, 80% 4px, 55% 4px;
-      background-repeat:no-repeat;
-      background-position:center 16px, center 36px, center 48px;
-      margin:0 auto 8px;
+        linear-gradient(#dcdcdc, #dcdcdc),
+        linear-gradient(#b2b2b2, #b2b2b2),
+        linear-gradient(#c3c3c3, #c3c3c3);
+      background-size: 70% 11px, 80% 4px, 55% 4px;
+      background-repeat: no-repeat;
+      background-position: center 18px, center 40px, center 53px;
+      box-shadow: 0 8px 18px rgba(255,255,255,.04);
+      margin: 0 auto 8px;
     }
 
-    .radio-dot{
-      width:22px;
-      height:22px;
-      border-radius:50%;
-      border:3px solid #4d4d4d;
-      background:#4d4d4d;
-      display:inline-block;
+    .radio-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 3px solid #50607c;
+      background: #37465e;
     }
 
-    .radio-dot.active{
-      border-color:#9fcfff;
-      box-shadow:inset 0 0 0 4px #b7daff;
+    .radio-dot.active {
+      border-color: var(--accent-3);
+      box-shadow: inset 0 0 0 4px #bfeeff;
     }
 
-    .docs-grid{
-      display:grid;
-      grid-template-columns:30px 1fr 150px 90px;
-      gap:10px 12px;
-      align-items:center;
-      font-size:20px;
+    .docs-grid {
+      display: grid;
+      grid-template-columns: 28px 1fr 150px 90px;
+      gap: 12px;
+      align-items: center;
     }
 
-    .bottom-actions{
-      position:sticky;
-      bottom:10px;
-      display:flex;
-      gap:10px;
-      margin-top:22px;
-      z-index:5;
+    .docs-head {
+      color: var(--text-muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: .04em;
     }
 
-    .bottom-actions .btn{
-      flex:1;
-      font-size:22px;
-      padding:15px 12px;
-      border-radius:10px;
+    .bottom-actions {
+      position: sticky;
+      bottom: 10px;
+      z-index: 30;
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 6px;
     }
 
-    .to-top{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      bottom:18px;
-      width:78px;
-      height:78px;
-      border-radius:50%;
-      border:0;
-      background:#505050;
-      color:#fff;
-      font-size:34px;
-      box-shadow:0 8px 20px rgba(0,0,0,.28);
-      cursor:pointer;
-      z-index:20;
+    .bottom-actions .btn {
+      flex: 1;
+      font-size: 19px;
+      padding: 15px 14px;
+      border-radius: 18px;
     }
 
-    .service-header{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-      margin-bottom:14px;
+    .to-top {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 18px;
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      border: 0;
+      color: #fff;
+      font-size: 32px;
+      background: linear-gradient(180deg, rgba(31,45,70,.96), rgba(16,23,36,.96));
+      backdrop-filter: blur(10px);
+      box-shadow: 0 16px 34px rgba(0,0,0,.26);
+      cursor: pointer;
+      z-index: 90;
     }
 
-    .service-title{
-      color:#1179c5;
-      font-size:28px;
-      font-weight:700;
-      font-style:italic;
-      line-height:1.05;
+    .settings-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 20px 0 18px;
     }
 
-    .service-right{
-      font-size:18px;
-      font-style:italic;
-      font-weight:700;
-      line-height:1.05;
-      color:#313131;
-      min-width:120px;
+    .tab-btn {
+      background: transparent;
+      color: var(--accent);
+      border-radius: 16px;
+      padding: 13px 18px;
+      font-size: 17px;
     }
 
-    .service-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      font-size:21px;
-      margin-bottom:22px;
+    .tab-btn.active {
+      color: #fff;
+      background: linear-gradient(180deg, var(--btn-primary-1), var(--btn-primary-2));
+      box-shadow: 0 12px 26px rgba(13,79,217,.22);
     }
 
-    .badge{
-      display:inline-block;
-      background:#61aa46;
-      color:#fff;
-      font-weight:700;
-      padding:4px 10px;
-      border-radius:6px;
-      font-size:18px;
-      white-space:nowrap;
+    .settings-section-title {
+      font-size: 18px;
+      color: var(--accent);
+      margin: 8px 0 10px;
+      font-weight: 800;
     }
 
-    .history-grid{
-      display:grid;
-      grid-template-columns:1.2fr 1.1fr .9fr .9fr;
-      gap:8px 10px;
-      align-items:start;
-      font-size:18px;
+    .settings-block {
+      display: grid;
+      gap: 20px;
     }
 
-    .history-grid .head{
-      font-style:italic;
-      font-weight:700;
-      line-height:1.05;
-      color:#313131;
+    .doc-style-grid {
+      display: grid;
+      gap: 20px;
     }
 
-    .pdf-icon{
-      width:34px;
-      height:42px;
-      border-radius:6px;
-      background:linear-gradient(180deg,#fff,#ececec);
-      border:1px solid #cfcfcf;
-      position:relative;
-      margin-top:4px;
-      box-shadow:0 2px 4px rgba(0,0,0,.08);
+    .doc-style-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 20px;
+      padding: 16px;
     }
 
-    .pdf-icon::before{
-      content:"PDF";
-      position:absolute;
-      bottom:4px;
-      left:50%;
-      transform:translateX(-50%);
-      font-size:10px;
-      font-weight:800;
-      color:#b40000;
+    .doc-style-title {
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: 800;
+      margin: 0 0 14px;
     }
 
-    .pdf-icon::after{
-      content:"";
-      position:absolute;
-      top:0;
-      right:0;
-      border-width:0 10px 10px 0;
-      border-style:solid;
-      border-color:transparent #d9d9d9 transparent transparent;
-      width:0;
-      height:0;
+    .doc-style-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 16px 18px;
+      align-items: start;
     }
 
-    @media (max-width:640px){
-      .brand-title{ font-size:18px; }
-      .hero h1{ font-size:34px; }
-      .hero p{ font-size:24px; }
-      .card-title, .service-title{ font-size:24px; }
-      label,
-      input[type="text"],
-      input[type="date"],
-      input[type="number"],
-      select,
-      textarea{ font-size:17px; }
-      .detail-btn{ min-width:118px; font-size:16px; padding:12px; }
-      .item-grid{ grid-template-columns:1fr; }
-      .docs-grid{ grid-template-columns:24px 1fr; }
-      .docs-grid .doc-head{ display:none; }
-      .history-grid{ font-size:16px; }
+    .doc-style-preview {
+      color: var(--text-soft);
+      font-size: 16px;
+      line-height: 1.3;
+    }
+
+    .doc-style-preview .thumb-list {
+      margin-top: 12px;
+    }
+
+    .tab-panel.hidden-tab {
+      display: none;
+    }
+
+    .security-box {
+      display: grid;
+      gap: 14px;
+    }
+
+    .info-note {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.04);
+      color: var(--text-soft);
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 760px) {
+      .hero h1 { font-size: 42px; }
+      .hero p { font-size: 24px; }
+      .action-grid { grid-template-columns: 1fr 1fr; }
+      .doc-style-inner { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      .brand-title { font-size: 18px; }
+      .hero h1 { font-size: 34px; }
+      .hero p { font-size: 20px; }
+      .action-grid { grid-template-columns: 1fr 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field { display: block; }
+      label { display: block; padding-top: 0; margin-bottom: 8px; }
+      .item-grid { grid-template-columns: 1fr; }
+      .docs-grid { grid-template-columns: 24px 1fr; }
+      .docs-head { display: none; }
+      .history-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .history-head:nth-child(n+3),
+      .history-cell:nth-child(4n+3),
+      .history-cell:nth-child(4n+4) {
+        display: none;
+      }
+      .bottom-actions { flex-direction: column; }
     }
   </style>
 </head>
 <body>
-  <div class="topbar"></div>
+  <div class="app-shell">
+    <div class="top-status-bar"></div>
 
-  <div id="dashboardScreen">
     <div class="page">
-      <header class="header-brand">
-        <div class="brand-left">
-          <div class="brand-logo"></div>
-          <div class="brand-title">FAKTÚRY ONLINE</div>
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div class="brand">
+            <div class="brand-logo"></div>
+            <div class="brand-title">PLATINUM LECH FAKTÚRY</div>
+          </div>
+
+          <div class="top-actions">
+            <button class="gear-btn nav-settings" title="Nastavenia">⚙</button>
+            <button class="menu-btn" id="menuBtn">MENU</button>
+          </div>
         </div>
-        <button class="menu-btn" id="menuBtn">MENU</button>
+
+        <div class="menu-panel" id="menuPanel">
+          <div class="menu-list">
+            <a href="#" class="menu-link nav-dashboard"><span>🏠</span><span>Dashboard</span></a>
+            <a href="#" class="menu-link nav-new-invoice"><span>🧾</span><span>Nová faktúra</span></a>
+            <a href="#" class="menu-link nav-settings"><span>⚙</span><span>Nastavenia</span></a>
+            <a href="#" class="menu-link"><span>📊</span><span>Štatistika</span></a>
+            <a href="#" class="menu-link"><span>🛒</span><span>Košík</span></a>
+            <a href="#" class="menu-link"><span>👥</span><span>Správa prístupov</span></a>
+            <a href="#" class="menu-link"><span>✉</span><span>Email log</span></a>
+            <a href="#" class="menu-link"><span>👤</span><span>privatpresov@gmail.com</span></a>
+          </div>
+        </div>
       </header>
 
-      <nav class="menu-panel" id="menuPanel">
-        <a href="#" class="nav-dashboard">Dashboard</a>
-        <a href="#" class="nav-new-invoice">Nová faktúra</a>
-        <a href="#">Nová cenová ponuka</a>
-        <a href="#">Príjmové doklady</a>
-        <a href="#">Výdavkové doklady</a>
-        <a href="#">Dodacie listy</a>
-        <a href="#">Objednávky</a>
-        <a href="#">Štatistika</a>
-        <a href="#">Nastavenia</a>
-      </nav>
-
-      <section class="hero">
-        <div class="gear">⚙</div>
-        <h1>Vitajte</h1>
-        <p>Vitajte vo Faktúrach online</p>
+      <!-- DASHBOARD -->
+      <section id="dashboardScreen" class="screen">
+        <div class="hero">
+          <h1>Vitajte</h1>
+          <p>Moderný prehľad faktúr, dokumentov a nastavení pre tvoju budúcu appku.</p>
+          <div class="hero-sub">Toto je nový frontend základ. Backend a reálny login doplníme neskôr.</div>
+        </div>
 
         <div class="action-grid">
           <button class="action-btn nav-new-invoice">Nová faktúra</button>
@@ -673,292 +975,512 @@
           <button class="action-btn">Nový príjmový doklad</button>
           <button class="action-btn secondary">Ako vytvoriť faktúru z cenovej ponuky</button>
         </div>
-      </section>
 
-      <section class="card">
-        <h2 class="card-title">Dokumenty</h2>
-        <div class="link-list">
-          <a href="#" class="nav-new-invoice">Faktúry (vystavené)</a>
-          <a href="#">Faktúry (prijaté)</a>
-          <a href="#">Príjmové pokladničné doklady</a>
-          <a href="#">Výdavkové pokladničné doklady</a>
-          <a href="#">Cenové ponuky</a>
-          <a href="#">Dodacie listy</a>
-          <a href="#">Objednávky (vystavené)</a>
-          <a href="#">Objednávky (prijaté)</a>
-          <a href="#">Zákazkové listy</a>
-          <a href="#">Preberacie protokoly</a>
-          <a href="#">Montážne denníky</a>
-          <a href="#">Tlačivá</a>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2 class="card-title">Zoznamy</h2>
-        <div class="link-list">
-          <a href="#">Moje spoločnosti (3)</a>
-          <a href="#">Moji klienti (7)</a>
-          <a href="#">Moje fakturačné položky (11)</a>
-          <a href="#">Moje bankové účty (2)</a>
-          <a href="#">Moje označenia / tagy (0)</a>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2 class="card-title">Údaje o konte</h2>
-        <div class="stats-list">
-          <div>Email: <strong>example@gmail.com</strong></div>
-          <div>Konto vytvorené dňa: <strong>2.4.2025</strong></div>
-          <div>Obchodný názov: <strong>Moja Firma s. r. o.</strong></div>
-          <div>IČO: <strong>12345678</strong></div>
-          <div>API kľúč: <a href="#" style="color:#1181c8;text-decoration:none;">👁 Zobraziť</a></div>
-          <div><a href="#" style="color:#1181c8;text-decoration:none;">✎ Upraviť</a></div>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2 class="card-title">Štatistika</h2>
-        <div class="stats-list">
-          <div>Faktúry (vystavené): <strong>57</strong></div>
-          <div>Faktúry (prijaté): <strong>0</strong></div>
-          <div>Príjmové pokl. doklady: <strong>2</strong></div>
-          <div>Výdavkové pokl. doklady: <strong>1</strong></div>
-          <div>Cenové ponuky: <strong>1</strong></div>
-          <div>Dodacie listy: <strong>0</strong></div>
-          <div>Objednávky (prijaté): <strong>0</strong></div>
-          <div>Objednávky (vystavené): <strong>0</strong></div>
-          <div>Zákazkové listy: <strong>0</strong></div>
-          <div>Preberacie protokoly: <strong>0</strong></div>
-          <div>Montážne denníky: <strong>0</strong></div>
-        </div>
-        <a href="#" class="section-link">📊 Štatistika</a>
-      </section>
-
-      <section class="card">
-        <div class="service-header">
-          <div class="service-title">Služby vo Faktúrach online</div>
-          <div class="service-right">Dátum<br>platnosti</div>
-        </div>
-
-        <div class="service-row">
-          <div>Prístup do Faktúr online</div>
-          <span class="badge">2.4.2027</span>
-        </div>
-
-        <div style="color:#1179c5;font-size:18px;font-style:italic;font-weight:700;margin-bottom:10px;">
-          História objednaných služieb
-        </div>
-
-        <div class="history-grid">
-          <div class="head">Dátum objednávky</div>
-          <div class="head">Variabilný symbol</div>
-          <div class="head">Zálohová faktúra</div>
-          <div class="head">Faktúra - doklad</div>
-
-          <div>21.3.2026</div>
-          <div>1413044243</div>
-          <div><div class="pdf-icon"></div></div>
-          <div><div class="pdf-icon"></div></div>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <div id="invoiceScreen" class="hidden">
-    <main class="page">
-      <section class="hero">
-        <div class="gear">⚙</div>
-        <h1>Vložiť faktúru</h1>
-        <p>Vytvorte faktúru vyplnením nasledujúcich polí</p>
-        <div class="breadcrumbs">
-          <a href="#" id="backToDashboardTop">Dashboard</a> <span>›</span> Vložiť faktúru
-        </div>
-      </section>
-
-      <div class="btn-row" style="margin-bottom:14px;">
-        <button class="btn btn-dark" id="backToDashboardBtn">← Späť na menu</button>
-      </div>
-
-      <section class="card">
-        <div class="card-head">
-          <div class="card-title">Údaje dodávateľa</div>
-          <button class="detail-btn toggle-section" data-target="supplier">↕ podrobnosti</button>
-        </div>
-        <div class="section-body collapsed" id="supplier">
-          <div class="form-grid">
-            <div class="field"><label>Moje spoločnosti:</label><select><option>-- Vyberte spoločnosť --</option></select></div>
-            <div class="field"><label>Spoločnosť / osoba:</label><input type="text"></div>
-            <div class="field"><label>Ulica:</label><input type="text"></div>
-            <div class="field"><label>Mesto:</label><input type="text"></div>
-            <div class="field"><label>PSČ:</label><input type="text"></div>
-            <div class="field"><label>Štát:</label><input type="text"></div>
-            <div class="field"><label>IČO:</label><input type="text"></div>
-            <div class="field"><label>DIČ:</label><input type="text"></div>
-            <div class="field"><label>IČDPH:</label><input type="text"></div>
-            <div class="field"><label>Platiteľ DPH:</label><select><option>nie</option><option>áno</option></select></div>
-            <div class="field"><label>Info o dodávateľovi:</label><textarea></textarea></div>
-            <div class="field"><label>Telefón:</label><input type="text"></div>
-            <div class="field"><label>Email:</label><input type="text"></div>
-            <div class="field"><label>Web:</label><input type="text"></div>
-            <div class="field"><label>Moje bankové účty:</label><select><option>-- Vyberte účet --</option></select></div>
-            <div class="field"><label>IBAN:</label><input type="text"></div>
-            <div class="field"><label>SWIFT:</label><input type="text"></div>
-            <div class="field"><label>Banka:</label><input type="text"></div>
-            <div class="field"><label>Číslo účtu (starý formát):</label><div class="row-inline"><input type="text"><button class="tiny-grey">⌗</button></div></div>
-          </div>
-          <label class="checkline"><input type="checkbox" checked> Zobraziť na faktúre</label>
-          <div class="btn-row">
-            <button class="btn btn-green">Pridať vlastné polia</button>
-            <button class="btn btn-red">Odstrániť vlastné polia</button>
-          </div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-head">
-          <div class="card-title">Údaje odberateľa</div>
-          <button class="detail-btn toggle-section" data-target="customer">↕ podrobnosti</button>
-        </div>
-        <div class="section-body collapsed" id="customer">
-          <div class="form-grid">
-            <div class="field"><label>Moji klienti:</label><select><option>-- Vyberte klienta --</option></select></div>
-            <div class="field"><label>Spoločnosť / osoba:</label><input type="text"></div>
-            <div class="field"><label>Ulica:</label><input type="text"></div>
-            <div class="field"><label>Mesto:</label><input type="text"></div>
-            <div class="field"><label>PSČ:</label><input type="text"></div>
-            <div class="field"><label>Štát:</label><input type="text"></div>
-            <div class="field"><label>IČO:</label><div class="row-inline"><input type="text"><button class="tiny-grey">🔍</button></div></div>
-            <div class="field"><label>DIČ:</label><input type="text"></div>
-            <div class="field"><label>IČDPH:</label><input type="text"></div>
-            <div class="field"><label>Email odberateľa:</label><input type="text"></div>
-            <div class="field"><label>Info o odberateľovi:</label><textarea></textarea></div>
-            <div class="field"><label>Adresa dodania (ak je iná ako adresa odberateľa)</label><div></div></div>
-            <div class="field"><label>Spoločnosť / osoba:</label><input type="text"></div>
-            <div class="field"><label>Ulica:</label><input type="text"></div>
-            <div class="field"><label>Mesto:</label><input type="text"></div>
-            <div class="field"><label>PSČ:</label><input type="text"></div>
-            <div class="field"><label>Štát:</label><input type="text"></div>
-          </div>
-          <div class="btn-row">
-            <button class="btn btn-green">Pridať vlastné polia</button>
-            <button class="btn btn-red">Odstrániť vlastné polia</button>
-          </div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-head">
-          <div class="card-title">Základné údaje</div>
-          <button class="collapse-icon toggle-section" data-target="basic">⬆</button>
-        </div>
-        <div class="section-body" id="basic">
-          <div class="form-grid">
-            <div class="field"><label>Číslo faktúry:</label><input type="text"></div>
-            <div class="field"><label>Typ faktúry:</label><select><option>Faktúra</option></select></div>
-            <div class="field"><label>Variabilný symbol:</label><input type="text"></div>
-            <div class="field"><label>Konštantný symbol:</label><input type="text"></div>
-            <div class="field"><label>Dátum vystavenia:</label><input type="date" value="2026-04-09"></div>
-            <div class="field"><label>Dátum dodania:</label><input type="date" value="2026-04-09"></div>
-            <div class="field"><label>Dátum splatnosti:</label><input type="date" value="2026-04-24"></div>
-            <div class="field"><label>Číslo objednávky:</label><input type="text"></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-head">
-          <div class="card-title">Peňažné údaje</div>
-          <button class="collapse-icon toggle-section" data-target="money">⬆</button>
-        </div>
-        <div class="section-body" id="money">
-          <div class="form-grid">
-            <div class="field"><label>Mena faktúry:</label><select><option>EUR</option></select></div>
-            <div class="field"><label>Forma úhrady:</label><select><option>peňažný prevod</option></select></div>
-            <div class="field"><label>Zaokrúhlenie k úhrade:</label><select><option>žiadne</option></select></div>
-            <div class="field"><label>Zobraziť QR kód:</label><select><option>pay-by-square</option></select></div>
-            <div class="field"><label>Už uhradené (nedaňové zálohy):</label><div class="row-inline"><input type="number" value="0"><span>EUR</span></div></div>
-            <div class="field"><label>Celková zľava:</label><div class="row-inline"><input type="number" value="0"><span>%</span></div></div>
-            <div class="field"><label>Zobraziť hlášku "Už uhradené":</label><select class="small"><option>nie</option><option>áno</option></select></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-head">
-          <div class="card-title">Doplňujúce údaje</div>
-          <button class="collapse-icon toggle-section" data-target="extra">⬆</button>
-        </div>
-        <div class="section-body" id="extra">
-          <div class="form-grid">
-            <div class="field"><label>Jazyk faktúry:</label><select><option>slovenčina</option></select></div>
-            <div class="field"><label>Poznámka nad položkami:</label><textarea></textarea></div>
-            <div class="field"><label>Poznámka pod položkami:</label><textarea></textarea></div>
-            <div class="field"><label>Interná poznámka:</label><textarea></textarea></div>
-            <div class="field"><label>Logo spoločnosti:</label><select><option>-- Nezobraziť logo --</option></select></div>
-            <div class="field"><label>Pečiatka spoločnosti:</label><select><option>-- Nezobraziť pečiatku --</option></select></div>
-            <div class="field"><label>Faktúru vystavil:</label><input type="text"></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-head">
-          <div class="card-title">Položky faktúry</div>
-          <button class="collapse-icon toggle-section" data-target="items">⬆</button>
-        </div>
-        <div class="section-body" id="items">
-          <div class="items-toolbar">
-            <select><option>-- Vyberte fakturačnú položku --</option></select>
-            <button class="tiny-btn">+</button>
-          </div>
-
-          <div class="item-box">
-            <div class="item-grid">
-              <textarea placeholder="Popis položky"></textarea>
-              <input type="text" value="ks" placeholder="MJ">
-              <input type="number" value="1" placeholder="Množstvo">
-              <input type="number" placeholder="Cena za MJ bez DPH">
-              <select><option>EUR</option></select>
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Dokumenty</h2>
+              <div class="card-subtitle">Rýchly vstup do hlavných sekcií</div>
             </div>
           </div>
 
-          <div class="btn-row">
-            <button class="btn btn-green">Vložiť položku</button>
-            <button class="btn btn-green">Vložiť textovú položku</button>
-          </div>
-
-          <div class="totals">
-            Spolu: <strong>0.00 EUR</strong><br>
-            K úhrade: <strong>0.00 EUR</strong>
+          <div class="link-list">
+            <a href="#" class="link-row nav-new-invoice"><span>Faktúry (vystavené)</span><span class="link-count">57</span></a>
+            <a href="#" class="link-row"><span>Faktúry (prijaté)</span><span class="link-count">0</span></a>
+            <a href="#" class="link-row"><span>Príjmové pokladničné doklady</span><span class="link-count">2</span></a>
+            <a href="#" class="link-row"><span>Výdavkové pokladničné doklady</span><span class="link-count">1</span></a>
+            <a href="#" class="link-row"><span>Cenové ponuky</span><span class="link-count">1</span></a>
+            <a href="#" class="link-row"><span>Dodacie listy</span><span class="link-count">0</span></a>
+            <a href="#" class="link-row"><span>Objednávky (vystavené)</span><span class="link-count">0</span></a>
+            <a href="#" class="link-row"><span>Objednávky (prijaté)</span><span class="link-count">0</span></a>
+            <a href="#" class="link-row"><span>Zákazkové listy</span><span class="link-count">0</span></a>
+            <a href="#" class="link-row"><span>Preberacie protokoly</span><span class="link-count">0</span></a>
+            <a href="#" class="link-row"><span>Montážne denníky</span><span class="link-count">0</span></a>
           </div>
         </div>
-      </section>
 
-      <section class="card">
-        <div class="card-head">
-          <div class="card-title">Označenia ⓘ</div>
-          <button class="collapse-icon toggle-section" data-target="tags">⬆</button>
-        </div>
-        <div class="section-body" id="tags">
-          <div class="subnote">Vložte prvé označenie</div>
-          <div class="tags-line">
-            <div class="grow">
-              <label>Vložiť nový tag:</label>
-              <input type="text">
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Údaje o konte</h2>
+              <div class="card-subtitle">Základné informácie</div>
             </div>
-            <button class="btn btn-blue">Pridať</button>
+          </div>
+
+          <div class="profile-grid">
+            <div class="profile-item"><span>Email</span><strong>privatpresov@gmail.com</strong></div>
+            <div class="profile-item"><span>Konto vytvorené</span><strong>2.4.2025</strong></div>
+            <div class="profile-item"><span>Obchodný názov</span><strong>Stavby12 s. r. o.</strong></div>
+            <div class="profile-item"><span>IČO</span><strong>52535851</strong></div>
+            <div class="profile-item"><span>API kľúč</span><strong>Zobraziť</strong></div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Štatistika</h2>
+              <div class="card-subtitle">Rýchly súhrn dokumentov</div>
+            </div>
+          </div>
+
+          <div class="stats-list">
+            <div class="stats-line"><span>Faktúry (vystavené)</span><strong>57</strong></div>
+            <div class="stats-line"><span>Faktúry (prijaté)</span><strong>0</strong></div>
+            <div class="stats-line"><span>Príjmové pokl. doklady</span><strong>2</strong></div>
+            <div class="stats-line"><span>Výdavkové pokl. doklady</span><strong>1</strong></div>
+            <div class="stats-line"><span>Cenové ponuky</span><strong>1</strong></div>
+            <div class="stats-line"><span>Dodacie listy</span><strong>0</strong></div>
+            <div class="stats-line"><span>Objednávky (prijaté)</span><strong>0</strong></div>
+            <div class="stats-line"><span>Objednávky (vystavené)</span><strong>0</strong></div>
+            <div class="stats-line"><span>Zákazkové listy</span><strong>0</strong></div>
+            <div class="stats-line"><span>Preberacie protokoly</span><strong>0</strong></div>
+            <div class="stats-line"><span>Montážne denníky</span><strong>0</strong></div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Služby</h2>
+              <div class="card-subtitle">Platnosť a história</div>
+            </div>
+          </div>
+
+          <div class="service-box">
+            <div class="service-row">
+              <span>Prístup do Faktúr online</span>
+              <span class="badge">2.4.2027</span>
+            </div>
+
+            <div class="history-grid">
+              <div class="history-head">Dátum objednávky</div>
+              <div class="history-head">Variabilný symbol</div>
+              <div class="history-head">Zálohová</div>
+              <div class="history-head">Faktúra</div>
+
+              <div class="history-cell">21.3.2026</div>
+              <div class="history-cell">1413044243</div>
+              <div class="history-cell"><span class="pdf-chip">PDF</span></div>
+              <div class="history-cell"><span class="pdf-chip">PDF</span></div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="card">
-        <div class="card-head">
-          <div class="card-title">Vzhľad faktúry</div>
-          <button class="collapse-icon toggle-section" data-target="layout">⬆</button>
+      <!-- INVOICE -->
+      <section id="invoiceScreen" class="screen hidden">
+        <div class="hero">
+          <h1>Vložiť faktúru</h1>
+          <p>Vyplň moderný formulár a neskôr ho napojíme na skutočný backend.</p>
+          <div class="breadcrumbs">
+            <a href="#" class="nav-dashboard">Dashboard</a> › Vložiť faktúru
+          </div>
         </div>
-        <div class="section-body" id="layout">
-          <div class="layout-row">
-            <div class="layout-thumbs">
+
+        <div class="screen-toolbar">
+          <button class="btn btn-dark nav-dashboard">← Späť na menu</button>
+          <button class="btn btn-secondary nav-settings">Nastavenia</button>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Údaje dodávateľa</h2>
+              <div class="card-subtitle">Základ firmy a banky</div>
+            </div>
+            <button class="toggle-details toggle-section" data-target="supplierBody">Podrobnosti</button>
+          </div>
+
+          <div id="supplierBody" class="collapsed">
+            <div class="form-grid">
+              <div class="field">
+                <label>Moje spoločnosti</label>
+                <select><option>-- Vyberte spoločnosť --</option></select>
+              </div>
+              <div class="field">
+                <label>Spoločnosť / osoba</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Ulica</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Mesto</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>PSČ</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Štát</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>IČO</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>DIČ</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>IČDPH</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Platiteľ DPH</label>
+                <select><option>nie</option><option>áno</option></select>
+              </div>
+              <div class="field">
+                <label>Info o dodávateľovi</label>
+                <textarea></textarea>
+              </div>
+              <div class="field">
+                <label>Telefón</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Email</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Web</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Moje bankové účty</label>
+                <select><option>-- Vyberte účet --</option></select>
+              </div>
+              <div class="field">
+                <label>IBAN</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>SWIFT</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Banka</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Číslo účtu (starý formát)</label>
+                <div class="row-inline">
+                  <input type="text">
+                  <button class="small-square">⌗</button>
+                </div>
+              </div>
+            </div>
+
+            <label class="checkline">
+              <input type="checkbox" checked>
+              Zobraziť na faktúre
+            </label>
+
+            <div class="btn-row">
+              <button class="btn btn-green">Pridať vlastné polia</button>
+              <button class="btn btn-red">Odstrániť vlastné polia</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Údaje odberateľa</h2>
+              <div class="card-subtitle">Klient a dodacia adresa</div>
+            </div>
+            <button class="toggle-details toggle-section" data-target="customerBody">Podrobnosti</button>
+          </div>
+
+          <div id="customerBody" class="collapsed">
+            <div class="form-grid">
+              <div class="field">
+                <label>Moji klienti</label>
+                <select><option>-- Vyberte klienta --</option></select>
+              </div>
+              <div class="field">
+                <label>Spoločnosť / osoba</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Ulica</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Mesto</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>PSČ</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Štát</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>IČO</label>
+                <div class="row-inline">
+                  <input type="text">
+                  <button class="small-square">⌕</button>
+                </div>
+              </div>
+              <div class="field">
+                <label>DIČ</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>IČDPH</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Email odberateľa</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Info o odberateľovi</label>
+                <textarea></textarea>
+              </div>
+              <div class="field">
+                <label>Spoločnosť / osoba (dodacia adresa)</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Ulica (dodacia adresa)</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Mesto (dodacia adresa)</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>PSČ (dodacia adresa)</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Štát (dodacia adresa)</label>
+                <input type="text">
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-green">Pridať vlastné polia</button>
+              <button class="btn btn-red">Odstrániť vlastné polia</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Základné údaje</h2>
+              <div class="card-subtitle">Čísla a dátumy</div>
+            </div>
+            <button class="collapse-btn toggle-section" data-target="basicBody">⌃</button>
+          </div>
+
+          <div id="basicBody">
+            <div class="form-grid">
+              <div class="field">
+                <label>Číslo faktúry</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Typ faktúry</label>
+                <select><option>Faktúra</option></select>
+              </div>
+              <div class="field">
+                <label>Variabilný symbol</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Konštantný symbol</label>
+                <input type="text">
+              </div>
+              <div class="field">
+                <label>Dátum vystavenia</label>
+                <input type="date" value="2026-04-09">
+              </div>
+              <div class="field">
+                <label>Dátum dodania</label>
+                <input type="date" value="2026-04-09">
+              </div>
+              <div class="field">
+                <label>Dátum splatnosti</label>
+                <input type="date" value="2026-04-24">
+              </div>
+              <div class="field">
+                <label>Číslo objednávky</label>
+                <input type="text">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Peňažné údaje</h2>
+              <div class="card-subtitle">Platba, mena a zľavy</div>
+            </div>
+            <button class="collapse-btn toggle-section" data-target="moneyBody">⌃</button>
+          </div>
+
+          <div id="moneyBody">
+            <div class="form-grid">
+              <div class="field">
+                <label>Mena faktúry</label>
+                <select><option>EUR</option></select>
+              </div>
+              <div class="field">
+                <label>Forma úhrady</label>
+                <select><option>peňažný prevod</option></select>
+              </div>
+              <div class="field">
+                <label>Zaokrúhlenie k úhrade</label>
+                <select><option>žiadne</option></select>
+              </div>
+              <div class="field">
+                <label>Zobraziť QR kód</label>
+                <select><option>pay-by-square</option></select>
+              </div>
+              <div class="field">
+                <label>Už uhradené</label>
+                <div class="row-inline">
+                  <input type="number" value="0">
+                  <span>EUR</span>
+                </div>
+              </div>
+              <div class="field">
+                <label>Celková zľava</label>
+                <div class="row-inline">
+                  <input type="number" value="0">
+                  <span>%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label>Zobraziť hlášku „Už uhradené“</label>
+                <select><option>nie</option><option>áno</option></select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Doplňujúce údaje</h2>
+              <div class="card-subtitle">Jazyk, logo, pečiatka, poznámky</div>
+            </div>
+            <button class="collapse-btn toggle-section" data-target="extraBody">⌃</button>
+          </div>
+
+          <div id="extraBody">
+            <div class="form-grid">
+              <div class="field">
+                <label>Jazyk faktúry</label>
+                <select><option>slovenčina</option></select>
+              </div>
+              <div class="field">
+                <label>Poznámka nad položkami</label>
+                <textarea></textarea>
+              </div>
+              <div class="field">
+                <label>Poznámka pod položkami</label>
+                <textarea></textarea>
+              </div>
+              <div class="field">
+                <label>Interná poznámka</label>
+                <textarea></textarea>
+              </div>
+              <div class="field">
+                <label>Logo spoločnosti</label>
+                <select><option>-- Nezobraziť logo --</option></select>
+              </div>
+              <div class="field">
+                <label>Pečiatka spoločnosti</label>
+                <select><option>-- Nezobraziť pečiatku --</option></select>
+              </div>
+              <div class="field">
+                <label>Faktúru vystavil</label>
+                <input type="text">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Položky faktúry</h2>
+              <div class="card-subtitle">Položka, množstvo, cena</div>
+            </div>
+            <button class="collapse-btn toggle-section" data-target="itemsBody">⌃</button>
+          </div>
+
+          <div id="itemsBody">
+            <div class="items-toolbar">
+              <select><option>-- Vyberte fakturačnú položku --</option></select>
+              <button class="small-add">+</button>
+            </div>
+
+            <div class="item-box">
+              <div class="item-grid">
+                <textarea placeholder="Popis položky"></textarea>
+                <input type="text" value="ks" placeholder="MJ">
+                <input type="number" value="1" placeholder="Množstvo">
+                <input type="number" placeholder="Cena za MJ bez DPH">
+                <select><option>EUR</option></select>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-green">Vložiť položku</button>
+              <button class="btn btn-green">Vložiť textovú položku</button>
+            </div>
+
+            <div class="totals">
+              Spolu: <strong>0.00 EUR</strong><br>
+              K úhrade: <strong>0.00 EUR</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Označenia</h2>
+              <div class="card-subtitle">Tagy a interné značky</div>
+            </div>
+            <button class="collapse-btn toggle-section" data-target="tagsBody">⌃</button>
+          </div>
+
+          <div id="tagsBody">
+            <div class="tags-line">
+              <div class="grow">
+                <label>Vložiť nový tag</label>
+                <input type="text" placeholder="napr. servis, objednávka, VIP">
+              </div>
+              <button class="btn btn-primary">Pridať</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Vzhľad faktúry</h2>
+              <div class="card-subtitle">Výber štýlu dokumentu</div>
+            </div>
+            <button class="collapse-btn toggle-section" data-target="layoutBody">⌃</button>
+          </div>
+
+          <div id="layoutBody">
+            <div class="thumb-list">
               <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot active"></span></div>
               <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot"></span></div>
               <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot"></span></div>
@@ -966,68 +1488,448 @@
               <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot"></span></div>
               <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot"></span></div>
             </div>
-            <button class="tiny-grey">˅</button>
           </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Spolu s faktúrou vytvoriť aj</h2>
+              <div class="card-subtitle">Doplnkové dokumenty</div>
+            </div>
+            <button class="collapse-btn toggle-section" data-target="docsBody">⌃</button>
+          </div>
+
+          <div id="docsBody">
+            <div class="docs-grid">
+              <div class="docs-head"></div>
+              <div class="docs-head"></div>
+              <div class="docs-head">Číslo</div>
+              <div class="docs-head">Účel</div>
+
+              <input type="checkbox">
+              <div>Príjmový doklad</div>
+              <input type="text">
+              <input type="text">
+
+              <input type="checkbox">
+              <div>Výdavkový doklad</div>
+              <input type="text">
+              <input type="text">
+
+              <input type="checkbox">
+              <div>Dodací list</div>
+              <input type="text">
+              <input type="text">
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-actions">
+          <button class="btn btn-primary">Uložiť</button>
+          <button class="btn btn-secondary">Uložiť a zobraziť PDF</button>
         </div>
       </section>
 
-      <section class="card">
-        <div class="card-head">
-          <div class="card-title">Spolu s faktúrou vytvoriť aj</div>
-          <button class="collapse-icon toggle-section" data-target="docs">⬆</button>
+      <!-- SETTINGS -->
+      <section id="settingsScreen" class="screen hidden">
+        <div class="hero">
+          <h1>Nastavenia</h1>
+          <p>Moderná verzia nastavení pripravená ako základ pre budúcu plnohodnotnú appku.</p>
+          <div class="breadcrumbs">
+            <a href="#" class="nav-dashboard">Dashboard</a> › Nastavenia
+          </div>
         </div>
-        <div class="section-body" id="docs">
-          <div class="docs-grid">
-            <div class="doc-head"></div>
-            <div class="doc-head"></div>
-            <div class="doc-head"><strong>Číslo dokladu</strong></div>
-            <div class="doc-head"><strong>Účel</strong></div>
 
-            <input type="checkbox">
-            <div>Príjmový doklad</div>
-            <input type="text">
-            <input type="text">
+        <div class="screen-toolbar">
+          <button class="btn btn-dark nav-dashboard">← Späť na menu</button>
+          <button class="btn btn-primary nav-new-invoice">Nová faktúra</button>
+        </div>
 
-            <input type="checkbox">
-            <div>Výdavkový doklad</div>
-            <input type="text">
-            <input type="text">
+        <div class="settings-tabs">
+          <button class="tab-btn active" data-tab="tabGeneral">Všeobecné</button>
+          <button class="tab-btn" data-tab="tabDocuments">Dokumenty</button>
+          <button class="tab-btn" data-tab="tabItems">Položky</button>
+          <button class="tab-btn" data-tab="tabSecurity">Bezpečnosť</button>
+        </div>
 
-            <input type="checkbox">
-            <div>Dodací list</div>
-            <input type="text">
-            <input type="text">
+        <!-- GENERAL TAB -->
+        <div id="tabGeneral" class="tab-panel">
+          <div class="section-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Všeobecné nastavenia</h2>
+                <div class="card-subtitle">Systém, zoznamy a predvolené správanie</div>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label>Jazyk systému po prihlásení</label>
+                <select><option>slovenčina</option></select>
+              </div>
+              <div class="field">
+                <label>Zobraziť čiarový kód dokumentu v hlavičke</label>
+                <select><option>áno</option><option>nie</option></select>
+              </div>
+              <div class="field">
+                <label>Počet riadkov v zoznamoch</label>
+                <select><option>15</option><option>25</option><option>50</option></select>
+              </div>
+              <div class="field">
+                <label>Predvolená sadzba DPH v položkách</label>
+                <select><option>Štandardná (23%)</option></select>
+              </div>
+              <div class="field">
+                <label>Predvolená skratka mernej jednotky</label>
+                <input type="text" value="ks">
+              </div>
+              <div class="field">
+                <label>Zaokrúhlenie</label>
+                <select><option>žiadne</option></select>
+              </div>
+              <div class="field">
+                <label>Formát názvu stiahnutého súboru</label>
+                <select><option>SPOLOCNOST_CISLO</option></select>
+              </div>
+              <div class="field">
+                <label>Zobraziť akciové tlačidlá na uvítacej stránke</label>
+                <select><option>áno</option><option>nie</option></select>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-primary">Nastaviť</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DOCUMENTS TAB -->
+        <div id="tabDocuments" class="tab-panel hidden-tab">
+          <div class="doc-style-grid">
+            <div class="section-card">
+              <h3 class="settings-section-title">Faktúry (vystavené)</h3>
+              <div class="doc-style-card">
+                <div class="doc-style-inner">
+                  <div class="doc-style-preview">
+                    Predvolený štýl faktúry
+                    <div class="thumb-list">
+                      <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot active"></span></div>
+                      <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot"></span></div>
+                      <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot"></span></div>
+                      <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot"></span></div>
+                      <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot"></span></div>
+                      <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot"></span></div>
+                    </div>
+                  </div>
+
+                  <div class="form-grid">
+                    <div class="field">
+                      <label>Splatnosť faktúry v dňoch</label>
+                      <input type="number" value="0">
+                    </div>
+                    <div class="field">
+                      <label>Filter: zobraziť sumy s DPH</label>
+                      <select><option>áno</option></select>
+                    </div>
+                    <div class="field">
+                      <label>Spolu s faktúrou vytvoriť aj</label>
+                      <div class="row-inline">
+                        <label class="checkline"><input type="checkbox"> PPD</label>
+                        <label class="checkline"><input type="checkbox"> VPD</label>
+                        <label class="checkline"><input type="checkbox"> DL</label>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label>Názov zálohovej faktúry</label>
+                      <select><option>Zálohová faktúra</option></select>
+                    </div>
+                    <div class="field">
+                      <label>Faktúry zobraziť a triediť podľa</label>
+                      <select><option>Dátum vystavenia</option></select>
+                    </div>
+                    <div class="field">
+                      <label>Predvolený dátum pri tvorbe faktúry</label>
+                      <select><option>Dátum dodania</option></select>
+                    </div>
+                    <div class="field">
+                      <label>Sadzba DPH v režime prenesenej daňovej povinnosti</label>
+                      <select><option>zobraziť pôvodnú sadzbu</option></select>
+                    </div>
+                    <div class="field">
+                      <label>Text pri už uhradenej faktúre zálohami</label>
+                      <input type="text" value="UŽ UHRADENÉ">
+                    </div>
+                    <div class="field">
+                      <label>Predvolene zobraziť QR kód</label>
+                      <select><option>áno</option></select>
+                    </div>
+                    <div class="field">
+                      <label>Predvolený formát QR kódu</label>
+                      <select><option>Pay By Square</option></select>
+                    </div>
+                    <div class="field">
+                      <label>Do faktúry v PDF priložiť súbor ISDOC</label>
+                      <select><option>nie</option></select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <h3 class="settings-section-title">Faktúry (prijaté)</h3>
+              <div class="doc-style-card">
+                <div class="form-grid">
+                  <div class="field">
+                    <label>Názov zálohovej faktúry</label>
+                    <select><option>Zálohová faktúra</option></select>
+                  </div>
+                  <div class="field">
+                    <label>Faktúry zobraziť a triediť podľa</label>
+                    <select><option>Dátum vystavenia</option></select>
+                  </div>
+                  <div class="field">
+                    <label>Predvolený dátum pri tvorbe faktúry</label>
+                    <select><option>Dátum dodania</option></select>
+                  </div>
+                  <div class="field">
+                    <label>Sadzba DPH v režime prenesenej daňovej povinnosti</label>
+                    <select><option>zobraziť pôvodnú sadzbu</option></select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <h3 class="settings-section-title">Príjmové a výdavkové doklady</h3>
+              <div class="doc-style-card">
+                <div class="doc-style-inner">
+                  <div class="doc-style-preview">
+                    Predvolený štýl pokladničného dokladu
+                    <div class="thumb-list">
+                      <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot active"></span></div>
+                      <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot"></span></div>
+                    </div>
+                  </div>
+
+                  <div class="form-grid">
+                    <div class="field">
+                      <label>Filter: zobraziť sumy s DPH</label>
+                      <select><option>áno</option></select>
+                    </div>
+                    <div class="field">
+                      <label>Zobrazovať ceny v dokumente</label>
+                      <select><option>áno</option></select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <h3 class="settings-section-title">Cenové ponuky a dodacie listy</h3>
+              <div class="doc-style-card">
+                <div class="form-grid">
+                  <div class="field">
+                    <label>Filter: zobraziť sumy s DPH</label>
+                    <select><option>áno</option></select>
+                  </div>
+                  <div class="field">
+                    <label>Filter: dodané</label>
+                    <select><option>všetko</option></select>
+                  </div>
+                  <div class="field">
+                    <label>Zobrazovať ceny v dokumente</label>
+                    <select><option>áno</option></select>
+                  </div>
+                  <div class="field">
+                    <label>Vlastný názov dokumentu</label>
+                    <input type="text" value="Dodací list">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <h3 class="settings-section-title">Objednávky, zákazkové listy, preberacie protokoly, montážne denníky</h3>
+              <div class="doc-style-card">
+                <div class="doc-style-inner">
+                  <div class="doc-style-preview">
+                    Predvolený štýl dokumentu
+                    <div class="thumb-list">
+                      <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot active"></span></div>
+                      <div class="thumb-wrap"><div class="thumb"></div><span class="radio-dot"></span></div>
+                    </div>
+                  </div>
+
+                  <div class="form-grid">
+                    <div class="field">
+                      <label>Názov dokladu</label>
+                      <select><option>Objednávka</option></select>
+                    </div>
+                    <div class="field">
+                      <label>Filter: zobraziť sumy s DPH</label>
+                      <select><option>áno</option></select>
+                    </div>
+                    <div class="field">
+                      <label>Zobrazovať ceny v dokumente</label>
+                      <select><option>áno</option></select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-primary">Nastaviť</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ITEMS TAB -->
+        <div id="tabItems" class="tab-panel hidden-tab">
+          <div class="section-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Položky a cenníky</h2>
+                <div class="card-subtitle">Cenové hladiny a vlastné polia</div>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field"><label>1. cenová hladina (názov)</label><input type="text" value="A"></div>
+              <div class="field"><label>2. cenová hladina (názov)</label><input type="text" value="B"></div>
+              <div class="field"><label>3. cenová hladina (názov)</label><input type="text" value="C"></div>
+              <div class="field"><label>4. cenová hladina (názov)</label><input type="text" value="D"></div>
+              <div class="field"><label>5. cenová hladina (názov)</label><input type="text" value="E"></div>
+              <div class="field"><label>6. cenová hladina (názov)</label><input type="text" value="F"></div>
+              <div class="field"><label>7. cenová hladina (názov)</label><input type="text" value="G"></div>
+              <div class="field"><label>8. cenová hladina (názov)</label><input type="text" value="H"></div>
+              <div class="field"><label>9. cenová hladina (názov)</label><input type="text" value="I"></div>
+              <div class="field"><label>10. cenová hladina (názov)</label><input type="text" value="J"></div>
+            </div>
+
+            <div class="settings-section-title" style="margin-top:22px;">Vlastné polia</div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label>Dodávateľ – názov / hodnota 1</label>
+                <div>
+                  <input type="text" placeholder="napr.: Číslo licencie">
+                  <div style="height:8px"></div>
+                  <input type="text" placeholder="napr.: SK-2017-112">
+                </div>
+              </div>
+              <div class="field">
+                <label>Dodávateľ – názov / hodnota 2</label>
+                <div>
+                  <input type="text" placeholder="napr.: Hotline">
+                  <div style="height:8px"></div>
+                  <input type="text" placeholder="napr.: 0901 111 111">
+                </div>
+              </div>
+              <div class="field">
+                <label>Odberateľ – názov / hodnota 1</label>
+                <div>
+                  <input type="text" placeholder="napr.: ID klienta">
+                  <div style="height:8px"></div>
+                  <input type="text" placeholder="napr.: 145656">
+                </div>
+              </div>
+              <div class="field">
+                <label>Odberateľ – názov / hodnota 2</label>
+                <div>
+                  <input type="text" placeholder="napr.: Objednávka">
+                  <div style="height:8px"></div>
+                  <input type="text" placeholder="napr.: 2017123">
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-primary">Nastaviť</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECURITY TAB -->
+        <div id="tabSecurity" class="tab-panel hidden-tab">
+          <div class="section-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Bezpečnosť</h2>
+                <div class="card-subtitle">Heslo, relácie a ochrana prístupu</div>
+              </div>
+            </div>
+
+            <div class="security-box">
+              <div class="info-note">
+                Tu neskôr napojíme reálne bezpečnostné funkcie. Zatiaľ je to pripravené ako moderný frontend pre budúcu appku.
+              </div>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label>Aktuálne heslo</label>
+                  <input type="password" placeholder="Zadaj aktuálne heslo">
+                </div>
+                <div class="field">
+                  <label>Nové heslo</label>
+                  <input type="password" placeholder="Zadaj nové heslo">
+                </div>
+                <div class="field">
+                  <label>Potvrdiť nové heslo</label>
+                  <input type="password" placeholder="Zopakuj nové heslo">
+                </div>
+                <div class="field">
+                  <label>Dvojfaktorové overenie</label>
+                  <select><option>vypnuté</option><option>zapnuté</option></select>
+                </div>
+                <div class="field">
+                  <label>Automatické odhlásenie po neaktivite</label>
+                  <select><option>30 minút</option><option>60 minút</option><option>nikdy</option></select>
+                </div>
+                <div class="field">
+                  <label>Povoliť prihlásenie len z dôveryhodných zariadení</label>
+                  <select><option>nie</option><option>áno</option></select>
+                </div>
+              </div>
+
+              <div class="btn-row">
+                <button class="btn btn-primary">Uložiť bezpečnosť</button>
+                <button class="btn btn-red">Odhlásiť všetky zariadenia</button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
+    </div>
 
-      <div class="bottom-actions">
-        <button class="btn btn-blue">Uložiť</button>
-        <button class="btn btn-blue">Uložiť a zobraziť PDF</button>
-      </div>
-    </main>
+    <button class="to-top" id="toTop">⌃</button>
   </div>
-
-  <button class="to-top" id="toTop">⌃</button>
 
   <script>
     const dashboardScreen = document.getElementById("dashboardScreen");
     const invoiceScreen = document.getElementById("invoiceScreen");
+    const settingsScreen = document.getElementById("settingsScreen");
     const menuBtn = document.getElementById("menuBtn");
     const menuPanel = document.getElementById("menuPanel");
     const toTop = document.getElementById("toTop");
 
-    function showDashboard() {
-      dashboardScreen.classList.remove("hidden");
-      invoiceScreen.classList.add("hidden");
+    function closeMenu() {
       menuPanel.classList.remove("open");
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function showInvoice() {
+    function showScreen(screenName) {
       dashboardScreen.classList.add("hidden");
-      invoiceScreen.classList.remove("hidden");
-      menuPanel.classList.remove("open");
+      invoiceScreen.classList.add("hidden");
+      settingsScreen.classList.add("hidden");
+
+      if (screenName === "dashboard") dashboardScreen.classList.remove("hidden");
+      if (screenName === "invoice") invoiceScreen.classList.remove("hidden");
+      if (screenName === "settings") settingsScreen.classList.remove("hidden");
+
+      closeMenu();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -1035,24 +1937,25 @@
       menuPanel.classList.toggle("open");
     });
 
-    document.querySelectorAll(".nav-new-invoice").forEach(el => {
-      el.addEventListener("click", (e) => {
-        e.preventDefault();
-        showInvoice();
-      });
-    });
-
     document.querySelectorAll(".nav-dashboard").forEach(el => {
       el.addEventListener("click", (e) => {
         e.preventDefault();
-        showDashboard();
+        showScreen("dashboard");
       });
     });
 
-    document.getElementById("backToDashboardBtn").addEventListener("click", showDashboard);
-    document.getElementById("backToDashboardTop").addEventListener("click", (e) => {
-      e.preventDefault();
-      showDashboard();
+    document.querySelectorAll(".nav-new-invoice").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        showScreen("invoice");
+      });
+    });
+
+    document.querySelectorAll(".nav-settings").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        showScreen("settings");
+      });
     });
 
     document.querySelectorAll(".toggle-section").forEach(btn => {
@@ -1062,11 +1965,24 @@
       });
     });
 
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const tabPanels = document.querySelectorAll(".tab-panel");
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabButtons.forEach(b => b.classList.remove("active"));
+        tabPanels.forEach(p => p.classList.add("hidden-tab"));
+
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.tab).classList.remove("hidden-tab");
+      });
+    });
+
     toTop.addEventListener("click", () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
-    showDashboard();
+    showScreen("dashboard");
   </script>
 </body>
-  </html>
+                  </html>
