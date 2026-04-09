@@ -458,7 +458,270 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
       transition: .18s ease;
     }
+    select {
+      background: linear-gradient(180deg, var(--field-bg-2), #232d42);
+    }
 
+    textarea {
+      min-height: 98px;
+      resize: vertical;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--field-placeholder);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(89,201,255,.38);
+      box-shadow: 0 0 0 4px rgba(89,201,255,.10);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .items-toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .items-toolbar select {
+      flex: 1;
+    }
+
+    .small-add {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      font-size: 26px;
+      color: #fff;
+      background: linear-gradient(180deg, var(--success), var(--success-2));
+    }
+
+    .item-box {
+      padding: 12px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: 1.6fr .6fr .6fr .9fr .55fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .item-grid textarea {
+      min-height: 92px;
+    }
+
+    .totals {
+      margin-top: 14px;
+      text-align: right;
+      font-size: 20px;
+      line-height: 1.7;
+      color: var(--text-soft);
+    }
+
+    .totals strong {
+      display: inline-block;
+      min-width: 120px;
+      text-align: right;
+      color: #fff;
+    }
+
+    .settings-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 20px 0 18px;
+    }
+
+    .tab-btn {
+      padding: 13px 18px;
+      font-size: 17px;
+      color: var(--accent);
+      border-radius: 16px;
+      background: transparent;
+    }
+
+    .tab-btn.active {
+      color: #fff;
+      background: linear-gradient(180deg, var(--btn-primary-1), var(--btn-primary-2));
+      box-shadow: 0 12px 26px rgba(13,79,217,.22);
+    }
+
+    .settings-section-title {
+      margin: 8px 0 10px;
+      font-size: 18px;
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .doc-style-card {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .doc-style-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 16px 18px;
+      align-items: start;
+    }
+
+    .doc-style-preview {
+      font-size: 16px;
+      line-height: 1.3;
+      color: var(--text-soft);
+    }
+
+    .thumb-list {
+      display: flex;
+      gap: 14px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .thumb-wrap {
+      text-align: center;
+    }
+
+    .thumb {
+      width: 50px;
+      height: 82px;
+      margin: 0 auto 8px;
+      border-radius: 8px;
+      border: 3px solid #0f1218;
+      background:
+        linear-gradient(#dcdcdc, #dcdcdc),
+        linear-gradient(#b2b2b2, #b2b2b2),
+        linear-gradient(#c3c3c3, #c3c3c3);
+      background-size: 70% 11px, 80% 4px, 55% 4px;
+      background-repeat: no-repeat;
+      background-position: center 18px, center 40px, center 53px;
+      box-shadow: 0 8px 18px rgba(255,255,255,.04);
+    }
+
+    .radio-dot {
+      width: 22px;
+      height: 22px;
+      display: inline-block;
+      border-radius: 50%;
+      border: 3px solid #50607c;
+      background: #37465e;
+    }
+
+    .radio-dot.active {
+      border-color: var(--accent-3);
+      box-shadow: inset 0 0 0 4px #bfeeff;
+    }
+
+    .info-note {
+      padding: 14px;
+      border-radius: 16px;
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--text-soft);
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.04);
+    }
+
+    .company-card {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .company-card-top {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .company-name {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .company-meta {
+      margin-top: 6px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-soft);
+    }
+
+    .company-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      width: 100%;
+    }
+
+    .company-empty {
+      padding: 18px;
+      text-align: center;
+      border-radius: 18px;
+      color: var(--text-muted);
+      background: rgba(255,255,255,.03);
+      border: 1px dashed rgba(255,255,255,.10);
+    }
+
+    .active-company-card {
+      border: 1px solid rgba(89,201,255,.24);
+      box-shadow: 0 0 0 1px rgba(89,201,255,.08), 0 18px 48px rgba(0,0,0,.28);
+    }
+
+    .active-company-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .active-company-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.04);
+      color: var(--text-soft);
+      font-size: 16px;
+    }
+
+    .active-company-line strong {
+      color: #fff;
+      text-align: right;
+    }
+
+    .customer-card,
+    .invoice-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.04);
+      color: var(--text-soft);
+    }
     .customer-card-main,
     .invoice-card-main {
       flex: 1;
@@ -909,8 +1172,7 @@
             <a href="#" class="menu-link nav-invoices"><span>📁</span><span>Faktúry</span></a>
           </div>
         </div>
-      </header>
-      <!-- DASHBOARD -->
+      </header><!-- DASHBOARD -->
       <section id="dashboardScreen" class="screen">
         <div class="hero">
           <h1>Vitajte</h1>
@@ -1081,147 +1343,6 @@
           </div>
         </div>
       </section>
-      <!-- POKRAČOVANIE INVOICE -->
-      <section id="invoiceScreen_cont_1" class="hidden">
-        <div class="section-card">
-          <div class="card-header">
-            <div>
-              <h2 class="card-title">Údaje odberateľa</h2>
-              <div class="card-subtitle">Možnosť vybrať uloženého klienta alebo uložiť nového</div>
-            </div>
-            <button class="toggle-details toggle-section" data-target="customerBody">Podrobnosti</button>
-          </div>
-
-          <div id="customerBody">
-            <div class="form-grid">
-              <div class="field">
-                <label>Vybrať uloženého klienta</label>
-                <select id="invoiceCustomerSelect">
-                  <option value="">-- Vyberte klienta --</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Názov klienta / osoba</label>
-                <input type="text" id="customerName">
-              </div>
-              <div class="field">
-                <label>Ulica</label>
-                <input type="text" id="customerStreet">
-              </div>
-              <div class="field">
-                <label>Mesto</label>
-                <input type="text" id="customerCity">
-              </div>
-              <div class="field">
-                <label>PSČ</label>
-                <input type="text" id="customerZip">
-              </div>
-              <div class="field">
-                <label>Štát</label>
-                <input type="text" id="customerCountry" value="Slovensko">
-              </div>
-              <div class="field">
-                <label>IČO</label>
-                <input type="text" id="customerIco">
-              </div>
-              <div class="field">
-                <label>DIČ</label>
-                <input type="text" id="customerDic">
-              </div>
-              <div class="field">
-                <label>IČ DPH</label>
-                <input type="text" id="customerVat">
-              </div>
-              <div class="field">
-                <label>Email odberateľa</label>
-                <input type="text" id="customerEmail">
-              </div>
-              <div class="field">
-                <label>Telefón odberateľa</label>
-                <input type="text" id="customerPhone">
-              </div>
-              <div class="field">
-                <label>Info o odberateľovi</label>
-                <textarea id="customerNote"></textarea>
-              </div>
-            </div>
-
-            <div class="btn-row">
-              <button class="btn btn-secondary" type="button" id="saveCustomerBtn">Uložiť / upraviť klienta</button>
-              <button class="btn btn-dark" type="button" id="clearCustomerBtn">Vyčistiť klienta</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <div class="card-header">
-            <div>
-              <h2 class="card-title">Základné údaje</h2>
-              <div class="card-subtitle">Čísla a dátumy dokladu</div>
-            </div>
-            <button class="collapse-btn toggle-section" data-target="basicBody">⌃</button>
-          </div>
-
-          <div id="basicBody">
-            <div class="form-grid">
-              <div class="field"><label>Číslo faktúry</label><input type="text" id="invoiceNumber"></div>
-              <div class="field">
-                <label>Typ faktúry</label>
-                <select id="invoiceType">
-                  <option>Faktúra</option>
-                  <option>Zálohová faktúra</option>
-                  <option>Dobropis</option>
-                </select>
-              </div>
-              <div class="field"><label>Variabilný symbol</label><input type="text" id="invoiceVariable"></div>
-              <div class="field"><label>Konštantný symbol</label><input type="text" id="invoiceConstant"></div>
-              <div class="field"><label>Dátum vystavenia</label><input type="date" id="invoiceIssuedDate"></div>
-              <div class="field"><label>Dátum dodania</label><input type="date" id="invoiceDeliveryDate"></div>
-              <div class="field"><label>Dátum splatnosti</label><input type="date" id="invoiceDueDate"></div>
-              <div class="field"><label>Číslo objednávky</label><input type="text" id="invoiceOrderNumber"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <div class="card-header">
-            <div>
-              <h2 class="card-title">Peňažné údaje</h2>
-              <div class="card-subtitle">Platba, mena a zľava</div>
-            </div>
-            <button class="collapse-btn toggle-section" data-target="moneyBody">⌃</button>
-          </div>
-
-          <div id="moneyBody">
-            <div class="form-grid">
-              <div class="field">
-                <label>Mena faktúry</label>
-                <select id="invoiceCurrency"><option>EUR</option></select>
-              </div>
-              <div class="field">
-                <label>Forma úhrady</label>
-                <select id="invoicePayment">
-                  <option>peňažný prevod</option>
-                  <option>hotovosť</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Zaokrúhlenie k úhrade</label>
-                <select id="invoiceRounding"><option>žiadne</option></select>
-              </div>
-              <div class="field">
-                <label>Zobraziť QR kód</label>
-                <select id="invoiceQr">
-                  <option>pay-by-square</option>
-                  <option>nie</option>
-                </select>
-              </div>
-              <div class="field"><label>Už uhradené</label><input type="number" id="invoicePaid" value="0"></div>
-              <div class="field"><label>Celková zľava (%)</label><input type="number" id="invoiceDiscount" value="0"></div>
-            </div>
-          </div>
-        </div>
-      </section>
       <div class="section-card">
           <div class="card-header">
             <div>
@@ -1370,8 +1491,7 @@
               </div>
             </div>
           </div>
-        </div>
-        <div id="tabItems" class="tab-panel hidden-tab">
+        </div><div id="tabItems" class="tab-panel hidden-tab">
           <div class="section-card">
             <div class="card-header">
               <div>
@@ -2070,7 +2190,7 @@
       setImagePreview(companyStampPreview, "");
       companyLogoInput.value = "";
       companyStampInput.value = "";
-        }
+    }
     function fillCompanyForm(company) {
       companyIdInput.value = company.id || "";
       companyNameInput.value = company.name || "";
@@ -2462,8 +2582,7 @@
         });
       });
     }
-
-  function renderInvoicesHeader() {
+    function renderInvoicesHeader() {
       const activeCompany = getActiveCompany();
       invoicesCompanyBadge.textContent = activeCompany ? "Aktívna" : "Nezvolená";
       invoicesActiveCompanyInfo.innerHTML = renderActiveCompanyBlock(activeCompany);
