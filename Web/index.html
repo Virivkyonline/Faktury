@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fakturácia online</title>
+  <meta name="description" content="Jednoduchá online fakturácia, cenové ponuky, dodacie listy a ďalšie dokumenty." />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f6f8fb;
+      color: #1f2937;
+    }
+    a { text-decoration: none; color: inherit; }
+    .container {
+      width: min(1200px, 92%);
+      margin: 0 auto;
+    }
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    nav {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 14px;
+      color: #475569;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: #fff;
+    }
+    .btn-outline {
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      background: #fff;
+    }
+    .hero {
+      padding: 60px 0 30px;
+      background: linear-gradient(180deg, #ffffff 0%, #eef4ff 100%);
+      text-align: center;
+    }
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: 42px;
+      color: #0f172a;
+    }
+    .hero p {
+      max-width: 800px;
+      margin: 0 auto 24px;
+      color: #475569;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    .doc-links {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 18px 0 24px;
+    }
+    .pill {
+      background: #fff;
+      border: 1px solid #dbeafe;
+      color: #1d4ed8;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .section {
+      padding: 50px 0;
+    }
+    .section h2 {
+      text-align: center;
+      margin: 0 0 26px;
+      font-size: 32px;
+      color: #0f172a;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 10px 24px rgba(15,23,42,.05);
+    }
+    .icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: #dbeafe;
+      margin-bottom: 14px;
+    }
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
+    .card p {
+      margin: 0 0 16px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 26px;
+    }
+    .stat {
+      background: #0f172a;
+      color: #fff;
+      border-radius: 18px;
+      padding: 24px;
+      text-align: center;
+    }
+    .stat strong {
+      display: block;
+      font-size: 34px;
+      margin-bottom: 8px;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .pricing {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .price-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 26px;
+    }
+    .price {
+      font-size: 34px;
+      font-weight: 700;
+      margin: 10px 0 18px;
+      color: #0f172a;
+    }
+    ul {
+      padding-left: 18px;
+      color: #475569;
+      line-height: 1.7;
+    }
+    footer {
+      background: #0f172a;
+      color: #cbd5e1;
+      padding: 30px 0;
+      margin-top: 30px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container topbar">
+      <div class="logo">Fakturácia online</div>
+
+      <nav>
+        <a href="#">Faktúra</a>
+        <a href="#">Príjmový doklad</a>
+        <a href="#">Výdavkový doklad</a>
+        <a href="#">Cenová ponuka</a>
+        <a href="#">Dodací list</a>
+        <a href="#">Objednávka</a>
+        <a href="#">API</a>
+        <a href="#">Kontakt</a>
+      </nav>
+
+      <div class="actions">
+        <a href="#" class="btn btn-outline">Prihlásiť sa</a>
+        <a href="#" class="btn btn-primary">Registrácia</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Vaša faktúra online</h1>
+      <p>
+        Jednoduché vystavenie faktúr, cenových ponúk, dodacích listov a ďalších dokumentov
+        v modernom online rozhraní.
+      </p>
+
+      <div class="doc-links">
+        <span class="pill">Faktúry</span>
+        <span class="pill">Cenové ponuky</span>
+        <span class="pill">Dodacie listy</span>
+        <span class="pill">Príjmové doklady</span>
+        <span class="pill">Výdavkové doklady</span>
+        <span class="pill">Objednávky</span>
+      </div>
+
+      <div class="actions" style="justify-content:center;">
+        <a href="#" class="btn btn-primary">Vytvoriť konto zadarmo</a>
+        <a href="#" class="btn btn-outline">Prihlásiť sa</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Dokumenty</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="icon"></div>
+          <h3>Faktúry</h3>
+          <p>Vytvorenie a odoslanie faktúry v profesionálnom vzhľade.</p>
+          <a href="#" class="btn btn-primary">Vytvoriť faktúru</a>
+        </div>
+
+        <div class="card">
+          <div class="icon"></div>
+          <h3>Príjmové doklady</h3>
+          <p>Jednoduché online vystavenie príjmových pokladničných dokladov.</p>
+          <a href="#" class="btn btn-primary">Vytvoriť doklad</a>
+        </div>
+
+        <div class="card">
+          <div class="icon"></div>
+          <h3>Výdavkové doklady</h3>
+          <p>Online tvorba výdavkových pokladničných dokladov.</p>
+          <a href="#" class="btn btn-primary">Vytvoriť doklad</a>
+        </div>
+
+        <div class="card">
+          <div class="icon"></div>
+          <h3>Cenové ponuky</h3>
+          <p>Rýchla tvorba cenových ponúk pre klientov.</p>
+          <a href="#" class="btn btn-primary">Vytvoriť ponuku</a>
+        </div>
+
+        <div class="card">
+          <div class="icon"></div>
+          <h3>Dodacie listy</h3>
+          <p>Prehľadné dodacie listy pripravené na tlač a PDF export.</p>
+          <a href="#" class="btn btn-primary">Vytvoriť list</a>
+        </div>
+
+        <div class="card">
+          <div class="icon"></div>
+          <h3>Objednávky</h3>
+          <p>Vystavenie objednávok v jednotnom firemnom štýle.</p>
+          <a href="#" class="btn btn-primary">Vytvoriť objednávku</a>
+        </div>
+
+        <div class="card">
+          <div class="icon"></div>
+          <h3>Zákazkové listy</h3>
+          <p>Podpora ďalších typov dokumentov pre služby a realizácie.</p>
+          <a href="#" class="btn btn-primary">Otvoriť</a>
+        </div>
+
+        <div class="card">
+          <div class="icon"></div>
+          <h3>Preberacie protokoly</h3>
+          <p>Dokumentácia k odovzdaniu a prevzatiu práce alebo tovaru.</p>
+          <a href="#" class="btn btn-primary">Otvoriť</a>
+        </div>
+
+        <div class="card">
+          <div class="icon"></div>
+          <h3>Montážny denník</h3>
+          <p>Evidencia montážnych úkonov a servisných činností.</p>
+          <a href="#" class="btn btn-primary">Otvoriť</a>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <strong>0</strong>
+          jedinečných používateľov
+        </div>
+        <div class="stat">
+          <strong>0</strong>
+          vytvorených dokumentov
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:#fff;">
+    <div class="container">
+      <h2>Prečo to používať</h2>
+      <div class="features">
+        <div class="card">
+          <h3>Profesionalita</h3>
+          <p>Dokumenty vyzerajú čisto, moderne a reprezentatívne pre zákazníka.</p>
+        </div>
+        <div class="card">
+          <h3>Úspora času</h3>
+          <p>Automatické dopĺňanie údajov a rýchle vystavenie dokumentu.</p>
+        </div>
+        <div class="card">
+          <h3>Prehľad</h3>
+          <p>Všetky dokumenty na jednom mieste, pripravené na úpravu, tlač a export.</p>
+        </div>
+        <div class="card">
+          <h3>Ďalšie funkcie</h3>
+          <p>QR platby, cudzie jazyky, logo, pečiatka a štatistiky dokumentov.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Cenník</h2>
+      <div class="pricing">
+        <div class="price-card">
+          <h3>Bez registrácie</h3>
+          <div class="price">Zadarmo</div>
+          <ul>
+            <li>vystavenie dokumentu bez registrácie</li>
+            <li>uloženie do PDF</li>
+            <li>základné použitie</li>
+          </ul>
+          <a href="#" class="btn btn-outline">Začať</a>
+        </div>
+
+        <div class="price-card">
+          <h3>S registráciou</h3>
+          <div class="price">Zadarmo</div>
+          <ul>
+            <li>automatické dopĺňanie údajov</li>
+            <li>zoznam klientov a spoločností</li>
+            <li>štatistiky a export dát</li>
+            <li>vlastné logo a cudzie jazyky</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Registrácia</a>
+        </div>
+
+        <div class="price-card">
+          <h3>Platená verzia</h3>
+          <div class="price">2,50 € / mesiac</div>
+          <ul>
+            <li>po roku používania</li>
+            <li>rozšírené funkcie</li>
+            <li>vhodné pre pravidelné používanie</li>
+          </ul>
+          <a href="#" class="btn btn-outline">Pozrieť cenník</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="#">E-faktúra</a>
+        <a href="#">Vzory dokumentov</a>
+        <a href="#">Video manuál</a>
+        <a href="#">Otázky a odpovede</a>
+        <a href="#">Cenník</a>
+        <a href="#">Podmienky používania</a>
+        <a href="#">Ochrana osobných údajov</a>
+      </div>
+      <div>© 2026 Fakturácia online</div>
+    </div>
+  </footer>
+
+</body>
+            </html>
