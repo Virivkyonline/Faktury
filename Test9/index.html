@@ -1013,6 +1013,76 @@
 
     .pdf-payline strong {
       font-size: 24px;
+    }
+
+
+    .pdf-company-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 128px;
+      gap: 18px;
+      align-items: start;
+      min-width: 0;
+    }
+
+    .pdf-company-meta {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #111827;
+      text-align: left;
+      min-width: 0;
+    }
+
+    .pdf-company-meta strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 18px;
+    }
+
+    .pdf-payment-block {
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+      margin-top: 18px;
+    }
+
+    .pdf-qr-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .pdf-qr-image {
+      width: 148px;
+      height: 148px;
+      object-fit: contain;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #fff;
+      padding: 8px;
+    }
+
+    .pdf-qr-caption {
+      font-size: 12px;
+      line-height: 1.4;
+      color: #374151;
+    }
+
+    .pdf-payment-meta {
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      padding: 14px;
+      background: #fff;
+      font-size: 13px;
+      line-height: 1.65;
+      color: #111827;
+    }
+
+    .pdf-payment-meta strong {
+      color: #111827;
+    }
+
       line-height: 1;
     }
 
@@ -3813,6 +3883,36 @@
       renderAll();
     }
 
+    function buildInvoiceQrPayload(doc) {
+      const iban = normalizeIban(doc.company?.iban || "");
+      if (!iban) return "";
+
+      const amount = Number(doc.totals?.due || 0).toFixed(2);
+      const beneficiary = String(doc.company?.name || "").trim().slice(0, 70);
+      const bank = String(doc.company?.bank || "").trim();
+      const variable = String(doc.variable || doc.number || "").trim();
+      const message = [
+        doc.type || "Faktúra",
+        doc.number ? `č. ${doc.number}` : "",
+        variable ? `VS ${variable}` : ""
+      ].filter(Boolean).join(" ").slice(0, 140);
+
+      return [
+        "BCD",
+        "002",
+        "1",
+        "SCT",
+        "",
+        beneficiary || "PLATBA",
+        iban,
+        `EUR${amount}`,
+        "",
+        message,
+        bank || ""
+      ].join("
+");
+    }
+
     function renderPdfPreview() {
       const docWrap = state.lastPreviewDoc;
       if (!docWrap || !docWrap.data) {
@@ -3857,27 +3957,43 @@
       }).join("");
 
       const qrEnabled = docWrap.type === "invoice" && (doc.qr || "").toLowerCase() !== "nie";
-      const qrPayload = [
-        doc.company?.iban ? `IBAN:${doc.company.iban}` : "",
-        doc.company?.bank ? `BANK:${doc.company.bank}` : "",
-        doc.number ? `CISLO:${doc.number}` : "",
-        doc.variable ? `VS:${doc.variable}` : "",
-        doc.totals?.due != null ? `SUMA:${Number(doc.totals.due).toFixed(2)} ${doc.currency || "EUR"}` : ""
-      ].filter(Boolean).join("\n");
-      const qrImage = qrEnabled && qrPayload
-        ? `https://quickchart.io/qr?text=${encodeURIComponent(qrPayload)}&size=180`
+      const qrPayload = qrEnabled ? buildInvoiceQrPayload(doc) : "";
+      const qrImage = qrPayload
+        ? `https://quickchart.io/qr?text=${encodeURIComponent(qrPayload)}&size=220`
         : "";
-      const qrHtml = qrImage ? `<div style="margin-top:18px"><img src="${qrImage}" alt="QR platba" style="width:140px;height:140px;object-fit:contain;border:1px solid #d1d5db;border-radius:10px;background:#fff;"><div style="font-size:12px;color:#374151;margin-top:6px;">QR platba</div></div>` : "";
+
+      const paymentMetaHtml = docWrap.type === "invoice"
+        ? `
+          <div class="pdf-payment-block">
+            ${qrImage ? `
+              <div class="pdf-qr-wrap">
+                <img class="pdf-qr-image" src="${qrImage}" alt="QR platba">
+                <div class="pdf-qr-caption">QR platba / naskenuj v bankovej aplikácii</div>
+              </div>
+            ` : `<div></div>`}
+
+            <div class="pdf-payment-meta">
+              <strong>Platobné údaje</strong><br>
+              Príjemca: ${escapeHtml(doc.company?.name || "—")}<br>
+              IBAN: ${escapeHtml(doc.company?.iban || "—")}<br>
+              Banka: ${escapeHtml(doc.company?.bank || "—")}<br>
+              Variabilný symbol: ${escapeHtml(doc.variable || doc.number || "—")}<br>
+              Konštantný symbol: ${escapeHtml(doc.constant || "—")}<br>
+              Suma: ${escapeHtml(currencyFormat(doc.totals?.due || 0, doc.currency || "EUR"))}<br>
+              Forma úhrady: ${escapeHtml(doc.payment || "—")}
+            </div>
+          </div>
+        `
+        : "";
 
       const summaryHtml = docWrap.type === "invoice"
         ? `
           <div class="pdf-summary">
             <div class="pdf-summary-left">
               Objednávka: ${escapeHtml(doc.orderNumber || "—")}<br>
-              Konštantný symbol: ${escapeHtml(doc.constant || "—")}<br>
-              QR platba: ${escapeHtml(doc.qr || "—")}<br>
               Vytvorené: ${escapeHtml(doc.createdAt ? String(doc.createdAt).slice(0, 10) : "—")}<br>
               Aktualizované: ${escapeHtml(doc.updatedAt ? String(doc.updatedAt).slice(0, 10) : "—")}
+              ${paymentMetaHtml}
             </div>
 
             <div class="pdf-summary-right">
@@ -3915,11 +4031,12 @@
             <div class="pdf-docline"><span>Dodanie</span><strong>${escapeHtml(doc.deliveryDate || "—")}</strong></div>
             <div class="pdf-docline"><span>Splatnosť</span><strong>${escapeHtml(doc.dueDate || "—")}</strong></div>
             <div class="pdf-docline"><span>Forma úhrady</span><strong>${escapeHtml(doc.payment || "—")}</strong></div>
+            ${docWrap.type === "invoice" ? `<div class="pdf-docline"><span>Variabilný symbol</span><strong>${escapeHtml(doc.variable || doc.number || "—")}</strong></div>` : ""}
           </div>
 
-          <div class="pdf-logo-wrap" style="justify-content:flex-end;">
-            <div class="pdf-company-text" style="text-align:right;max-width:320px;">
-              <strong>${escapeHtml(doc.company?.name || "—")}</strong><br>
+          <div class="pdf-company-panel">
+            <div class="pdf-company-meta">
+              <strong>${escapeHtml(doc.company?.name || "—")}</strong>
               ${escapeHtml(companyAddress || "—")}<br>
               IČO: ${escapeHtml(doc.company?.ico || "—")}<br>
               DIČ: ${escapeHtml(doc.company?.dic || "—")}<br>
@@ -3985,7 +4102,6 @@ Telefón: ${escapeHtml(doc.customer?.phone || "—")}
           <div class="pdf-signature">
             Dodávateľ potvrdzuje správnosť údajov uvedených na tomto doklade.<br>
             Tento dokument bol vytvorený v aplikácii Platinum Lech Faktúry.
-            ${qrHtml}
           </div>
 
           <div class="pdf-stamp-wrap">
@@ -4158,33 +4274,39 @@ Telefón: ${escapeHtml(doc.customer?.phone || "—")}
       saveCurrentDraft();
     });
 
-    savedItemSelect.addEventListener("change", () => {
-      const selectedId = savedItemSelect.value;
-      const item = state.catalogItems.find(x => x.id === selectedId);
-      if (!item) return;
+function applySelectedCatalogItem() {
+  const selectedId = savedItemSelect.value;
+  const item = state.catalogItems.find(x => x.id === selectedId);
+  if (!item) return;
 
-      const mappedItem = {
-        id: uid("item"),
-        description: item.name,
-        unit: item.unit || "ks",
-        quantity: 1,
-        price: Number(item.price || 0),
-        vatRate: Number(item.vatRate || 0),
-        currency: item.currency || "EUR"
-      };
+  const mappedItem = {
+    id: uid("item"),
+    description: item.name,
+    unit: item.unit || "ks",
+    quantity: 1,
+    price: Number(item.price || 0),
+    vatRate: Number(item.vatRate || 0),
+    currency: item.currency || "EUR"
+  };
 
-      const emptyIndex = state.invoiceItems.findIndex(existing => !String(existing.description || "").trim() && Number(existing.price || 0) <= 0);
-      if (emptyIndex >= 0) {
-        state.invoiceItems[emptyIndex] = mappedItem;
-      } else {
-        state.invoiceItems.push(mappedItem);
-      }
+  const emptyIndex = state.invoiceItems.findIndex(existing => !String(existing.description || "").trim() && Number(existing.price || 0) <= 0);
+  if (emptyIndex >= 0) {
+    state.invoiceItems[emptyIndex] = mappedItem;
+  } else {
+    state.invoiceItems.push(mappedItem);
+  }
 
-      renderInvoiceItems();
-      recalcInvoiceTotals();
-      saveCurrentDraft();
-      savedItemSelect.value = selectedId;
-    });
+  renderInvoiceItems();
+  recalcInvoiceTotals();
+  saveCurrentDraft();
+
+  requestAnimationFrame(() => {
+    savedItemSelect.value = selectedId;
+  });
+}
+
+savedItemSelect.addEventListener("change", applySelectedCatalogItem);
+savedItemSelect.addEventListener("input", applySelectedCatalogItem);
 
     addCatalogItemBtn.addEventListener("click", () => {
       const firstFilled = state.invoiceItems.find(item => item.description.trim());
