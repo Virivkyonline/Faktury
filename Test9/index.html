@@ -1570,6 +1570,7 @@
 
         <div class="bottom-actions">
           <button class="btn btn-primary" type="button" id="saveInvoiceBtn">Uložiť</button>
+          <button class="btn btn-secondary" type="button" id="createDeliveryFromInvoiceBtn">Vytvoriť dodací list</button>
           <button class="btn btn-secondary" type="button" id="previewInvoiceBtn">Uložiť a zobraziť PDF</button>
         </div>
       </section>
@@ -1595,7 +1596,7 @@
           <div class="card-header">
             <div>
               <h2 class="card-title">Nový dodací list</h2>
-              <div class="card-subtitle">Dodací list používa položky z formulára</div>
+              <div class="card-subtitle">Dodací list sa vie vytvoriť priamo z faktúry jedným tlačidlom</div>
             </div>
           </div>
 
@@ -2165,6 +2166,7 @@
     const saveCustomerBtn = document.getElementById("saveCustomerBtn");
     const clearCustomerBtn = document.getElementById("clearCustomerBtn");
     const saveInvoiceBtn = document.getElementById("saveInvoiceBtn");
+    const createDeliveryFromInvoiceBtn = document.getElementById("createDeliveryFromInvoiceBtn");
     const previewInvoiceBtn = document.getElementById("previewInvoiceBtn");
     const recalcInvoiceBtn = document.getElementById("recalcInvoiceBtn");
     const clearInvoiceBtn = document.getElementById("clearInvoiceBtn");
@@ -2246,6 +2248,8 @@
 
     let pendingLogoData = "";
     let pendingStampData = "";
+    let pendingDeliverySourceInvoiceId = "";
+    let pendingDeliverySourceCustomer = null;
 
     function safeParse(json, fallback) {
       try {
@@ -2904,6 +2908,7 @@
 
           <div class="invoice-actions">
             <button class="btn btn-secondary invoice-load-btn" data-id="${escapeHtml(invoice.id)}">Načítať</button>
+            <button class="btn btn-secondary invoice-delivery-btn" data-id="${escapeHtml(invoice.id)}">Dodací list</button>
             <button class="btn btn-primary invoice-preview-btn" data-id="${escapeHtml(invoice.id)}">PDF</button>
             <button class="btn btn-red invoice-delete-btn" data-id="${escapeHtml(invoice.id)}">Zmazať</button>
           </div>
@@ -2916,6 +2921,14 @@
           if (!invoice) return;
           loadInvoiceIntoForm(invoice);
           showScreen("invoice");
+        });
+      });
+
+      invoicesList.querySelectorAll(".invoice-delivery-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const invoice = getInvoicesForActiveCompany().find(item => item.id === btn.dataset.id);
+          if (!invoice) return;
+          openDeliveryFromInvoice(invoice);
         });
       });
 
@@ -2970,7 +2983,7 @@
         <div class="delivery-card">
           <div class="delivery-card-main">
             <div class="delivery-title">${escapeHtml(doc.number || "Bez čísla")} • Dodací list</div>
-            <div class="delivery-meta">${escapeHtml(deliveryCardMeta(doc))}</div>
+            <div class="delivery-meta">${escapeHtml(deliveryCardMeta(doc) + (doc.sourceInvoiceNumber ? ` • z faktúry ${doc.sourceInvoiceNumber}` : ""))}</div>
           </div>
           <div class="delivery-actions">
             <button class="btn btn-secondary delivery-load-btn" data-id="${escapeHtml(doc.id)}">Načítať</button>
@@ -3525,6 +3538,8 @@
       deliveryDate.value = todayISO();
       deliveryCustomerSelect.value = "";
       deliveryNote.value = "";
+      pendingDeliverySourceInvoiceId = "";
+      pendingDeliverySourceCustomer = null;
     }
 
     function fillCompanyForm(company) {
@@ -4323,6 +4338,42 @@
       renderDashboard();
     });
 
+    createDeliveryFromInvoiceBtn.addEventListener("click", async () => {
+      if (!validateInvoiceBeforeSave()) return;
+
+      const activeCompany = getActiveCompany();
+      if (!activeCompany) {
+        window.alert("Najprv si nastav aktívnu firmu.");
+        return;
+      }
+
+      if (!editingInvoiceId.value && !invoiceFields.number.value.trim()) {
+        const next = nextInvoiceNumber(activeCompany);
+        invoiceFields.number.value = next.number;
+        const companyIndex = state.companies.findIndex(item => item.id === activeCompany.id);
+        if (companyIndex >= 0) state.companies[companyIndex].invoiceCounter = next.counter;
+      }
+
+      const payload = createInvoicePayload();
+      try {
+        await upsertCompany(getActiveCompany(), { render: false });
+        if (!await upsertInvoiceForActiveCompany(payload)) {
+          window.alert("Faktúru sa nepodarilo uložiť.");
+          return;
+        }
+      } catch (error) {
+        setSyncError(error);
+        window.alert(`Uloženie faktúry zlyhalo: ${error.message || error}`);
+        return;
+      }
+
+      editingInvoiceId.value = payload.id;
+      editingInvoiceCreatedAt.value = payload.createdAt || "";
+      renderInvoicesScreen();
+      renderDashboard();
+      openDeliveryFromInvoice(payload);
+    });
+
     previewInvoiceBtn.addEventListener("click", async () => {
       if (!validateInvoiceBeforeSave()) return;
 
@@ -4397,9 +4448,21 @@
     });
 
     loadInvoiceItemsToDeliveryBtn.addEventListener("click", () => {
-      if (!state.invoiceItems.length) state.invoiceItems = [createEmptyItem()];
-      showScreen("invoice");
-      window.alert("Uprav položky vo faktúre a potom ich vieš uložiť aj ako dodací list.");
+      if (editingInvoiceId.value) {
+        const invoice = getInvoicesForActiveCompany().find(item => item.id === editingInvoiceId.value);
+        if (invoice) {
+          openDeliveryFromInvoice(invoice);
+          return;
+        }
+      }
+
+      const currentDraftInvoice = createInvoicePayload();
+      if (getValidItems(currentDraftInvoice.items).length) {
+        openDeliveryFromInvoice(currentDraftInvoice);
+        return;
+      }
+
+      window.alert("Najprv ulož faktúru alebo vyplň aspoň jednu platnú položku.");
     });
 
     invoiceSearchInput.addEventListener("input", renderInvoicesList);
