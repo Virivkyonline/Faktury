@@ -1986,6 +1986,9 @@
     };
 
     const API_BASE = "https://platinum-lech-api.virivkyonlinecz.workers.dev";
+    const MAX_LOCAL_IMAGE_DIMENSION = 1400;
+    const MAX_LOCAL_IMAGE_QUALITY = 0.82;
+    const MAX_LOCAL_DATAURL_LENGTH = 350000;
 
     const state = {
       companies: [],
@@ -2269,6 +2272,72 @@
       });
     }
 
+    function loadImageElementFromDataUrl(dataUrl) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = dataUrl;
+      });
+    }
+
+    async function compressImageFile(file, options = {}) {
+      const {
+        maxWidth = MAX_LOCAL_IMAGE_DIMENSION,
+        maxHeight = MAX_LOCAL_IMAGE_DIMENSION,
+        quality = MAX_LOCAL_IMAGE_QUALITY,
+        mimeType = "image/jpeg"
+      } = options;
+
+      const originalDataUrl = await readFileAsDataUrl(file);
+      if (!String(file.type || "").startsWith("image/")) return originalDataUrl;
+
+      try {
+        const img = await loadImageElementFromDataUrl(originalDataUrl);
+        const ratio = Math.min(maxWidth / img.width || 1, maxHeight / img.height || 1, 1);
+        const width = Math.max(1, Math.round(img.width * ratio));
+        const height = Math.max(1, Math.round(img.height * ratio));
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d", { alpha: false });
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressed = canvas.toDataURL(mimeType, quality);
+        return compressed.length < originalDataUrl.length ? compressed : originalDataUrl;
+      } catch (error) {
+        console.warn("Image compression failed, using original file.", error);
+        return originalDataUrl;
+      }
+    }
+
+    function slimDataUrl(dataUrl, maxLength = MAX_LOCAL_DATAURL_LENGTH) {
+      if (!dataUrl || typeof dataUrl !== "string") return "";
+      return dataUrl.length <= maxLength ? dataUrl : "";
+    }
+
+    function buildLocalCompaniesCache(companies) {
+      return (Array.isArray(companies) ? companies : []).map(company => ({
+        ...company,
+        logoDataUrl: slimDataUrl(company?.logoDataUrl || ""),
+        stampDataUrl: slimDataUrl(company?.stampDataUrl || "")
+      }));
+    }
+
+    function setLocalStorageJson(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function removeLegacyLargePreviewCache() {
+      try {
+        localStorage.removeItem(STORAGE_KEYS.lastPreviewDoc);
+      } catch {}
+    }
+
     function apiUrl(path, params) {
       const url = new URL(path, API_BASE);
       if (params) {
@@ -2385,12 +2454,13 @@
     }
 
     async function loadState() {
+      removeLegacyLargePreviewCache();
       state.companies = safeParse(localStorage.getItem(STORAGE_KEYS.companies), []);
       state.activeCompanyId = localStorage.getItem(STORAGE_KEYS.activeCompanyId) || null;
       state.customersByCompany = safeParse(localStorage.getItem(STORAGE_KEYS.customersByCompany), {});
       state.invoicesByCompany = safeParse(localStorage.getItem(STORAGE_KEYS.invoicesByCompany), {});
       state.deliveryByCompany = safeParse(localStorage.getItem(STORAGE_KEYS.deliveryByCompany), {});
-      state.lastPreviewDoc = safeParse(localStorage.getItem(STORAGE_KEYS.lastPreviewDoc), null);
+      state.lastPreviewDoc = null;
       state.draftInvoiceByCompany = safeParse(localStorage.getItem(STORAGE_KEYS.draftInvoiceByCompany), {});
       state.catalogItems = safeParse(localStorage.getItem(STORAGE_KEYS.catalogItems), []);
       state.settings = {
@@ -2414,19 +2484,46 @@
     }
 
     function saveState() {
-      localStorage.setItem(STORAGE_KEYS.companies, JSON.stringify(state.companies));
-      localStorage.setItem(STORAGE_KEYS.customersByCompany, JSON.stringify(state.customersByCompany));
-      localStorage.setItem(STORAGE_KEYS.invoicesByCompany, JSON.stringify(state.invoicesByCompany));
-      localStorage.setItem(STORAGE_KEYS.deliveryByCompany, JSON.stringify(state.deliveryByCompany));
-      localStorage.setItem(STORAGE_KEYS.lastPreviewDoc, JSON.stringify(state.lastPreviewDoc));
-      localStorage.setItem(STORAGE_KEYS.draftInvoiceByCompany, JSON.stringify(state.draftInvoiceByCompany));
-      localStorage.setItem(STORAGE_KEYS.catalogItems, JSON.stringify(state.catalogItems));
-      localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings));
+      removeLegacyLargePreviewCache();
 
-      if (state.activeCompanyId) {
-        localStorage.setItem(STORAGE_KEYS.activeCompanyId, state.activeCompanyId);
-      } else {
-        localStorage.removeItem(STORAGE_KEYS.activeCompanyId);
+      try {
+        setLocalStorageJson(STORAGE_KEYS.companies, buildLocalCompaniesCache(state.companies));
+        setLocalStorageJson(STORAGE_KEYS.customersByCompany, state.customersByCompany);
+        setLocalStorageJson(STORAGE_KEYS.invoicesByCompany, state.invoicesByCompany);
+        setLocalStorageJson(STORAGE_KEYS.deliveryByCompany, state.deliveryByCompany);
+        setLocalStorageJson(STORAGE_KEYS.draftInvoiceByCompany, state.draftInvoiceByCompany);
+        setLocalStorageJson(STORAGE_KEYS.catalogItems, state.catalogItems);
+        setLocalStorageJson(STORAGE_KEYS.settings, state.settings);
+
+        if (state.activeCompanyId) {
+          localStorage.setItem(STORAGE_KEYS.activeCompanyId, state.activeCompanyId);
+        } else {
+          localStorage.removeItem(STORAGE_KEYS.activeCompanyId);
+        }
+      } catch (error) {
+        console.warn("Local cache save failed, retrying with smaller cache.", error);
+        removeLegacyLargePreviewCache();
+        try {
+          setLocalStorageJson(STORAGE_KEYS.companies, buildLocalCompaniesCache(state.companies).map(company => ({
+            ...company,
+            logoDataUrl: "",
+            stampDataUrl: ""
+          })));
+          setLocalStorageJson(STORAGE_KEYS.customersByCompany, state.customersByCompany);
+          setLocalStorageJson(STORAGE_KEYS.invoicesByCompany, state.invoicesByCompany);
+          setLocalStorageJson(STORAGE_KEYS.deliveryByCompany, state.deliveryByCompany);
+          setLocalStorageJson(STORAGE_KEYS.draftInvoiceByCompany, {});
+          setLocalStorageJson(STORAGE_KEYS.catalogItems, state.catalogItems);
+          setLocalStorageJson(STORAGE_KEYS.settings, state.settings);
+
+          if (state.activeCompanyId) {
+            localStorage.setItem(STORAGE_KEYS.activeCompanyId, state.activeCompanyId);
+          } else {
+            localStorage.removeItem(STORAGE_KEYS.activeCompanyId);
+          }
+        } catch (finalError) {
+          console.warn("Local cache fallback also failed.", finalError);
+        }
       }
     }
 
@@ -3136,8 +3233,8 @@
         invoiceCounter: Number(companyInvoiceCounterInput.value || 0),
         deliveryPrefix: companyDeliveryPrefixInput.value.trim(),
         deliveryCounter: Number(companyDeliveryCounterInput.value || 0),
-        logoDataUrl: pendingLogoData || "",
-        stampDataUrl: pendingStampData || ""
+        logoDataUrl: slimDataUrl(pendingLogoData || "", 700000),
+        stampDataUrl: slimDataUrl(pendingStampData || "", 500000)
       };
     }
 
@@ -3888,14 +3985,14 @@ Telefón: ${escapeHtml(doc.customer?.phone || "—")}
     companyLogoInput.addEventListener("change", async () => {
       const file = companyLogoInput.files?.[0];
       if (!file) return;
-      pendingLogoData = await readFileAsDataUrl(file);
+      pendingLogoData = await compressImageFile(file, { maxWidth: 1400, maxHeight: 900, quality: 0.82 });
       setImagePreview(companyLogoPreview, pendingLogoData);
     });
 
     companyStampInput.addEventListener("change", async () => {
       const file = companyStampInput.files?.[0];
       if (!file) return;
-      pendingStampData = await readFileAsDataUrl(file);
+      pendingStampData = await compressImageFile(file, { maxWidth: 1000, maxHeight: 1000, quality: 0.8 });
       setImagePreview(companyStampPreview, pendingStampData);
     });
 
