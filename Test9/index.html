@@ -806,9 +806,9 @@
 
     .pdf-topline {
       display: grid;
-      grid-template-columns: minmax(260px, 340px) 1fr;
-      gap: 26px;
-      align-items: stretch;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      align-items: start;
       margin-bottom: 22px;
     }
 
@@ -845,23 +845,28 @@
 
     .pdf-hero-company {
       display: grid;
-      grid-template-columns: 1fr 120px;
+      grid-template-columns: minmax(0,1fr) 110px;
       gap: 18px;
       align-items: start;
+      border: 1px solid #7b7b7b;
+      padding: 10px 12px;
+      background: #fff;
       min-height: 100%;
     }
 
     .pdf-company-text {
       font-size: 14px;
-      line-height: 1.4;
+      line-height: 1.45;
       color: #111827;
+      text-align: left;
+      white-space: pre-line;
     }
 
     .pdf-company-text strong {
       display: block;
-      margin-bottom: 6px;
-      font-size: 20px;
-      line-height: 1.1;
+      margin-bottom: 8px;
+      font-size: 22px;
+      line-height: 1.08;
     }
 
     .pdf-company-bank {
@@ -870,9 +875,9 @@
 
     .pdf-logo-wrap {
       display: flex;
-      justify-content: center;
+      justify-content: flex-end;
       align-items: flex-start;
-      min-height: 120px;
+      min-height: 110px;
     }
 
     .pdf-logo {
@@ -3443,7 +3448,7 @@
         qr: invoiceFields.qr.value,
         paid: Number(invoiceFields.paid.value || 0),
         discount: Number(invoiceFields.discount.value || 0),
-        items: state.invoiceItems.map(item => ({
+        items: state.invoiceItems.filter(item => String(item.description || "").trim() && Number(item.quantity || 0) > 0).map(item => ({
           id: item.id || uid("item"),
           description: item.description || "",
           unit: item.unit || "ks",
@@ -3470,7 +3475,7 @@
         number: deliveryNumber.value.trim(),
         date: deliveryDate.value || todayISO(),
         note: deliveryNote.value.trim(),
-        items: state.invoiceItems.map(item => ({
+        items: state.invoiceItems.filter(item => String(item.description || "").trim() && Number(item.quantity || 0) > 0).map(item => ({
           id: item.id || uid("item"),
           description: item.description || "",
           unit: item.unit || "ks",
@@ -3859,13 +3864,12 @@
       if (party.email) lines.push(`EMAIL: ${party.email}`);
       if (party.phone) lines.push(`TELEFÓN: ${party.phone}`);
       if (party.web) lines.push(`WEB: ${party.web}`);
-      return lines.join("
-");
+      return lines.join("\n");
     }
 
     function buildCompanyHeroText(company) {
       if (!company) return "—";
-      const lines = [company.name || "—"];
+      const lines = [];
       if (company.street) lines.push(company.street);
       const cityLine = [company.zip, company.city].filter(Boolean).join(" ");
       if (cityLine) lines.push(cityLine);
@@ -3881,8 +3885,7 @@
       if (company.bank) lines.push(`BANKA: ${company.bank}`);
       const accountNumber = normalizeIban(company.iban || "").slice(-10);
       if (accountNumber) lines.push(`ÚČET: ${accountNumber}`);
-      return lines.join("
-");
+      return lines.join("\n");
     }
 
     function buildQrPayload(doc) {
@@ -3907,8 +3910,7 @@
         `KS:${ks}`,
         `PAYMENT_TYPE:${payment}`,
         `DOC:${doc?.number || ""}`
-      ].join("
-");
+      ].join("\n");
     }
 
     function buildQrImageUrl(doc) {
@@ -3954,8 +3956,7 @@
         `IBAN: ${doc.company?.iban || "—"}`,
         `VS: ${doc.variable || doc.number || "—"}`,
         `Suma: ${currencyFormat(doc.totals?.due || 0, doc.currency || "EUR")}`
-      ].join("
-") : "";
+      ].join("\n") : "";
 
       const documentBoxHtml = `
         <div class="pdf-docbox">
@@ -3973,8 +3974,7 @@
         <div class="pdf-hero-company">
           <div class="pdf-company-text">
             <strong>${escapeHtml(doc.company?.name || "—")}</strong>
-            ${escapeHtml(buildCompanyHeroText(doc.company || {})).replace(/
-/g, "<br>")}
+            ${escapeHtml(buildCompanyHeroText(doc.company || {})).replace(/\n/g, "<br>")}
           </div>
           ${logoHtml}
         </div>
@@ -4391,7 +4391,9 @@
       window.alert("Dodací list bol uložený.");
       state.lastPreviewDoc = { type: "delivery", data: payload };
       saveState();
+      renderDeliveryScreen();
       renderPdfPreview();
+      showScreen("pdf");
     });
 
     loadInvoiceItemsToDeliveryBtn.addEventListener("click", () => {
