@@ -805,81 +805,103 @@
     }
 
     .pdf-topline {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 24px;
-      margin-bottom: 24px;
-    }
-
-    .pdf-logo-wrap {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-      flex: 1;
-    }
-
-    .pdf-logo {
-      width: 130px;
-      height: 86px;
-      object-fit: contain;
-      border-radius: 8px;
-      background: #fff;
-    }
-
-    .pdf-company-text {
-      flex: 1;
-      font-size: 14px;
-      line-height: 1.45;
-      color: #111827;
+      display: grid;
+      grid-template-columns: minmax(260px, 340px) 1fr;
+      gap: 26px;
+      align-items: stretch;
+      margin-bottom: 22px;
     }
 
     .pdf-docbox {
-      min-width: 240px;
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      padding: 14px 14px 12px;
-      background: #f9fafb;
+      border: 1px solid #7b7b7b;
+      border-radius: 0;
+      padding: 0;
+      background: #fff;
+      align-self: start;
     }
 
     .pdf-docbox h2 {
-      margin: 0 0 10px;
-      font-size: 28px;
+      margin: 0;
+      padding: 8px 10px 7px;
+      font-size: 20px;
       line-height: 1;
+      font-weight: 700;
       color: #111827;
+      border-bottom: 1px solid #7b7b7b;
+      text-transform: uppercase;
     }
 
     .pdf-docline {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 1fr auto;
       gap: 12px;
       font-size: 14px;
-      line-height: 1.5;
-      padding: 4px 0;
-      border-bottom: 1px solid #e5e7eb;
+      line-height: 1.35;
+      padding: 6px 10px;
+      border-bottom: 1px solid #bdbdbd;
     }
 
     .pdf-docline:last-child { border-bottom: 0; }
 
-    .pdf-two-cols {
+    .pdf-hero-company {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-      margin-bottom: 22px;
+      grid-template-columns: 1fr 120px;
+      gap: 18px;
+      align-items: start;
+      min-height: 100%;
     }
 
-    .pdf-box {
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      padding: 14px;
+    .pdf-company-text {
+      font-size: 14px;
+      line-height: 1.4;
+      color: #111827;
+    }
+
+    .pdf-company-text strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .pdf-company-bank {
+      margin-top: 10px;
+    }
+
+    .pdf-logo-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 120px;
+    }
+
+    .pdf-logo {
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
       background: #fff;
     }
 
+    .pdf-party-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .pdf-box {
+      border: 1px solid #7b7b7b;
+      border-radius: 0;
+      padding: 14px;
+      background: #fff;
+      min-height: 170px;
+    }
+
     .pdf-box h3 {
-      margin: 0 0 10px;
+      margin: 0 0 12px;
       font-size: 15px;
       text-transform: uppercase;
-      letter-spacing: .04em;
+      letter-spacing: .02em;
       color: #374151;
     }
 
@@ -892,17 +914,17 @@
     }
 
     .pdf-note {
-      margin: 16px 0 18px;
-      font-size: 13px;
-      line-height: 1.55;
+      margin: 12px 0 14px;
+      font-size: 12px;
+      line-height: 1.45;
       color: #374151;
     }
 
     .pdf-table-wrap {
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
+      border: 1px solid #7b7b7b;
+      border-radius: 0;
       overflow: hidden;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .pdf-table {
@@ -931,23 +953,23 @@
 
     .pdf-summary {
       display: grid;
-      grid-template-columns: 1fr 320px;
+      grid-template-columns: 1fr 300px;
       gap: 22px;
       align-items: start;
-      margin-top: 16px;
+      margin-top: 12px;
     }
 
     .pdf-summary-left {
-      font-size: 13px;
-      line-height: 1.6;
+      font-size: 12px;
+      line-height: 1.55;
       color: #374151;
     }
 
     .pdf-summary-right {
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      padding: 14px;
-      background: #f9fafb;
+      border: 1px solid #7b7b7b;
+      border-radius: 0;
+      padding: 12px 14px;
+      background: #fff;
     }
 
     .pdf-sum-row {
@@ -955,13 +977,13 @@
       justify-content: space-between;
       gap: 12px;
       font-size: 14px;
-      line-height: 1.6;
+      line-height: 1.55;
       padding: 4px 0;
       color: #111827;
     }
 
     .pdf-sum-row.total {
-      margin-top: 6px;
+      margin-top: 8px;
       padding-top: 10px;
       border-top: 2px solid #111827;
       font-weight: 800;
@@ -970,79 +992,9 @@
 
     .pdf-bottom {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
+      grid-template-columns: 220px 1fr 170px;
+      gap: 18px;
       align-items: end;
-      margin-top: 26px;
-    }
-
-    .pdf-stamp-wrap {
-      display: flex;
-      align-items: flex-end;
-      justify-content: flex-end;
-      min-height: 130px;
-    }
-
-    .pdf-stamp {
-      width: 130px;
-      height: 130px;
-      object-fit: contain;
-      border-radius: 10px;
-      background: #fff;
-    }
-
-    .pdf-signature {
-      font-size: 14px;
-      line-height: 1.6;
-      color: #111827;
-    }
-
-    .pdf-payline {
-      margin-top: 18px;
-      padding: 14px 16px;
-      border-radius: 12px;
-      background: #111827;
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      align-items: center;
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .pdf-payline strong {
-      font-size: 24px;
-    }
-
-
-    .pdf-company-panel {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 128px;
-      gap: 18px;
-      align-items: start;
-      min-width: 0;
-    }
-
-    .pdf-company-meta {
-      font-size: 14px;
-      line-height: 1.5;
-      color: #111827;
-      text-align: left;
-      min-width: 0;
-    }
-
-    .pdf-company-meta strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 18px;
-    }
-
-    .pdf-payment-block {
-      display: grid;
-      grid-template-columns: 180px minmax(0, 1fr);
-      gap: 18px;
-      align-items: start;
       margin-top: 18px;
     }
 
@@ -1053,36 +1005,61 @@
       gap: 8px;
     }
 
-    .pdf-qr-image {
-      width: 148px;
-      height: 148px;
+    .pdf-qr {
+      width: 150px;
+      height: 150px;
       object-fit: contain;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      background: #fff;
+      border: 1px solid #7b7b7b;
       padding: 8px;
+      background: #fff;
     }
 
     .pdf-qr-caption {
-      font-size: 12px;
-      line-height: 1.4;
+      font-size: 11px;
+      line-height: 1.45;
       color: #374151;
+      white-space: pre-line;
     }
 
-    .pdf-payment-meta {
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      padding: 14px;
-      background: #fff;
+    .pdf-signature {
       font-size: 13px;
-      line-height: 1.65;
+      line-height: 1.6;
       color: #111827;
     }
 
-    .pdf-payment-meta strong {
+    .pdf-signature-amount {
+      margin-top: 18px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .pdf-stamp-wrap {
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      min-height: 140px;
+    }
+
+    .pdf-stamp {
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      background: #fff;
+    }
+
+    .pdf-payline {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: end;
+      font-size: 18px;
+      font-weight: 700;
       color: #111827;
     }
 
+    .pdf-payline strong {
+      font-size: 34px;
       line-height: 1;
     }
 
@@ -2523,34 +2500,6 @@
       };
     }
 
-    function isInvoiceItemMeaningful(item) {
-      if (!item) return false;
-      return Boolean(
-        String(item.description || "").trim() ||
-        String(item.unit || "").trim() ||
-        Number(item.quantity || 0) > 0 ||
-        Number(item.price || 0) > 0 ||
-        Number(item.vatRate || 0) > 0
-      );
-    }
-
-    function isInvoiceItemValid(item) {
-      if (!item) return false;
-      return Boolean(
-        String(item.description || "").trim() &&
-        Number(item.quantity || 0) > 0 &&
-        Number(item.price || 0) >= 0
-      );
-    }
-
-    function getMeaningfulInvoiceItems(items = state.invoiceItems) {
-      return (Array.isArray(items) ? items : []).filter(isInvoiceItemMeaningful);
-    }
-
-    function getValidInvoiceItems(items = state.invoiceItems) {
-      return (Array.isArray(items) ? items : []).filter(isInvoiceItemValid);
-    }
-
     async function loadState() {
       removeLegacyLargePreviewCache();
       state.companies = safeParse(localStorage.getItem(STORAGE_KEYS.companies), []);
@@ -2574,7 +2523,7 @@
         state.activeCompanyId = state.companies[0].id;
       }
 
-      state.invoiceItems = [];
+      state.invoiceItems = [createEmptyItem()];
       applySettingsToInputs();
       ensureInvoiceDefaults();
       saveState();
@@ -3132,14 +3081,9 @@
     }
 
     function renderInvoiceItems() {
-      const items = Array.isArray(state.invoiceItems) ? state.invoiceItems : [];
+      if (!state.invoiceItems.length) state.invoiceItems = [createEmptyItem()];
 
-      if (!items.length) {
-        invoiceItemsWrap.innerHTML = `<div class="company-empty">Zatiaľ nemáš pridanú žiadnu položku. Pridaj ju cez + alebo vyber z cenníka.</div>`;
-        return;
-      }
-
-      invoiceItemsWrap.innerHTML = items.map((item, index) => `
+      invoiceItemsWrap.innerHTML = state.invoiceItems.map((item, index) => `
         <div class="item-box" data-item-id="${escapeHtml(item.id)}">
           <div class="item-head">
             <div class="item-title">Položka ${index + 1}</div>
@@ -3188,7 +3132,11 @@
 
       invoiceItemsWrap.querySelectorAll(".remove-item-btn").forEach(btn => {
         btn.addEventListener("click", () => {
-          state.invoiceItems = state.invoiceItems.filter(item => item.id !== btn.dataset.id);
+          if (state.invoiceItems.length <= 1) {
+            state.invoiceItems = [createEmptyItem()];
+          } else {
+            state.invoiceItems = state.invoiceItems.filter(item => item.id !== btn.dataset.id);
+          }
           renderInvoiceItems();
           recalcInvoiceTotals();
           saveCurrentDraft();
@@ -3406,7 +3354,7 @@
           phone: customerFields.phone.value.trim(),
           note: customerFields.note.value.trim()
         },
-        items: getMeaningfulInvoiceItems(state.invoiceItems).map(item => ({ ...item })),
+        items: state.invoiceItems,
         updatedAt: new Date().toISOString()
       };
     }
@@ -3464,7 +3412,7 @@
       renderInvoiceCustomerSelect();
       if (draft.customerId) invoiceCustomerSelect.value = draft.customerId;
 
-      state.invoiceItems = Array.isArray(draft.items) && draft.items.length ? draft.items : [];
+      state.invoiceItems = Array.isArray(draft.items) && draft.items.length ? draft.items : [createEmptyItem()];
       renderInvoiceItems();
       recalcInvoiceTotals();
       setInvoiceModeBadge();
@@ -3495,7 +3443,7 @@
         qr: invoiceFields.qr.value,
         paid: Number(invoiceFields.paid.value || 0),
         discount: Number(invoiceFields.discount.value || 0),
-        items: getValidInvoiceItems(state.invoiceItems).map(item => ({
+        items: state.invoiceItems.map(item => ({
           id: item.id || uid("item"),
           description: item.description || "",
           unit: item.unit || "ks",
@@ -3522,7 +3470,7 @@
         number: deliveryNumber.value.trim(),
         date: deliveryDate.value || todayISO(),
         note: deliveryNote.value.trim(),
-        items: getValidInvoiceItems(state.invoiceItems).map(item => ({
+        items: state.invoiceItems.map(item => ({
           id: item.id || uid("item"),
           description: item.description || "",
           unit: item.unit || "ks",
@@ -3660,7 +3608,7 @@
       renderInvoiceCustomerSelect();
       if (invoice.customer?.id) invoiceCustomerSelect.value = invoice.customer.id;
 
-      state.invoiceItems = Array.isArray(invoice.items) && invoice.items.length ? invoice.items : [];
+      state.invoiceItems = Array.isArray(invoice.items) && invoice.items.length ? invoice.items : [createEmptyItem()];
       renderInvoiceItems();
       setInvoiceModeBadge();
       recalcInvoiceTotals();
@@ -3674,7 +3622,7 @@
       renderDeliveryCustomerSelect();
       if (doc.customer?.id) deliveryCustomerSelect.value = doc.customer.id;
       deliveryNote.value = doc.note || "";
-      state.invoiceItems = Array.isArray(doc.items) && doc.items.length ? doc.items : [];
+      state.invoiceItems = Array.isArray(doc.items) && doc.items.length ? doc.items : [createEmptyItem()];
       renderInvoiceItems();
       recalcInvoiceTotals();
       showScreen("delivery");
@@ -3707,7 +3655,12 @@
         return false;
       }
 
-      const validItems = getValidInvoiceItems(state.invoiceItems);
+      if (!state.invoiceItems.length) {
+        window.alert("Faktúra musí mať aspoň 1 položku.");
+        return false;
+      }
+
+      const validItems = state.invoiceItems.filter(item => item.description.trim() && Number(item.quantity || 0) > 0 && Number(item.price || 0) >= 0);
       if (!validItems.length) {
         window.alert("Pridaj aspoň 1 platnú položku.");
         return false;
@@ -3883,34 +3836,85 @@
       renderAll();
     }
 
-    function buildInvoiceQrPayload(doc) {
-      const iban = normalizeIban(doc.company?.iban || "");
-      if (!iban) return "";
+    function formatDateSk(dateValue) {
+      if (!dateValue) return "—";
+      const value = String(dateValue).trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        const [y, m, d] = value.split("-");
+        return `${Number(d)}.${Number(m)}.${y}`;
+      }
+      return value;
+    }
 
-      const amount = Number(doc.totals?.due || 0).toFixed(2);
-      const beneficiary = String(doc.company?.name || "").trim().slice(0, 70);
-      const bank = String(doc.company?.bank || "").trim();
-      const variable = String(doc.variable || doc.number || "").trim();
-      const message = [
-        doc.type || "Faktúra",
-        doc.number ? `č. ${doc.number}` : "",
-        variable ? `VS ${variable}` : ""
-      ].filter(Boolean).join(" ").slice(0, 140);
+    function buildPdfPartyText(party) {
+      if (!party) return "—";
+      const lines = [
+        party.name || "—",
+        [party.street, party.zip, party.city].filter(Boolean).join(" "),
+        party.country || ""
+      ].filter(Boolean);
+      lines.push(`IČO: ${party.ico || "—"}`);
+      lines.push(`DIČ: ${party.dic || "—"}`);
+      lines.push(`IČ DPH: ${party.vat || "—"}`);
+      if (party.email) lines.push(`EMAIL: ${party.email}`);
+      if (party.phone) lines.push(`TELEFÓN: ${party.phone}`);
+      if (party.web) lines.push(`WEB: ${party.web}`);
+      return lines.join("
+");
+    }
 
+    function buildCompanyHeroText(company) {
+      if (!company) return "—";
+      const lines = [company.name || "—"];
+      if (company.street) lines.push(company.street);
+      const cityLine = [company.zip, company.city].filter(Boolean).join(" ");
+      if (cityLine) lines.push(cityLine);
+      if (company.country) lines.push(company.country);
+      lines.push(`IČO: ${company.ico || "—"}`);
+      lines.push(`DIČ: ${company.dic || "—"}`);
+      lines.push(company.vat ? `IČ DPH: ${company.vat}` : "Neplatiteľ DPH");
+      if (company.phone) lines.push(`TELEFÓN: ${company.phone}`);
+      if (company.email) lines.push(`EMAIL: ${company.email}`);
+      if (company.web) lines.push(`WEB: ${company.web}`);
+      if (company.iban) lines.push(`IBAN: ${company.iban}`);
+      if (company.swift) lines.push(`SWIFT: ${company.swift}`);
+      if (company.bank) lines.push(`BANKA: ${company.bank}`);
+      const accountNumber = normalizeIban(company.iban || "").slice(-10);
+      if (accountNumber) lines.push(`ÚČET: ${accountNumber}`);
+      return lines.join("
+");
+    }
+
+    function buildQrPayload(doc) {
+      const amount = Number(doc?.totals?.due || 0).toFixed(2);
+      const currency = doc?.currency || "EUR";
+      const iban = normalizeIban(doc?.company?.iban || "");
+      const vs = doc?.variable || doc?.number || "";
+      const ks = doc?.constant || "";
+      const recipient = doc?.company?.name || "";
+      const bank = doc?.company?.bank || "";
+      const payment = doc?.payment || "peňažný prevod";
+      const accountNumber = iban ? iban.slice(-10) : "";
       return [
-        "BCD",
-        "002",
-        "1",
-        "SCT",
-        "",
-        beneficiary || "PLATBA",
-        iban,
-        `EUR${amount}`,
-        "",
-        message,
-        bank || ""
+        `PAYMENT`,
+        `RECIPIENT:${recipient}`,
+        `IBAN:${iban}`,
+        `ACCOUNT:${accountNumber}`,
+        `BANK:${bank}`,
+        `AMOUNT:${amount}`,
+        `CURRENCY:${currency}`,
+        `VS:${vs}`,
+        `KS:${ks}`,
+        `PAYMENT_TYPE:${payment}`,
+        `DOC:${doc?.number || ""}`
       ].join("
 ");
+    }
+
+    function buildQrImageUrl(doc) {
+      const payload = buildQrPayload(doc);
+      if (!payload.trim()) return "";
+      return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(payload)}`;
     }
 
     function renderPdfPreview() {
@@ -3921,195 +3925,154 @@
       }
 
       const doc = docWrap.data;
+      const isInvoice = docWrap.type === "invoice";
       const docType = docWrap.type === "delivery" ? "Dodací list" : (doc.type || "Faktúra");
+      const validItems = (doc.items || []).filter(item => {
+        return String(item.description || "").trim() || Number(item.quantity || 0) || Number(item.price || 0);
+      });
 
-      const companyAddress = [
-        doc.company?.street,
-        doc.company?.city,
-        doc.company?.zip,
-        doc.company?.country
-      ].filter(Boolean).join(", ");
-
-      const customerAddress = [
-        doc.customer?.street,
-        doc.customer?.city,
-        doc.customer?.zip,
-        doc.customer?.country
-      ].filter(Boolean).join(", ");
-
-      const logoHtml = doc.company?.logoDataUrl ? `<img class="pdf-logo" src="${doc.company.logoDataUrl}" alt="Logo firmy">` : "";
-      const stampHtml = doc.company?.stampDataUrl ? `<img class="pdf-stamp" src="${doc.company.stampDataUrl}" alt="Pečiatka firmy">` : "";
-      const noteText = doc.company?.note ? `<div class="pdf-note">${escapeHtml(doc.company.note)}</div>` : "";
-
-      const printableItems = getValidInvoiceItems(doc.items || []);
-      const rowsHtml = printableItems.map(item => {
+      const rowsHtml = validItems.map(item => {
         const lineBase = Number(item.quantity || 0) * Number(item.price || 0);
         return `
           <tr>
             <td>${escapeHtml(item.description || "—")}</td>
-            <td>${escapeHtml(item.unit || "ks")}</td>
             <td>${escapeHtml(String(item.quantity || 0))}</td>
-            <td>${escapeHtml(String(item.vatRate || 0))}%</td>
+            <td>${escapeHtml(item.unit || "ks")}</td>
             <td>${escapeHtml(currencyFormat(item.price || 0, item.currency || "EUR"))}</td>
             <td>${escapeHtml(currencyFormat(lineBase, item.currency || "EUR"))}</td>
           </tr>
         `;
       }).join("");
 
-      const qrEnabled = docWrap.type === "invoice" && (doc.qr || "").toLowerCase() !== "nie";
-      const qrPayload = qrEnabled ? buildInvoiceQrPayload(doc) : "";
-      const qrImage = qrPayload
-        ? `https://quickchart.io/qr?text=${encodeURIComponent(qrPayload)}&size=220`
-        : "";
+      const logoHtml = doc.company?.logoDataUrl
+        ? `<div class="pdf-logo-wrap"><img class="pdf-logo" src="${doc.company.logoDataUrl}" alt="Logo firmy"></div>`
+        : `<div class="pdf-logo-wrap"></div>`;
+      const stampHtml = doc.company?.stampDataUrl ? `<img class="pdf-stamp" src="${doc.company.stampDataUrl}" alt="Pečiatka alebo podpis">` : "";
+      const qrImageUrl = isInvoice && doc.qr !== "nie" ? buildQrImageUrl(doc) : "";
+      const qrCaption = isInvoice && doc.qr !== "nie" ? [
+        `Príjemca: ${doc.company?.name || "—"}`,
+        `IBAN: ${doc.company?.iban || "—"}`,
+        `VS: ${doc.variable || doc.number || "—"}`,
+        `Suma: ${currencyFormat(doc.totals?.due || 0, doc.currency || "EUR")}`
+      ].join("
+") : "";
 
-      const paymentMetaHtml = docWrap.type === "invoice"
-        ? `
-          <div class="pdf-payment-block">
-            ${qrImage ? `
-              <div class="pdf-qr-wrap">
-                <img class="pdf-qr-image" src="${qrImage}" alt="QR platba">
-                <div class="pdf-qr-caption">QR platba / naskenuj v bankovej aplikácii</div>
-              </div>
-            ` : `<div></div>`}
+      const documentBoxHtml = `
+        <div class="pdf-docbox">
+          <h2>${escapeHtml(docType)}</h2>
+          <div class="pdf-docline"><span>Číslo dokladu</span><strong>${escapeHtml(doc.number || "—")}</strong></div>
+          ${isInvoice ? `<div class="pdf-docline"><span>Variabilný symbol</span><strong>${escapeHtml(doc.variable || doc.number || "—")}</strong></div>` : ""}
+          <div class="pdf-docline"><span>Dátum vystavenia</span><strong>${escapeHtml(formatDateSk(isInvoice ? doc.issuedDate : doc.date))}</strong></div>
+          <div class="pdf-docline"><span>Dátum dodania</span><strong>${escapeHtml(formatDateSk(doc.deliveryDate || (isInvoice ? doc.issuedDate : doc.date) || "—"))}</strong></div>
+          <div class="pdf-docline"><span>Dátum splatnosti</span><strong>${escapeHtml(formatDateSk(doc.dueDate || (isInvoice ? doc.issuedDate : doc.date) || "—"))}</strong></div>
+          <div class="pdf-docline"><span>Forma úhrady</span><strong>${escapeHtml(doc.payment || "—")}</strong></div>
+        </div>
+      `;
 
-            <div class="pdf-payment-meta">
-              <strong>Platobné údaje</strong><br>
-              Príjemca: ${escapeHtml(doc.company?.name || "—")}<br>
-              IBAN: ${escapeHtml(doc.company?.iban || "—")}<br>
-              Banka: ${escapeHtml(doc.company?.bank || "—")}<br>
-              Variabilný symbol: ${escapeHtml(doc.variable || doc.number || "—")}<br>
-              Konštantný symbol: ${escapeHtml(doc.constant || "—")}<br>
-              Suma: ${escapeHtml(currencyFormat(doc.totals?.due || 0, doc.currency || "EUR"))}<br>
-              Forma úhrady: ${escapeHtml(doc.payment || "—")}
-            </div>
+      const topRightHtml = `
+        <div class="pdf-hero-company">
+          <div class="pdf-company-text">
+            <strong>${escapeHtml(doc.company?.name || "—")}</strong>
+            ${escapeHtml(buildCompanyHeroText(doc.company || {})).replace(/
+/g, "<br>")}
           </div>
-        `
-        : "";
+          ${logoHtml}
+        </div>
+      `;
 
-      const summaryHtml = docWrap.type === "invoice"
+      const noteHtml = doc.company?.note
+        ? `<div class="pdf-note">${escapeHtml(doc.company.note)}</div>`
+        : (isInvoice ? `<div class="pdf-note">Nerešpektovanie podmienok ubytovania môže viesť k okamžitému ukončeniu zmluvy bez náhrady.</div>` : "");
+
+      const summaryHtml = isInvoice
         ? `
           <div class="pdf-summary">
             <div class="pdf-summary-left">
               Objednávka: ${escapeHtml(doc.orderNumber || "—")}<br>
+              Konštantný symbol: ${escapeHtml(doc.constant || "—")}<br>
+              QR platba: ${escapeHtml(doc.qr || "—")}<br>
               Vytvorené: ${escapeHtml(doc.createdAt ? String(doc.createdAt).slice(0, 10) : "—")}<br>
               Aktualizované: ${escapeHtml(doc.updatedAt ? String(doc.updatedAt).slice(0, 10) : "—")}
-              ${paymentMetaHtml}
             </div>
-
             <div class="pdf-summary-right">
               <div class="pdf-sum-row"><span>Medzisúčet</span><strong>${escapeHtml(currencyFormat(doc.totals?.subtotal || 0, doc.currency || "EUR"))}</strong></div>
               <div class="pdf-sum-row"><span>DPH</span><strong>${escapeHtml(currencyFormat(doc.totals?.vatTotal || 0, doc.currency || "EUR"))}</strong></div>
               <div class="pdf-sum-row"><span>Zľava</span><strong>${escapeHtml(currencyFormat(doc.totals?.discountAmount || 0, doc.currency || "EUR"))}</strong></div>
-              <div class="pdf-sum-row"><span>Už uhradené</span><strong>${escapeHtml(currencyFormat(doc.paid || 0, doc.currency || "EUR"))}</strong></div>
-              <div class="pdf-sum-row total"><span>K úhrade</span><strong>${escapeHtml(currencyFormat(doc.totals?.due || 0, doc.currency || "EUR"))}</strong></div>
+              <div class="pdf-sum-row"><span>Uhradené zálohami</span><strong>${escapeHtml(currencyFormat(doc.paid || 0, doc.currency || "EUR"))}</strong></div>
+              <div class="pdf-sum-row total"><span>Zostáva uhradiť</span><strong>${escapeHtml(currencyFormat(doc.totals?.due || 0, doc.currency || "EUR"))}</strong></div>
             </div>
           </div>
         `
         : `
           <div class="pdf-summary">
-            <div class="pdf-summary-left">
-              Dátum: ${escapeHtml(doc.date || "—")}<br>
-              Poznámka: ${escapeHtml(doc.note || "—")}
-            </div>
-
+            <div class="pdf-summary-left">Dátum: ${escapeHtml(formatDateSk(doc.date || "—"))}<br>Poznámka: ${escapeHtml(doc.note || "—")}</div>
             <div class="pdf-summary-right">
-              <div class="pdf-sum-row total"><span>Počet položiek</span><strong>${escapeHtml(String(printableItems.length))}</strong></div>
+              <div class="pdf-sum-row total"><span>Počet položiek</span><strong>${escapeHtml(String(validItems.length))}</strong></div>
             </div>
           </div>
         `;
 
-      const paylineHtml = docWrap.type === "invoice"
-        ? `<div class="pdf-payline"><span>Celkom na úhradu</span><strong>${escapeHtml(currencyFormat(doc.totals?.due || 0, doc.currency || "EUR"))}</strong></div>`
-        : "";
+      const bottomHtml = isInvoice
+        ? `
+          <div class="pdf-bottom">
+            <div class="pdf-qr-wrap">
+              ${qrImageUrl ? `<img class="pdf-qr" src="${qrImageUrl}" alt="QR platba">` : ""}
+              ${qrCaption ? `<div class="pdf-qr-caption">${escapeHtml(qrCaption)}</div>` : ""}
+            </div>
+            <div class="pdf-signature">
+              Dodávateľ potvrdzuje správnosť údajov uvedených na tomto doklade.<br>
+              Tento dokument bol vytvorený v aplikácii Platinum Lech Faktúry.
+            </div>
+            <div class="pdf-stamp-wrap">${stampHtml}</div>
+          </div>
+          <div class="pdf-payline"><span>K úhrade:</span><strong>${escapeHtml(currencyFormat(doc.totals?.due || 0, doc.currency || "EUR"))}</strong></div>
+        `
+        : `
+          <div class="pdf-bottom">
+            <div></div>
+            <div class="pdf-signature">Dodávateľ potvrdzuje správnosť údajov uvedených na tomto doklade.</div>
+            <div class="pdf-stamp-wrap">${stampHtml}</div>
+          </div>
+        `;
 
       pdfPreviewContainer.innerHTML = `
         <div class="pdf-topline">
-          <div class="pdf-docbox">
-            <h2>${escapeHtml(docType)}</h2>
-            <div class="pdf-docline"><span>Číslo dokladu</span><strong>${escapeHtml(doc.number || "—")}</strong></div>
-            <div class="pdf-docline"><span>Dátum</span><strong>${escapeHtml(docWrap.type === "invoice" ? (doc.issuedDate || "—") : (doc.date || "—"))}</strong></div>
-            <div class="pdf-docline"><span>Dodanie</span><strong>${escapeHtml(doc.deliveryDate || "—")}</strong></div>
-            <div class="pdf-docline"><span>Splatnosť</span><strong>${escapeHtml(doc.dueDate || "—")}</strong></div>
-            <div class="pdf-docline"><span>Forma úhrady</span><strong>${escapeHtml(doc.payment || "—")}</strong></div>
-            ${docWrap.type === "invoice" ? `<div class="pdf-docline"><span>Variabilný symbol</span><strong>${escapeHtml(doc.variable || doc.number || "—")}</strong></div>` : ""}
-          </div>
-
-          <div class="pdf-company-panel">
-            <div class="pdf-company-meta">
-              <strong>${escapeHtml(doc.company?.name || "—")}</strong>
-              ${escapeHtml(companyAddress || "—")}<br>
-              IČO: ${escapeHtml(doc.company?.ico || "—")}<br>
-              DIČ: ${escapeHtml(doc.company?.dic || "—")}<br>
-              IČ DPH: ${escapeHtml(doc.company?.vat || "—")}<br>
-              IBAN: ${escapeHtml(doc.company?.iban || "—")}<br>
-              Banka: ${escapeHtml(doc.company?.bank || "—")}
-            </div>
-            ${logoHtml}
-          </div>
+          ${documentBoxHtml}
+          ${topRightHtml}
         </div>
 
-        <div class="pdf-two-cols">
+        <div class="pdf-party-grid">
           <div class="pdf-box">
             <h3>Dodávateľ</h3>
-            <p>
-${escapeHtml(doc.company?.name || "—")}
-${escapeHtml(companyAddress || "—")}
-IČO: ${escapeHtml(doc.company?.ico || "—")}
-DIČ: ${escapeHtml(doc.company?.dic || "—")}
-IČ DPH: ${escapeHtml(doc.company?.vat || "—")}
-Email: ${escapeHtml(doc.company?.email || "—")}
-Telefón: ${escapeHtml(doc.company?.phone || "—")}
-            </p>
+            <p>${escapeHtml(buildPdfPartyText(doc.company || {}))}</p>
           </div>
-
           <div class="pdf-box">
             <h3>Odberateľ</h3>
-            <p>
-${escapeHtml(doc.customer?.name || "—")}
-${escapeHtml(customerAddress || "—")}
-IČO: ${escapeHtml(doc.customer?.ico || "—")}
-DIČ: ${escapeHtml(doc.customer?.dic || "—")}
-IČ DPH: ${escapeHtml(doc.customer?.vat || "—")}
-Email: ${escapeHtml(doc.customer?.email || "—")}
-Telefón: ${escapeHtml(doc.customer?.phone || "—")}
-            </p>
+            <p>${escapeHtml(buildPdfPartyText(doc.customer || {}))}</p>
           </div>
         </div>
 
-        ${noteText}
+        ${noteHtml}
 
         <div class="pdf-table-wrap">
           <table class="pdf-table">
             <thead>
               <tr>
                 <th>Popis položky</th>
-                <th>MJ</th>
                 <th>Množstvo</th>
-                <th>DPH</th>
-                <th>Cena / MJ</th>
-                <th>Spolu</th>
+                <th>MJ</th>
+                <th>Cena za MJ</th>
+                <th>Celková cena</th>
               </tr>
             </thead>
             <tbody>
-              ${rowsHtml || `<tr><td colspan="6">Žiadne položky</td></tr>`}
+              ${rowsHtml || `<tr><td colspan="5">Žiadne položky</td></tr>`}
             </tbody>
           </table>
         </div>
 
         ${summaryHtml}
-
-        <div class="pdf-bottom">
-          <div class="pdf-signature">
-            Dodávateľ potvrdzuje správnosť údajov uvedených na tomto doklade.<br>
-            Tento dokument bol vytvorený v aplikácii Platinum Lech Faktúry.
-          </div>
-
-          <div class="pdf-stamp-wrap">
-            ${stampHtml}
-          </div>
-        </div>
-
-        ${paylineHtml}
+        ${bottomHtml}
       `;
     }
 
@@ -4269,44 +4232,23 @@ Telefón: ${escapeHtml(doc.customer?.phone || "—")}
       saveCurrentDraft();
     });
 
-    invoiceFields.number.addEventListener("input", () => {
-      invoiceFields.variable.value = invoiceFields.number.value.trim();
+    savedItemSelect.addEventListener("change", () => {
+      const item = state.catalogItems.find(x => x.id === savedItemSelect.value);
+      if (!item) return;
+      state.invoiceItems.push({
+        id: uid("item"),
+        description: item.name,
+        unit: item.unit || "ks",
+        quantity: 1,
+        price: Number(item.price || 0),
+        vatRate: Number(item.vatRate || 0),
+        currency: item.currency || "EUR"
+      });
+      savedItemSelect.value = "";
+      renderInvoiceItems();
+      recalcInvoiceTotals();
       saveCurrentDraft();
     });
-
-function applySelectedCatalogItem() {
-  const selectedId = savedItemSelect.value;
-  const item = state.catalogItems.find(x => x.id === selectedId);
-  if (!item) return;
-
-  const mappedItem = {
-    id: uid("item"),
-    description: item.name,
-    unit: item.unit || "ks",
-    quantity: 1,
-    price: Number(item.price || 0),
-    vatRate: Number(item.vatRate || 0),
-    currency: item.currency || "EUR"
-  };
-
-  const emptyIndex = state.invoiceItems.findIndex(existing => !String(existing.description || "").trim() && Number(existing.price || 0) <= 0);
-  if (emptyIndex >= 0) {
-    state.invoiceItems[emptyIndex] = mappedItem;
-  } else {
-    state.invoiceItems.push(mappedItem);
-  }
-
-  renderInvoiceItems();
-  recalcInvoiceTotals();
-  saveCurrentDraft();
-
-  requestAnimationFrame(() => {
-    savedItemSelect.value = selectedId;
-  });
-}
-
-savedItemSelect.addEventListener("change", applySelectedCatalogItem);
-savedItemSelect.addEventListener("input", applySelectedCatalogItem);
 
     addCatalogItemBtn.addEventListener("click", () => {
       const firstFilled = state.invoiceItems.find(item => item.description.trim());
@@ -4355,7 +4297,6 @@ savedItemSelect.addEventListener("input", applySelectedCatalogItem);
       if (!editingInvoiceId.value && !invoiceFields.number.value.trim()) {
         const next = nextInvoiceNumber(activeCompany);
         invoiceFields.number.value = next.number;
-        invoiceFields.variable.value = next.number;
         const companyIndex = state.companies.findIndex(item => item.id === activeCompany.id);
         if (companyIndex >= 0) state.companies[companyIndex].invoiceCounter = next.counter;
       }
@@ -4390,7 +4331,6 @@ savedItemSelect.addEventListener("input", applySelectedCatalogItem);
       if (!editingInvoiceId.value && !invoiceFields.number.value.trim()) {
         const next = nextInvoiceNumber(activeCompany);
         invoiceFields.number.value = next.number;
-        invoiceFields.variable.value = next.number;
         const companyIndex = state.companies.findIndex(item => item.id === activeCompany.id);
         if (companyIndex >= 0) state.companies[companyIndex].invoiceCounter = next.counter;
       }
