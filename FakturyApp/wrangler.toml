@@ -5,4 +5,4 @@ compatibility_date = "2026-04-09"
 [[d1_databases]]
 binding = "FAKTURY_DB"
 database_name = "faktury-db"
-database_id = "SEM_DAJ_SVOJE_D1_DATABASE_ID"
+database_id = "SEM_DAJ_SKUTOCNE_D1_ID"
