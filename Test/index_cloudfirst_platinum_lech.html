@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Platinum Lech Faktúry - cloud first</title>
+  <style>
+    :root{
+      --bg:#0f172a; --bg2:#17243d; --card:#121d33; --card2:#1d2b48;
+      --line:rgba(255,255,255,.08); --text:#eef4ff; --soft:#c6d5ee; --muted:#9eb2d7;
+      --accent:#5ecbff; --accent2:#2f8dff; --ok:#12b86a; --warn:#d9a23d; --bad:#db5050;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;padding:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:
+      radial-gradient(circle at top left, rgba(94,203,255,.08), transparent 24%),
+      radial-gradient(circle at top right, rgba(47,141,255,.08), transparent 18%),
+      linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text)}
+    .hidden{display:none!important}
+    .page{max-width:1220px;margin:0 auto;padding:0 14px 28px}
+    .topbar{position:sticky;top:0;z-index:80;background:rgba(10,16,28,.90);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);margin:0 -14px 16px;padding:12px 14px}
+    .topbar-inner{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-logo{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 22px rgba(94,203,255,.28)}
+    .brand-title{font-size:20px;font-weight:800}
+    .status-badges{display:flex;gap:8px;flex-wrap:wrap}
+    .badge{padding:8px 12px;border-radius:999px;font-size:13px;font-weight:700;color:#fff}
+    .badge.ok{background:linear-gradient(180deg,#12b86a,#0f874d)}
+    .badge.warn{background:linear-gradient(180deg,#d9a23d,#a06b0f)}
+    .badge.bad{background:linear-gradient(180deg,#db5050,#a82727)}
+    .badge.dark{background:linear-gradient(180deg,#1b2539,#111826)}
+    .menu{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .menu button,.btn{border:0;cursor:pointer;border-radius:14px;transition:.18s ease}
+    .menu button{padding:10px 14px;background:rgba(255,255,255,.04);color:var(--text)}
+    .menu button.active{background:linear-gradient(180deg,#1d7dff,#0c4fd9)}
+    .btn{padding:12px 15px;color:#fff}
+    .btn-primary{background:linear-gradient(180deg,#1d7dff,#0c4fd9)}
+    .btn-secondary{background:linear-gradient(180deg,#19bfd9,#1177b8)}
+    .btn-good{background:linear-gradient(180deg,#12b86a,#0f874d)}
+    .btn-bad{background:linear-gradient(180deg,#db5050,#a82727)}
+    .btn-dark{background:linear-gradient(180deg,#162034,#0d1320)}
+    .btn-small{padding:8px 12px;border-radius:12px;font-size:14px}
+    .hero{padding:8px 2px 16px}
+    .hero h1{margin:0 0 8px;font-size:40px;font-weight:300;font-style:italic;color:var(--accent)}
+    .hero p{margin:0;color:var(--soft);font-size:18px;line-height:1.35}
+    .card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 18px 48px rgba(0,0,0,.24);margin-bottom:16px}
+    .card h2,.card h3{margin:0 0 8px;color:var(--accent)}
+    .sub{color:var(--muted);font-size:14px;margin-bottom:12px}
+    .notice{padding:13px 14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);color:var(--soft);line-height:1.5}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .split{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}
+    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    .stat{padding:14px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05)}
+    .stat strong{display:block;font-size:22px;margin-top:8px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+    .field label{display:block;color:var(--muted);margin-bottom:7px}
+    input[type="text"],input[type="number"],input[type="date"],input[type="search"],input[type="file"],select,textarea{
+      width:100%;padding:13px 14px;background:#0e1628;color:var(--text);border:1px solid rgba(255,255,255,.08);border-radius:15px;outline:none
+    }
+    textarea{min-height:92px;resize:vertical}
+    .toolbar,.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+    .list{display:grid;gap:10px}
+    .rowcard,.item{padding:14px;border-radius:17px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05)}
+    .rowcard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .rowcard-title{font-weight:800;font-size:18px;line-height:1.25}
+    .meta{white-space:pre-line;color:var(--soft);font-size:14px;line-height:1.5}
+    .invoice-item-grid{display:grid;grid-template-columns:2fr .7fr .7fr .8fr .8fr auto;gap:8px;align-items:start}
+    .totals{margin-top:12px;text-align:right;line-height:1.8;color:var(--soft)}
+    .totals strong{display:inline-block;min-width:124px;color:#fff}
+    .sticky-actionbar{position:sticky;bottom:10px;z-index:50;padding:8px;border-radius:18px;background:rgba(9,14,24,.86);backdrop-filter:blur(10px);border:1px solid var(--line)}
+    .pdf{background:#fff;color:#111;padding:24px;border-radius:18px}
+    .pdf *{color:#111}
+    .pdf-header{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-bottom:18px}
+    .pdf-box{border:1px solid #999;padding:12px}
+    .pdf-table{width:100%;border-collapse:collapse;margin-top:12px}
+    .pdf-table th,.pdf-table td{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}
+    .pdf-foot{display:grid;grid-template-columns:1fr 230px;gap:18px;margin-top:18px}
+    .qr-wrap{text-align:center}
+    .qr-wrap img{max-width:180px;background:#fff;border:1px solid #ccc;padding:6px}
+    @media (max-width:980px){.grid2,.split,.stats,.form-grid,.invoice-item-grid,.pdf-header,.pdf-foot{grid-template-columns:1fr}.hero h1{font-size:34px}}
+    @media print{
+      body{background:#fff}.topbar,.hero,.sticky-actionbar,#cloudState,#saveState{display:none!important}
+      .screen:not(#screenPdf){display:none!important} #screenPdf{display:block!important}
+      .card{box-shadow:none;border:0;padding:0;background:#fff}.pdf{padding:0;border-radius:0}
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><div class="brand-logo"></div><div class="brand-title">PLATINUM LECH FAKTÚRY</div></div>
+      <div class="status-badges">
+        <span id="cloudState" class="badge ok">Cloud pripojený</span>
+        <span id="saveState" class="badge dark">Bez zmien</span>
+      </div>
+    </div>
+    <div class="menu">
+      <button data-screen="screenDashboard" class="nav-btn active">Dashboard</button>
+      <button data-screen="screenInvoice" class="nav-btn">Nová faktúra</button>
+      <button data-screen="screenInvoices" class="nav-btn">Faktúry</button>
+      <button data-screen="screenDelivery" class="nav-btn">Dodacie listy</button>
+      <button data-screen="screenCompanies" class="nav-btn">Firmy</button>
+      <button data-screen="screenCustomers" class="nav-btn">Klienti</button>
+      <button data-screen="screenSettings" class="nav-btn">Nastavenia</button>
+      <button data-screen="screenPdf" class="nav-btn">PDF</button>
+    </div>
+  </header>
+
+  <section id="screenDashboard" class="screen">
+    <div class="hero"><h1>Cloud-first</h1><p>Firmy, klienti, faktúry, dodacie listy aj cenník sa načítavajú a ukladajú cez Cloudflare Worker. Lokálne ostáva len draft faktúry.</p></div>
+    <div class="card">
+      <h2>Prehľad</h2>
+      <div class="stats">
+        <div class="stat">Firmy<strong id="statCompanies">0</strong></div>
+        <div class="stat">Klienti<strong id="statCustomers">0</strong></div>
+        <div class="stat">Faktúry<strong id="statInvoices">0</strong></div>
+        <div class="stat">Dodacie listy<strong id="statDeliveries">0</strong></div>
+        <div class="stat">Cenník<strong id="statCatalog">0</strong></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h3>Aktívna firma</h3><div id="activeCompanyCard" class="notice">Nemáš zvolenú aktívnu firmu.</div></div>
+      <div class="card"><h3>Pravidlo</h3><div class="notice">Ak Worker zápis zlyhá, dokument sa nepovažuje za uložený. Appka už nepoužíva lokálne uloženie ako hlavný zdroj pravdy.</div></div>
+    </div>
+  </section>
+
+  <section id="screenCompanies" class="screen hidden">
+    <div class="hero"><h1>Firmy</h1><p>Firmy sa ukladajú len do Cloudflare Worker.</p></div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Pridať / upraviť firmu</h3>
+        <input type="hidden" id="companyId">
+        <div class="form-grid">
+          <div class="field"><label>Názov firmy</label><input id="companyName" type="text"></div>
+          <div class="field"><label>Ulica</label><input id="companyStreet" type="text"></div>
+          <div class="field"><label>Mesto</label><input id="companyCity" type="text"></div>
+          <div class="field"><label>PSČ</label><input id="companyZip" type="text"></div>
+          <div class="field"><label>Štát</label><input id="companyCountry" type="text" value="Slovensko"></div>
+          <div class="field"><label>IČO</label><input id="companyIco" type="text"></div>
+          <div class="field"><label>DIČ</label><input id="companyDic" type="text"></div>
+          <div class="field"><label>IČ DPH</label><input id="companyVat" type="text"></div>
+          <div class="field"><label>Email</label><input id="companyEmail" type="text"></div>
+          <div class="field"><label>Telefón</label><input id="companyPhone" type="text"></div>
+          <div class="field"><label>Web</label><input id="companyWeb" type="text"></div>
+          <div class="field"><label>Banka</label><input id="companyBank" type="text"></div>
+          <div class="field"><label>IBAN</label><input id="companyIban" type="text"></div>
+          <div class="field"><label>SWIFT</label><input id="companySwift" type="text"></div>
+          <div class="field"><label>Prefix faktúr</label><input id="companyInvoicePrefix" type="text" placeholder="2026-"></div>
+          <div class="field"><label>Počítadlo faktúr</label><input id="companyInvoiceCounter" type="number" value="0"></div>
+          <div class="field"><label>Prefix dodacích listov</label><input id="companyDeliveryPrefix" type="text" placeholder="DL-2026-"></div>
+          <div class="field"><label>Počítadlo dodacích listov</label><input id="companyDeliveryCounter" type="number" value="0"></div>
+          <div class="field" style="grid-column:1/-1"><label>Poznámka</label><textarea id="companyNote"></textarea></div>
+        </div>
+        <div class="btn-row" style="margin-top:12px">
+          <button id="saveCompanyBtn" class="btn btn-primary">Uložiť firmu</button>
+          <button id="resetCompanyBtn" class="btn btn-dark">Vyčistiť</button>
+        </div>
+      </div>
+      <div class="card"><h3>Zoznam firiem</h3><div id="companiesList" class="list"></div></div>
+    </div>
+  </section>
+
+  <section id="screenCustomers" class="screen hidden">
+    <div class="hero"><h1>Klienti</h1><p>Klienti sú viazaní na aktívnu firmu a ukladajú sa do cloudu.</p></div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Pridať / upraviť klienta</h3>
+        <input type="hidden" id="customerId">
+        <div id="customersActiveNotice" class="notice">Najprv si nastav aktívnu firmu.</div>
+        <div class="form-grid" style="margin-top:12px">
+          <div class="field"><label>Názov klienta</label><input id="customerFormName" type="text"></div>
+          <div class="field"><label>Ulica</label><input id="customerFormStreet" type="text"></div>
+          <div class="field"><label>Mesto</label><input id="customerFormCity" type="text"></div>
+          <div class="field"><label>PSČ</label><input id="customerFormZip" type="text"></div>
+          <div class="field"><label>Štát</label><input id="customerFormCountry" type="text" value="Slovensko"></div>
+          <div class="field"><label>IČO</label><input id="customerFormIco" type="text"></div>
+          <div class="field"><label>DIČ</label><input id="customerFormDic" type="text"></div>
+          <div class="field"><label>IČ DPH</label><input id="customerFormVat" type="text"></div>
+          <div class="field"><label>Email</label><input id="customerFormEmail" type="text"></div>
+          <div class="field"><label>Telefón</label><input id="customerFormPhone" type="text"></div>
+          <div class="field" style="grid-column:1/-1"><label>Poznámka</label><textarea id="customerFormNote"></textarea></div>
+        </div>
+        <div class="btn-row" style="margin-top:12px">
+          <button id="saveCustomerBtn2" class="btn btn-primary">Uložiť klienta</button>
+          <button id="resetCustomerBtn2" class="btn btn-dark">Vyčistiť</button>
+        </div>
+      </div>
+      <div class="card"><h3>Klienti aktívnej firmy</h3><div id="customersList" class="list"></div></div>
+    </div>
+  </section>
+
+  <section id="screenInvoice" class="screen hidden">
+    <div class="hero"><h1>Nová faktúra</h1><p>Draft ostáva lokálne, ale uloženie faktúry ide len do cloudu.</p></div>
+    <input type="hidden" id="editingInvoiceId"><input type="hidden" id="editingInvoiceCreatedAt">
+    <div class="card"><h3>Aktívna firma</h3><div id="invoiceActiveCompanyBox" class="notice">Najprv si nastav aktívnu firmu.</div></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Dodávateľ</h3>
+        <div class="form-grid">
+          <div class="field"><label>Názov</label><input id="supplierName" type="text"></div>
+          <div class="field"><label>Ulica</label><input id="supplierStreet" type="text"></div>
+          <div class="field"><label>Mesto</label><input id="supplierCity" type="text"></div>
+          <div class="field"><label>PSČ</label><input id="supplierZip" type="text"></div>
+          <div class="field"><label>Štát</label><input id="supplierCountry" type="text"></div>
+          <div class="field"><label>IČO</label><input id="supplierIco" type="text"></div>
+          <div class="field"><label>DIČ</label><input id="supplierDic" type="text"></div>
+          <div class="field"><label>IČ DPH</label><input id="supplierVat" type="text"></div>
+          <div class="field"><label>Email</label><input id="supplierEmail" type="text"></div>
+          <div class="field"><label>Telefón</label><input id="supplierPhone" type="text"></div>
+          <div class="field"><label>Banka</label><input id="supplierBank" type="text"></div>
+          <div class="field"><label>IBAN</label><input id="supplierIban" type="text"></div>
+          <div class="field"><label>SWIFT</label><input id="supplierSwift" type="text"></div>
+          <div class="field"><label>Web</label><input id="supplierWeb" type="text"></div>
+          <div class="field" style="grid-column:1/-1"><label>Poznámka</label><textarea id="supplierNote"></textarea></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Odberateľ</h3>
+        <div class="form-grid">
+          <div class="field" style="grid-column:1/-1"><label>Vybrať klienta</label><select id="invoiceCustomerSelect"><option value="">-- Vyberte klienta --</option></select></div>
+          <div class="field"><label>Názov</label><input id="customerName" type="text"></div>
+          <div class="field"><label>Ulica</label><input id="customerStreet" type="text"></div>
+          <div class="field"><label>Mesto</label><input id="customerCity" type="text"></div>
+          <div class="field"><label>PSČ</label><input id="customerZip" type="text"></div>
+          <div class="field"><label>Štát</label><input id="customerCountry" type="text" value="Slovensko"></div>
+          <div class="field"><label>IČO</label><input id="customerIco" type="text"></div>
+          <div class="field"><label>DIČ</label><input id="customerDic" type="text"></div>
+          <div class="field"><label>IČ DPH</label><input id="customerVat" type="text"></div>
+          <div class="field"><label>Email</label><input id="customerEmail" type="text"></div>
+          <div class="field"><label>Telefón</label><input id="customerPhone" type="text"></div>
+          <div class="field" style="grid-column:1/-1"><label>Poznámka</label><textarea id="customerNote"></textarea></div>
+        </div>
+        <div class="btn-row" style="margin-top:12px">
+          <button id="saveCustomerFromInvoiceBtn" class="btn btn-secondary">Uložiť klienta</button>
+          <button id="clearCustomerFromInvoiceBtn" class="btn btn-dark">Vyčistiť klienta</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Základné údaje</h3>
+        <div class="form-grid">
+          <div class="field"><label>Číslo faktúry</label><input id="invoiceNumber" type="text"></div>
+          <div class="field"><label>Typ dokladu</label><select id="invoiceType"><option>Faktúra</option><option>Zálohová faktúra</option><option>Dobropis</option></select></div>
+          <div class="field"><label>Variabilný symbol</label><input id="invoiceVariable" type="text"></div>
+          <div class="field"><label>Konštantný symbol</label><input id="invoiceConstant" type="text"></div>
+          <div class="field"><label>Dátum vystavenia</label><input id="invoiceIssuedDate" type="date"></div>
+          <div class="field"><label>Dátum dodania</label><input id="invoiceDeliveryDate" type="date"></div>
+          <div class="field"><label>Dátum splatnosti</label><input id="invoiceDueDate" type="date"></div>
+          <div class="field"><label>Objednávka</label><input id="invoiceOrderNumber" type="text"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Platba</h3>
+        <div class="form-grid">
+          <div class="field"><label>Mena</label><select id="invoiceCurrency"><option>EUR</option></select></div>
+          <div class="field"><label>Forma úhrady</label><select id="invoicePayment"><option>peňažný prevod</option><option>hotovosť</option></select></div>
+          <div class="field"><label>QR režim</label><select id="invoiceQr"><option value="epc">SEPA / EPC QR</option><option value="none">nie</option></select></div>
+          <div class="field"><label>Už uhradené</label><input id="invoicePaid" type="number" step="0.01" value="0"></div>
+          <div class="field"><label>Zľava %</label><input id="invoiceDiscount" type="number" step="0.01" value="0"></div>
+          <div class="field"><label>Zaokrúhlenie</label><select id="invoiceRounding"><option value="none">žiadne</option></select></div>
+        </div>
+        <div class="notice" style="margin-top:12px">QR sa generuje z IBAN, SWIFT, EUR, sumy, splatnosti a VS.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Položky faktúry</h3>
+      <div class="toolbar">
+        <select id="savedItemSelect"><option value="">-- Vyberte položku z cenníka --</option></select>
+        <button id="addSelectedCatalogItemBtn" class="btn btn-secondary">Pridať z cenníka</button>
+        <input id="newCatalogName" type="text" placeholder="Názov položky na uloženie do cenníka">
+        <button id="addCatalogItemBtn" class="btn btn-secondary">Uložiť do cenníka</button>
+        <button id="addInvoiceItemBtn" class="btn btn-good">+ Pridať položku</button>
+      </div>
+      <div id="invoiceItemsWrap" class="list" style="margin-top:12px"></div>
+      <div class="totals">
+        Medzisúčet: <strong id="invoiceSubtotalValue">0.00 EUR</strong><br>
+        Zľava: <strong id="invoiceDiscountValue">0.00 EUR</strong><br>
+        Spolu: <strong id="invoiceTotalValue">0.00 EUR</strong><br>
+        K úhrade: <strong id="invoiceDueValue">0.00 EUR</strong>
+      </div>
+    </div>
+
+    <div class="sticky-actionbar"><div class="btn-row">
+      <button id="recalcInvoiceBtn" class="btn btn-good">Prepočítať</button>
+      <button id="clearInvoiceBtn" class="btn btn-dark">Vyčistiť formulár</button>
+      <button id="clearDraftBtn" class="btn btn-dark">Zmazať draft</button>
+      <button id="saveInvoiceBtn" class="btn btn-primary">Uložiť faktúru</button>
+      <button id="createDeliveryFromInvoiceBtn" class="btn btn-secondary">Vytvoriť dodací list</button>
+      <button id="previewInvoiceBtn" class="btn btn-secondary">Uložiť a zobraziť PDF</button>
+    </div></div>
+  </section>
+
+  <section id="screenInvoices" class="screen hidden">
+    <div class="hero"><h1>Faktúry</h1><p>Všetky faktúry sa čítajú a ukladajú z cloudu.</p></div>
+    <div class="card">
+      <div class="form-grid">
+        <div class="field"><label>Hľadať</label><input id="invoiceSearchInput" type="search" placeholder="Číslo alebo klient"></div>
+        <div class="field"><label>Dátum od</label><input id="invoiceFilterDateFrom" type="date"></div>
+        <div class="field"><label>Dátum do</label><input id="invoiceFilterDateTo" type="date"></div>
+        <div class="field"><label>&nbsp;</label><button id="clearInvoiceFiltersBtn" class="btn btn-dark" style="width:100%">Vyčistiť filtre</button></div>
+      </div>
+    </div>
+    <div class="card"><h3>Uložené faktúry</h3><div id="invoicesList" class="list"></div></div>
+  </section>
+
+  <section id="screenDelivery" class="screen hidden">
+    <div class="hero"><h1>Dodacie listy</h1><p>Dodacie listy idú do cloudu rovnako ako faktúry.</p></div>
+    <div class="split">
+      <div class="card">
+        <h3>Nový dodací list</h3>
+        <input id="editingDeliveryId" type="hidden">
+        <div class="form-grid">
+          <div class="field"><label>Číslo dodacieho listu</label><input id="deliveryNumber" type="text"></div>
+          <div class="field"><label>Dátum</label><input id="deliveryDate" type="date"></div>
+          <div class="field"><label>Odberateľ</label><select id="deliveryCustomerSelect"><option value="">-- Vyberte klienta --</option></select></div>
+          <div class="field"><label>Zdrojová faktúra</label><input id="deliverySourceInvoiceInfo" type="text" readonly></div>
+          <div class="field" style="grid-column:1/-1"><label>Poznámka</label><textarea id="deliveryNote"></textarea></div>
+        </div>
+        <div id="deliveryItemsInfo" class="notice" style="margin-top:12px">Položky dodacieho listu sa preberajú z aktuálnej alebo vybratej faktúry.</div>
+        <div id="deliveryItemsPreview" class="list" style="margin-top:12px"></div>
+        <div class="btn-row" style="margin-top:12px">
+          <button id="saveDeliveryBtn" class="btn btn-primary">Uložiť dodací list</button>
+          <button id="loadInvoiceItemsToDeliveryBtn" class="btn btn-secondary">Načítať položky z aktuálnej faktúry</button>
+          <button id="clearDeliveryFormBtn" class="btn btn-dark">Vyčistiť</button>
+        </div>
+      </div>
+      <div class="card"><h3>Uložené dodacie listy</h3><div id="deliveryList" class="list"></div></div>
+    </div>
+  </section>
+
+  <section id="screenSettings" class="screen hidden">
+    <div class="hero"><h1>Nastavenia</h1><p>Draft ostáva lokálne, cenník a dokumenty sú cloud-first.</p></div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Predvolené hodnoty</h3>
+        <div class="form-grid">
+          <div class="field"><label>Predvolená jednotka</label><input id="defaultUnitInput" type="text" value="ks"></div>
+          <div class="field"><label>Predvolená splatnosť (dni)</label><input id="defaultDueDaysInput" type="number" value="14"></div>
+          <div class="field"><label>Predvolený QR režim</label><select id="defaultQrInput"><option value="epc">SEPA / EPC QR</option><option value="none">nie</option></select></div>
+          <div class="field"><label>Text uhradenej faktúry</label><input id="paidLabelInput" type="text" value="UŽ UHRADENÉ"></div>
+        </div>
+        <div class="btn-row" style="margin-top:12px"><button id="saveSettingsBtn" class="btn btn-primary">Uložiť nastavenia</button></div>
+      </div>
+      <div class="card"><h3>Cenník položiek</h3><div id="catalogList" class="list"></div></div>
+    </div>
+    <div class="card">
+      <h3>Cloud akcie</h3>
+      <div class="btn-row">
+        <button id="refreshCloudBtn" class="btn btn-dark">Obnoviť z cloudu</button>
+        <button id="exportJsonBtn" class="btn btn-primary">Export JSON</button>
+        <button id="showApiHelpBtn" class="btn btn-secondary">Aké endpointy treba</button>
+      </div>
+      <div id="apiHelpBox" class="notice hidden" style="margin-top:12px">
+        Táto verzia očakáva aj cloud endpointy:
+        <br>/api/deliveries GET/POST a /api/deliveries/{id} DELETE
+        <br>/api/catalog-items GET/POST a /api/catalog-items/{id} DELETE
+        <br>Firmy, klienti a faktúry už v pôvodnom kóde Worker používali.
+      </div>
+    </div>
+  </section>
+
+  <section id="screenPdf" class="screen hidden">
+    <div class="hero"><h1>PDF náhľad</h1><p>Dokument môžeš vytlačiť alebo uložiť cez systémové PDF.</p></div>
+    <div class="btn-row" style="margin-bottom:12px"><button id="printPdfBtn" class="btn btn-primary">Tlačiť / Uložiť PDF</button></div>
+    <div class="card"><div id="pdfPreviewContainer" class="pdf"><p>Najprv ulož faktúru alebo dodací list.</p></div></div>
+  </section>
+</div>
+
+<script>
+const API_BASE = "https://platinum-lech-api.virivkyonlinecz.workers.dev";
+const DRAFT_KEY = "plf_draft_invoice_only_local";
+const SETTINGS_KEY = "plf_settings_only_local";
+const TIMEOUT_MS = 15000;
+
+const state = {
+  companies: [],
+  customersByCompany: {},
+  invoicesByCompany: {},
+  deliveriesByCompany: {},
+  catalogItems: [],
+  activeCompanyId: null,
+  invoiceItems: [],
+  deliveryWorkingItems: [],
+  pendingDeliverySourceInvoiceId: "",
+  lastPreviewDoc: null,
+  settings: { defaultUnit:"ks", defaultDueDays:14, defaultQr:"epc", paidLabel:"UŽ UHRADENÉ" },
+  draftInvoiceByCompany: {},
+  saveTimer: null
+};
+
+const $ = (id) => document.getElementById(id);
+function safeParse(v, fallback){ try{ const p = JSON.parse(v); return p ?? fallback; }catch{return fallback; } }
+function uid(prefix){ return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`; }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function addDaysISO(base, days){ const d = new Date(base || Date.now()); d.setDate(d.getDate() + Number(days || 0)); return d.toISOString().slice(0,10); }
+function escapeHtml(v){ return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;"); }
+function currencyFormat(v, c="EUR"){ return `${Number(v || 0).toFixed(2)} ${c}`; }
+function normalizeIban(v){ return String(v || "").replace(/\s+/g, "").toUpperCase(); }
+function isValidEmail(v){ if(!v) return true; return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v).trim()); }
+function isValidIban(v){ if(!v) return true; return /^[A-Z]{2}[0-9A-Z]{13,32}$/.test(normalizeIban(v)); }
+function setCloudState(text, cls="ok"){ const el=$("cloudState"); el.textContent=text; el.className=`badge ${cls}`; }
+function setSaveState(text, cls="dark"){ const el=$("saveState"); el.textContent=text; el.className=`badge ${cls}`; }
+function getActiveCompany(){ return state.companies.find(c => c.id === state.activeCompanyId) || null; }
+function getCustomers(){ return state.activeCompanyId ? (state.customersByCompany[state.activeCompanyId] || []) : []; }
+function getInvoices(){ return state.activeCompanyId ? (state.invoicesByCompany[state.activeCompanyId] || []) : []; }
+function getDeliveries(){ return state.activeCompanyId ? (state.deliveriesByCompany[state.activeCompanyId] || []) : []; }
+function getDraft(){ return state.activeCompanyId ? (state.draftInvoiceByCompany[state.activeCompanyId] || null) : null; }
+function createEmptyItem(){ return { id:uid("item"), description:"", unit:state.settings.defaultUnit || "ks", quantity:1, price:0, vatRate:0 }; }
+
+function loadLocalAux(){
+  state.settings = { ...state.settings, ...safeParse(localStorage.getItem(SETTINGS_KEY), {}) };
+  state.draftInvoiceByCompany = safeParse(localStorage.getItem(DRAFT_KEY), {});
+}
+function saveLocalAux(){
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
+  localStorage.setItem(DRAFT_KEY, JSON.stringify(state.draftInvoiceByCompany));
+}
+
+function apiUrl(path, params){
+  const url = new URL(path, API_BASE);
+  if(params) Object.entries(params).forEach(([k,v]) => { if(v !== undefined && v !== null && v !== "") url.searchParams.set(k, String(v)); });
+  return url.toString();
+}
+async function apiFetchJson(path, options={}, params=null){
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  try{
+    const response = await fetch(apiUrl(path, params), { headers:{ "Content-Type":"application/json", ...(options.headers || {}) }, signal: controller.signal, ...options });
+    const raw = await response.text();
+    let parsed = null; try{ parsed = raw ? JSON.parse(raw) : null; }catch{}
+    if(!response.ok || parsed?.ok === false) throw new Error(parsed?.error || parsed?.detail || `HTTP ${response.status}`);
+    return parsed;
+  } finally { clearTimeout(timeout); }
+}
+async function apiEnsureDatabase(){ try{ await apiFetchJson("/api/init", { method:"POST", body:"{}" }); }catch(e){ console.warn(e); } }
+
+async function refreshAllFromCloud(){
+  setCloudState("Načítavam cloud...", "warn");
+  await apiEnsureDatabase();
+
+  const [companiesRes, catalogRes] = await Promise.all([
+    apiFetchJson("/api/companies", { method:"GET" }),
+    apiFetchJson("/api/catalog-items", { method:"GET" }).catch(() => ({ items: [] }))
+  ]);
+
+  state.companies = Array.isArray(companiesRes?.companies) ? companiesRes.companies : [];
+  state.catalogItems = Array.isArray(catalogRes?.items) ? catalogRes.items : [];
+
+  const customersByCompany = {};
+  const invoicesByCompany = {};
+  const deliveriesByCompany = {};
+
+  for(const company of state.companies){
+    const [custRes, invRes, delRes] = await Promise.all([
+      apiFetchJson("/api/customers", { method:"GET" }, { companyId: company.id }),
+      apiFetchJson("/api/invoices", { method:"GET" }, { companyId: company.id }),
+      apiFetchJson("/api/deliveries", { method:"GET" }, { companyId: company.id }).catch(() => ({ deliveries: [] }))
+    ]);
+    customersByCompany[company.id] = Array.isArray(custRes?.customers) ? custRes.customers : [];
+    invoicesByCompany[company.id] = Array.isArray(invRes?.invoices) ? invRes.invoices : [];
+    deliveriesByCompany[company.id] = Array.isArray(delRes?.deliveries) ? delRes.deliveries : [];
+  }
+
+  state.customersByCompany = customersByCompany;
+  state.invoicesByCompany = invoicesByCompany;
+  state.deliveriesByCompany = deliveriesByCompany;
+  if(state.activeCompanyId && !state.companies.some(c => c.id === state.activeCompanyId)) state.activeCompanyId = null;
+  if(!state.activeCompanyId && state.companies.length) state.activeCompanyId = state.companies[0].id;
+  setCloudState("Cloud pripojený", "ok");
+}
+
+function ensureDefaults(){
+  $("defaultUnitInput").value = state.settings.defaultUnit || "ks";
+  $("defaultDueDaysInput").value = String(state.settings.defaultDueDays || 14);
+  $("defaultQrInput").value = state.settings.defaultQr || "epc";
+  $("paidLabelInput").value = state.settings.paidLabel || "UŽ UHRADENÉ";
+  if(!$("invoiceIssuedDate").value) $("invoiceIssuedDate").value = todayISO();
+  if(!$("invoiceDeliveryDate").value) $("invoiceDeliveryDate").value = todayISO();
+  if(!$("invoiceDueDate").value) $("invoiceDueDate").value = addDaysISO(todayISO(), state.settings.defaultDueDays || 14);
+  if(!$("invoiceQr").value) $("invoiceQr").value = state.settings.defaultQr || "epc";
+  if(!$("deliveryDate").value) $("deliveryDate").value = todayISO();
+}
+function showScreen(name){
+  const alias = { dashboard:"screenDashboard", invoice:"screenInvoice", invoices:"screenInvoices", delivery:"screenDelivery", companies:"screenCompanies", customers:"screenCustomers", settings:"screenSettings", pdf:"screenPdf", dashboardScreen:"screenDashboard", invoiceScreen:"screenInvoice", invoicesScreen:"screenInvoices", deliveryScreen:"screenDelivery", companiesScreen:"screenCompanies", customersScreen:"screenCustomers", settingsScreen:"screenSettings", pdfScreen:"screenPdf" };
+  const id = alias[name] || name;
+  document.querySelectorAll(".screen").forEach(el => el.classList.add("hidden"));
+  const target = $(id) || $("screenDashboard");
+  target.classList.remove("hidden");
+  document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.screen === target.id));
+  if(target.id === "screenPdf") renderPdfPreview(state.lastPreviewDoc);
+  window.scrollTo({ top:0, behavior:"smooth" });
+}
+function bindNavigation(){ document.querySelectorAll("[data-screen]").forEach(btn => btn.addEventListener("click", (e) => { e.preventDefault(); showScreen(btn.dataset.screen); })); }
+
+function fillSupplier(company){
+  $("supplierName").value = company?.name || ""; $("supplierStreet").value = company?.street || ""; $("supplierCity").value = company?.city || ""; $("supplierZip").value = company?.zip || ""; $("supplierCountry").value = company?.country || "";
+  $("supplierIco").value = company?.ico || ""; $("supplierDic").value = company?.dic || ""; $("supplierVat").value = company?.vat || ""; $("supplierEmail").value = company?.email || ""; $("supplierPhone").value = company?.phone || "";
+  $("supplierBank").value = company?.bank || ""; $("supplierIban").value = company?.iban || ""; $("supplierSwift").value = company?.swift || ""; $("supplierWeb").value = company?.web || ""; $("supplierNote").value = company?.note || "";
+}
+function fillSupplierFromActiveCompany(){ fillSupplier(getActiveCompany() || {}); }
+function fillInvoiceCustomerFields(c){
+  $("customerName").value = c?.name || ""; $("customerStreet").value = c?.street || ""; $("customerCity").value = c?.city || ""; $("customerZip").value = c?.zip || ""; $("customerCountry").value = c?.country || "Slovensko";
+  $("customerIco").value = c?.ico || ""; $("customerDic").value = c?.dic || ""; $("customerVat").value = c?.vat || ""; $("customerEmail").value = c?.email || ""; $("customerPhone").value = c?.phone || ""; $("customerNote").value = c?.note || "";
+}
+function resetInvoiceCustomerFields(){
+  $("invoiceCustomerSelect").value = "";
+  ["customerName","customerStreet","customerCity","customerZip","customerIco","customerDic","customerVat","customerEmail","customerPhone","customerNote"].forEach(id => $(id).value = "");
+  $("customerCountry").value = "Slovensko";
+}
+
+function renderDashboard(){
+  $("statCompanies").textContent = state.companies.length;
+  $("statCustomers").textContent = getCustomers().length;
+  $("statInvoices").textContent = getInvoices().length;
+  $("statDeliveries").textContent = getDeliveries().length;
+  $("statCatalog").textContent = state.catalogItems.length;
+  const c = getActiveCompany();
+  $("activeCompanyCard").innerHTML = c ? `<strong>${escapeHtml(c.name)}</strong><br><span>${escapeHtml([c.street,c.city,c.zip,c.country].filter(Boolean).join(", "))}</span><br><span>IBAN: ${escapeHtml(c.iban || "-")} • Email: ${escapeHtml(c.email || "-")}</span>` : "Nemáš zvolenú aktívnu firmu.";
+  $("invoiceActiveCompanyBox").innerHTML = c ? `<strong>${escapeHtml(c.name)}</strong><br><span>${escapeHtml([c.street,c.city,c.zip,c.country].filter(Boolean).join(", "))}</span>` : "Najprv si nastav aktívnu firmu.";
+}
+function renderCompanies(){
+  const list = $("companiesList");
+  if(!state.companies.length){ list.innerHTML = '<div class="notice">Zatiaľ nemáš uloženú žiadnu firmu.</div>'; return; }
+  list.innerHTML = "";
+  state.companies.forEach(c => {
+    const row = document.createElement("div");
+    row.className = "rowcard";
+    row.innerHTML = `<div class="rowcard-top"><div><div class="rowcard-title">${escapeHtml(c.name)}</div><div class="meta">${escapeHtml([c.street,c.city,c.zip,c.country].filter(Boolean).join(", "))}\nIBAN: ${escapeHtml(c.iban || "-")} • SWIFT: ${escapeHtml(c.swift || "-")}\nEmail: ${escapeHtml(c.email || "-")}</div></div><div class="btn-row"><button class="btn ${state.activeCompanyId === c.id ? "btn-good" : "btn-secondary"} btn-small" data-set-active="${c.id}">${state.activeCompanyId === c.id ? "Aktívna" : "Nastaviť"}</button><button class="btn btn-dark btn-small" data-edit-company="${c.id}">Upraviť</button><button class="btn btn-bad btn-small" data-delete-company="${c.id}">Zmazať</button></div></div>`;
+    list.appendChild(row);
+  });
+  list.querySelectorAll("[data-set-active]").forEach(btn => btn.addEventListener("click", () => { state.activeCompanyId = btn.dataset.setActive; fillSupplierFromActiveCompany(); ensureInvoiceNumber(); ensureDeliveryNumber(); const draft=getDraft(); if(draft) applyInvoiceDraft(draft); renderAll(); }));
+  list.querySelectorAll("[data-edit-company]").forEach(btn => btn.addEventListener("click", () => {
+    const c = state.companies.find(x => x.id === btn.dataset.editCompany); if(!c) return;
+    $("companyId").value = c.id || ""; $("companyName").value = c.name || ""; $("companyStreet").value = c.street || ""; $("companyCity").value = c.city || ""; $("companyZip").value = c.zip || ""; $("companyCountry").value = c.country || "Slovensko";
+    $("companyIco").value = c.ico || ""; $("companyDic").value = c.dic || ""; $("companyVat").value = c.vat || ""; $("companyEmail").value = c.email || ""; $("companyPhone").value = c.phone || ""; $("companyWeb").value = c.web || "";
+    $("companyBank").value = c.bank || ""; $("companyIban").value = c.iban || ""; $("companySwift").value = c.swift || ""; $("companyInvoicePrefix").value = c.invoicePrefix || ""; $("companyInvoiceCounter").value = c.invoiceCounter || 0; $("companyDeliveryPrefix").value = c.deliveryPrefix || ""; $("companyDeliveryCounter").value = c.deliveryCounter || 0; $("companyNote").value = c.note || "";
+    window.scrollTo({ top:0, behavior:"smooth" });
+  }));
+  list.querySelectorAll("[data-delete-company]").forEach(btn => btn.addEventListener("click", async () => { if(confirm("Zmazať firmu?")) await deleteCompany(btn.dataset.deleteCompany); }));
+}
+function renderCustomers(){
+  $("customersActiveNotice").textContent = getActiveCompany() ? `Aktívna firma: ${getActiveCompany().name}` : "Najprv si nastav aktívnu firmu.";
+  const list = $("customersList");
+  const customers = getCustomers();
+  if(!customers.length){ list.innerHTML = '<div class="notice">Zatiaľ nemáš klientov pre aktívnu firmu.</div>'; return; }
+  list.innerHTML = "";
+  customers.forEach(c => {
+    const row = document.createElement("div");
+    row.className = "rowcard";
+    row.innerHTML = `<div class="rowcard-top"><div><div class="rowcard-title">${escapeHtml(c.name)}</div><div class="meta">${escapeHtml([c.street,c.city,c.zip,c.country].filter(Boolean).join(", "))}\nEmail: ${escapeHtml(c.email || "-")} • Telefón: ${escapeHtml(c.phone || "-")}</div></div><div class="btn-row"><button class="btn btn-dark btn-small" data-edit-customer="${c.id}">Upraviť</button><button class="btn btn-secondary btn-small" data-use-customer="${c.id}">Použiť</button><button class="btn btn-bad btn-small" data-delete-customer="${c.id}">Zmazať</button></div></div>`;
+    list.appendChild(row);
+  });
+  list.querySelectorAll("[data-edit-customer]").forEach(btn => btn.addEventListener("click", () => {
+    const c = customers.find(x => x.id === btn.dataset.editCustomer); if(!c) return;
+    $("customerId").value = c.id || ""; $("customerFormName").value = c.name || ""; $("customerFormStreet").value = c.street || ""; $("customerFormCity").value = c.city || ""; $("customerFormZip").value = c.zip || ""; $("customerFormCountry").value = c.country || "Slovensko"; $("customerFormIco").value = c.ico || ""; $("customerFormDic").value = c.dic || ""; $("customerFormVat").value = c.vat || ""; $("customerFormEmail").value = c.email || ""; $("customerFormPhone").value = c.phone || ""; $("customerFormNote").value = c.note || "";
+  }));
+  list.querySelectorAll("[data-use-customer]").forEach(btn => btn.addEventListener("click", () => {
+    const c = customers.find(x => x.id === btn.dataset.useCustomer); if(!c) return; $("invoiceCustomerSelect").value = c.id; fillInvoiceCustomerFields(c); showScreen("screenInvoice");
+  }));
+  list.querySelectorAll("[data-delete-customer]").forEach(btn => btn.addEventListener("click", async () => { if(confirm("Zmazať klienta?")) await deleteCustomer(btn.dataset.deleteCustomer); }));
+}
+function renderInvoiceCustomerSelect(){
+  const select = $("invoiceCustomerSelect"); const current = select.value; select.innerHTML = '<option value="">-- Vyberte klienta --</option>';
+  getCustomers().forEach(c => { const opt = document.createElement("option"); opt.value = c.id; opt.textContent = c.name; select.appendChild(opt); });
+  if(current && getCustomers().some(x => x.id === current)) select.value = current;
+}
+function renderDeliveryCustomerSelect(){
+  const select = $("deliveryCustomerSelect"); const current = select.value; select.innerHTML = '<option value="">-- Vyberte klienta --</option>';
+  getCustomers().forEach(c => { const opt = document.createElement("option"); opt.value = c.id; opt.textContent = c.name; select.appendChild(opt); });
+  if(current && getCustomers().some(x => x.id === current)) select.value = current;
+}
+
+function calculateTotals(){
+  const subtotal = state.invoiceItems.reduce((sum, item) => sum + Number(item.quantity || 0) * Number(item.price || 0), 0);
+  const discountPercent = Number($("invoiceDiscount").value || 0); const discountValue = subtotal * (discountPercent / 100); const total = subtotal - discountValue; const paid = Number($("invoicePaid").value || 0); const due = Math.max(total - paid, 0);
+  return { subtotal, discountValue, total, due };
+}
+function recalcInvoiceTotals(){
+  const t = calculateTotals(); const c = $("invoiceCurrency").value || "EUR";
+  $("invoiceSubtotalValue").textContent = currencyFormat(t.subtotal, c); $("invoiceDiscountValue").textContent = currencyFormat(t.discountValue, c); $("invoiceTotalValue").textContent = currencyFormat(t.total, c); $("invoiceDueValue").textContent = currencyFormat(t.due, c);
+  return t;
+}
+function renderInvoiceItems(){
+  const wrap = $("invoiceItemsWrap"); if(!state.invoiceItems.length) state.invoiceItems = [createEmptyItem()]; wrap.innerHTML = "";
+  state.invoiceItems.forEach((item, index) => {
+    const box = document.createElement("div"); box.className = "item";
+    box.innerHTML = `<div class="rowcard-top" style="margin-bottom:10px"><div class="rowcard-title">Položka ${index+1}</div><div class="btn-row"><button class="btn btn-dark btn-small" data-up="${item.id}">↑</button><button class="btn btn-dark btn-small" data-down="${item.id}">↓</button><button class="btn btn-bad btn-small" data-remove="${item.id}">Zmazať</button></div></div><div class="invoice-item-grid"><textarea data-field="description" data-id="${item.id}" placeholder="Popis položky">${escapeHtml(item.description)}</textarea><input type="number" step="0.01" data-field="quantity" data-id="${item.id}" value="${Number(item.quantity || 0)}"><input type="text" data-field="unit" data-id="${item.id}" value="${escapeHtml(item.unit || "")}"><input type="number" step="0.01" data-field="price" data-id="${item.id}" value="${Number(item.price || 0)}"><input type="number" step="0.01" data-field="vatRate" data-id="${item.id}" value="${Number(item.vatRate || 0)}"><div class="notice">Spolu<br><strong>${currencyFormat(Number(item.quantity || 0) * Number(item.price || 0), $("invoiceCurrency").value || "EUR")}</strong></div></div>`;
+    wrap.appendChild(box);
+  });
+  wrap.querySelectorAll("[data-field]").forEach(el => el.addEventListener("input", () => {
+    const item = state.invoiceItems.find(x => x.id === el.dataset.id); if(!item) return; item[el.dataset.field] = ["quantity","price","vatRate"].includes(el.dataset.field) ? Number(el.value || 0) : el.value; recalcInvoiceTotals(); debounceDraft(); renderDeliveryItemsPreview();
+  }));
+  wrap.querySelectorAll("[data-remove]").forEach(btn => btn.addEventListener("click", () => { state.invoiceItems = state.invoiceItems.filter(x => x.id !== btn.dataset.remove); if(!state.invoiceItems.length) state.invoiceItems = [createEmptyItem()]; renderInvoiceItems(); recalcInvoiceTotals(); debounceDraft(); }));
+  wrap.querySelectorAll("[data-up]").forEach(btn => btn.addEventListener("click", () => { const idx = state.invoiceItems.findIndex(x => x.id === btn.dataset.up); if(idx > 0){ [state.invoiceItems[idx-1], state.invoiceItems[idx]] = [state.invoiceItems[idx], state.invoiceItems[idx-1]]; renderInvoiceItems(); debounceDraft(); } }));
+  wrap.querySelectorAll("[data-down]").forEach(btn => btn.addEventListener("click", () => { const idx = state.invoiceItems.findIndex(x => x.id === btn.dataset.down); if(idx >=0 && idx < state.invoiceItems.length-1){ [state.invoiceItems[idx+1], state.invoiceItems[idx]] = [state.invoiceItems[idx], state.invoiceItems[idx+1]]; renderInvoiceItems(); debounceDraft(); } }));
+}
+function renderCatalog(){
+  const select = $("savedItemSelect"); const current = select.value; select.innerHTML = '<option value="">-- Vyberte položku z cenníka --</option>';
+  state.catalogItems.forEach(item => { const opt = document.createElement("option"); opt.value = item.id; opt.textContent = `${item.name} • ${Number(item.price || 0).toFixed(2)} ${item.unit || "ks"}`; select.appendChild(opt); });
+  if(current && state.catalogItems.some(x => x.id === current)) select.value = current;
+  const list = $("catalogList");
+  if(!state.catalogItems.length){ list.innerHTML = '<div class="notice">V cenníku zatiaľ nič nie je.</div>'; return; }
+  list.innerHTML = "";
+  state.catalogItems.forEach(item => {
+    const row = document.createElement("div"); row.className = "rowcard";
+    row.innerHTML = `<div class="rowcard-top"><div><div class="rowcard-title">${escapeHtml(item.name)}</div><div class="meta">Jednotka: ${escapeHtml(item.unit || "ks")} • Cena: ${currencyFormat(item.price || 0)} • DPH: ${Number(item.vatRate || 0)}%</div></div><div class="btn-row"><button class="btn btn-secondary btn-small" data-use-catalog="${item.id}">Použiť</button><button class="btn btn-bad btn-small" data-delete-catalog="${item.id}">Zmazať</button></div></div>`;
+    list.appendChild(row);
+  });
+  list.querySelectorAll("[data-use-catalog]").forEach(btn => btn.addEventListener("click", () => { $("savedItemSelect").value = btn.dataset.useCatalog; addSelectedCatalogItem(); showScreen("screenInvoice"); }));
+  list.querySelectorAll("[data-delete-catalog]").forEach(btn => btn.addEventListener("click", async () => { if(confirm("Zmazať položku z cenníka?")) await deleteCatalogItem(btn.dataset.deleteCatalog); }));
+}
+function renderInvoices(){
+  let invoices = [...getInvoices()];
+  const q = $("invoiceSearchInput").value.trim().toLowerCase(); const from = $("invoiceFilterDateFrom").value; const to = $("invoiceFilterDateTo").value;
+  if(q) invoices = invoices.filter(inv => String(inv.number || "").toLowerCase().includes(q) || String(inv.customer?.name || "").toLowerCase().includes(q));
+  if(from) invoices = invoices.filter(inv => (inv.issuedDate || "") >= from); if(to) invoices = invoices.filter(inv => (inv.issuedDate || "") <= to);
+  const list = $("invoicesList");
+  if(!invoices.length){ list.innerHTML = '<div class="notice">Nenašli sa žiadne faktúry.</div>'; return; }
+  list.innerHTML = "";
+  invoices.forEach(inv => {
+    const row = document.createElement("div"); row.className = "rowcard";
+    row.innerHTML = `<div class="rowcard-top"><div><div class="rowcard-title">${escapeHtml(inv.number || "-")} • ${escapeHtml(inv.customer?.name || "Bez klienta")}</div><div class="meta">Vystavené: ${escapeHtml(inv.issuedDate || "-")} • Splatnosť: ${escapeHtml(inv.dueDate || "-")}\nSpolu: ${currencyFormat(inv.totals?.total || 0, inv.currency || "EUR")} • K úhrade: ${currencyFormat(inv.totals?.due || 0, inv.currency || "EUR")}</div></div><div class="btn-row"><button class="btn btn-secondary btn-small" data-pdf-invoice="${inv.id}">PDF</button><button class="btn btn-dark btn-small" data-edit-invoice="${inv.id}">Upraviť</button><button class="btn btn-secondary btn-small" data-delivery-invoice="${inv.id}">Dodací list</button><button class="btn btn-bad btn-small" data-delete-invoice="${inv.id}">Zmazať</button></div></div>`;
+    list.appendChild(row);
+  });
+  list.querySelectorAll("[data-pdf-invoice]").forEach(btn => btn.addEventListener("click", () => { const inv = getInvoices().find(x => x.id === btn.dataset.pdfInvoice); if(inv){ state.lastPreviewDoc = { type:"invoice", data:inv }; renderPdfPreview(state.lastPreviewDoc); showScreen("screenPdf"); } }));
+  list.querySelectorAll("[data-edit-invoice]").forEach(btn => btn.addEventListener("click", () => { const inv = getInvoices().find(x => x.id === btn.dataset.editInvoice); if(inv) loadInvoiceIntoForm(inv); }));
+  list.querySelectorAll("[data-delivery-invoice]").forEach(btn => btn.addEventListener("click", () => { const inv = getInvoices().find(x => x.id === btn.dataset.deliveryInvoice); if(inv) createDeliveryFromInvoice(inv); }));
+  list.querySelectorAll("[data-delete-invoice]").forEach(btn => btn.addEventListener("click", async () => { if(confirm("Zmazať faktúru?")) await deleteInvoice(btn.dataset.deleteInvoice); }));
+}
+function renderDeliveryItemsPreview(){
+  const wrap = $("deliveryItemsPreview"); const items = state.deliveryWorkingItems.length ? state.deliveryWorkingItems : state.invoiceItems;
+  if(!items.length){ wrap.innerHTML = '<div class="notice">Zatiaľ nie sú položky.</div>'; return; }
+  wrap.innerHTML = "";
+  items.forEach((item, index) => { const row = document.createElement("div"); row.className = "item"; row.innerHTML = `<strong>${index+1}. ${escapeHtml(item.description || "-")}</strong><div class="meta">Množstvo: ${Number(item.quantity || 0)} ${escapeHtml(item.unit || "")} • Cena: ${currencyFormat(item.price || 0)}</div>`; wrap.appendChild(row); });
+}
+function renderDeliveries(){
+  const list = $("deliveryList"); const docs = getDeliveries();
+  if(!docs.length){ list.innerHTML = '<div class="notice">Zatiaľ nemáš dodacie listy.</div>'; return; }
+  list.innerHTML = "";
+  docs.forEach(doc => {
+    const row = document.createElement("div"); row.className = "rowcard";
+    row.innerHTML = `<div class="rowcard-top"><div><div class="rowcard-title">${escapeHtml(doc.number || "-")} • ${escapeHtml(doc.customer?.name || "Bez klienta")}</div><div class="meta">Dátum: ${escapeHtml(doc.date || "-")} • Zdrojová faktúra: ${escapeHtml(doc.sourceInvoiceNumber || "-")}\nPoložiek: ${doc.items?.length || 0}</div></div><div class="btn-row"><button class="btn btn-secondary btn-small" data-pdf-delivery="${doc.id}">PDF</button><button class="btn btn-dark btn-small" data-edit-delivery="${doc.id}">Upraviť</button><button class="btn btn-bad btn-small" data-delete-delivery="${doc.id}">Zmazať</button></div></div>`;
+    list.appendChild(row);
+  });
+  list.querySelectorAll("[data-pdf-delivery]").forEach(btn => btn.addEventListener("click", () => { const doc = getDeliveries().find(x => x.id === btn.dataset.pdfDelivery); if(doc){ state.lastPreviewDoc = { type:"delivery", data:doc }; renderPdfPreview(state.lastPreviewDoc); showScreen("screenPdf"); } }));
+  list.querySelectorAll("[data-edit-delivery]").forEach(btn => btn.addEventListener("click", () => { const doc = getDeliveries().find(x => x.id === btn.dataset.editDelivery); if(doc) loadDeliveryIntoForm(doc); }));
+  list.querySelectorAll("[data-delete-delivery]").forEach(btn => btn.addEventListener("click", async () => { if(confirm("Zmazať dodací list?")) await deleteDelivery(btn.dataset.deleteDelivery); }));
+}
+function renderAll(){ renderDashboard(); renderCompanies(); renderCustomers(); renderCatalog(); renderInvoiceCustomerSelect(); renderDeliveryCustomerSelect(); renderInvoiceItems(); recalcInvoiceTotals(); renderInvoices(); renderDeliveryItemsPreview(); renderDeliveries(); }
+
+function ensureInvoiceNumber(){ const c=getActiveCompany(); if(!$("invoiceNumber").value && c) $("invoiceNumber").value = `${c.invoicePrefix || ""}${Number(c.invoiceCounter || 0)+1}`; if(!$("invoiceVariable").value) $("invoiceVariable").value = $("invoiceNumber").value.replace(/\D/g,"").slice(-10) || $("invoiceNumber").value; }
+function ensureDeliveryNumber(){ const c=getActiveCompany(); if(!$("deliveryNumber").value && c) $("deliveryNumber").value = `${c.deliveryPrefix || ""}${Number(c.deliveryCounter || 0)+1}`; }
+
+function collectCompanyPayload(){ return { id:$("companyId").value || uid("company"), name:$("companyName").value.trim(), street:$("companyStreet").value.trim(), city:$("companyCity").value.trim(), zip:$("companyZip").value.trim(), country:$("companyCountry").value.trim(), ico:$("companyIco").value.trim(), dic:$("companyDic").value.trim(), vat:$("companyVat").value.trim(), email:$("companyEmail").value.trim(), phone:$("companyPhone").value.trim(), web:$("companyWeb").value.trim(), bank:$("companyBank").value.trim(), iban:normalizeIban($("companyIban").value), swift:$("companySwift").value.trim(), invoicePrefix:$("companyInvoicePrefix").value.trim(), invoiceCounter:Number($("companyInvoiceCounter").value || 0), deliveryPrefix:$("companyDeliveryPrefix").value.trim(), deliveryCounter:Number($("companyDeliveryCounter").value || 0), note:$("companyNote").value.trim() }; }
+function validateCompany(p){ if(!p.name){ alert("Vyplň názov firmy."); return false; } if(!isValidEmail(p.email)){ alert("Email firmy nemá správny formát."); return false; } if(!isValidIban(p.iban)){ alert("IBAN firmy nemá správny formát."); return false; } return true; }
+async function saveCompanyCloud(payload){
+  const res = await apiFetchJson("/api/companies", { method:"POST", body:JSON.stringify(payload) });
+  const saved = res?.company || payload;
+  const idx = state.companies.findIndex(x => x.id === saved.id); if(idx >= 0) state.companies[idx] = saved; else state.companies.unshift(saved);
+  if(!state.activeCompanyId) state.activeCompanyId = saved.id;
+  return saved;
+}
+async function deleteCompany(id){
+  await apiFetchJson(`/api/companies/${encodeURIComponent(id)}`, { method:"DELETE" });
+  state.companies = state.companies.filter(x => x.id !== id);
+  delete state.customersByCompany[id]; delete state.invoicesByCompany[id]; delete state.deliveriesByCompany[id];
+  if(state.activeCompanyId === id) state.activeCompanyId = state.companies[0]?.id || null;
+  renderAll();
+}
+
+function collectCustomerForm(prefix="customerForm"){ return { id: prefix === "customerForm" ? ($("customerId").value || uid("cust")) : ($("invoiceCustomerSelect").value || uid("cust")), name:$(`${prefix}Name`).value.trim(), street:$(`${prefix}Street`).value.trim(), city:$(`${prefix}City`).value.trim(), zip:$(`${prefix}Zip`).value.trim(), country:$(`${prefix}Country`).value.trim(), ico:$(`${prefix}Ico`).value.trim(), dic:$(`${prefix}Dic`).value.trim(), vat:$(`${prefix}Vat`).value.trim(), email:$(`${prefix}Email`).value.trim(), phone:$(`${prefix}Phone`).value.trim(), note:$(`${prefix}Note`).value.trim() }; }
+function validateCustomer(p){ if(!p.name){ alert("Vyplň názov klienta."); return false; } if(!isValidEmail(p.email)){ alert("Email klienta nemá správny formát."); return false; } return true; }
+async function saveCustomerCloud(payload){
+  if(!state.activeCompanyId) throw new Error("Najprv si nastav aktívnu firmu.");
+  const res = await apiFetchJson("/api/customers", { method:"POST", body:JSON.stringify({ ...payload, companyId: state.activeCompanyId }) });
+  const saved = res?.customer || payload; if(!state.customersByCompany[state.activeCompanyId]) state.customersByCompany[state.activeCompanyId] = [];
+  const list = state.customersByCompany[state.activeCompanyId]; const idx = list.findIndex(x => x.id === saved.id); if(idx >= 0) list[idx] = saved; else list.unshift(saved);
+  return saved;
+}
+async function deleteCustomer(id){
+  if(!state.activeCompanyId) return; await apiFetchJson(`/api/customers/${encodeURIComponent(id)}`, { method:"DELETE" });
+  state.customersByCompany[state.activeCompanyId] = (state.customersByCompany[state.activeCompanyId] || []).filter(x => x.id !== id); renderAll();
+}
+
+function collectInvoicePayload(isDraft=false){
+  const supplier = { name:$("supplierName").value.trim(), street:$("supplierStreet").value.trim(), city:$("supplierCity").value.trim(), zip:$("supplierZip").value.trim(), country:$("supplierCountry").value.trim(), ico:$("supplierIco").value.trim(), dic:$("supplierDic").value.trim(), vat:$("supplierVat").value.trim(), email:$("supplierEmail").value.trim(), phone:$("supplierPhone").value.trim(), bank:$("supplierBank").value.trim(), iban:normalizeIban($("supplierIban").value), swift:$("supplierSwift").value.trim(), web:$("supplierWeb").value.trim(), note:$("supplierNote").value.trim() };
+  const customer = { id:$("invoiceCustomerSelect").value || uid("cust"), name:$("customerName").value.trim(), street:$("customerStreet").value.trim(), city:$("customerCity").value.trim(), zip:$("customerZip").value.trim(), country:$("customerCountry").value.trim(), ico:$("customerIco").value.trim(), dic:$("customerDic").value.trim(), vat:$("customerVat").value.trim(), email:$("customerEmail").value.trim(), phone:$("customerPhone").value.trim(), note:$("customerNote").value.trim() };
+  return { id:$("editingInvoiceId").value || uid("inv"), createdAt:$("editingInvoiceCreatedAt").value || new Date().toISOString(), number:$("invoiceNumber").value.trim(), type:$("invoiceType").value, variable:$("invoiceVariable").value.trim(), constant:$("invoiceConstant").value.trim(), issuedDate:$("invoiceIssuedDate").value, deliveryDate:$("invoiceDeliveryDate").value, dueDate:$("invoiceDueDate").value, orderNumber:$("invoiceOrderNumber").value.trim(), currency:$("invoiceCurrency").value, payment:$("invoicePayment").value, qr:$("invoiceQr").value, paid:Number($("invoicePaid").value || 0), discount:Number($("invoiceDiscount").value || 0), rounding:$("invoiceRounding").value, supplier, customer, items: state.invoiceItems.map(i => ({ ...i, quantity:Number(i.quantity||0), price:Number(i.price||0), vatRate:Number(i.vatRate||0) })), totals: calculateTotals(), isDraft };
+}
+function validateInvoice(p){
+  if(!getActiveCompany()){ alert("Najprv si nastav aktívnu firmu."); return false; }
+  if(!p.customer.name){ alert("Vyplň názov odberateľa."); return false; }
+  if(!isValidEmail(p.customer.email)){ alert("Email odberateľa nemá správny formát."); return false; }
+  if(!isValidIban(p.supplier.iban)){ alert("IBAN dodávateľa nemá správny formát."); return false; }
+  if(p.qr === "epc" && p.payment !== "hotovosť"){ if(p.currency !== "EUR"){ alert("SEPA / EPC QR funguje len pre EUR."); return false; } if(!p.supplier.iban || !p.supplier.swift){ alert("Pre QR platbu vyplň IBAN a SWIFT."); return false; } }
+  const validItems = p.items.filter(i => i.description.trim() && Number(i.quantity) > 0 && Number(i.price) >= 0); if(!validItems.length){ alert("Pridaj aspoň 1 platnú položku."); return false; }
+  if(p.dueDate && p.issuedDate && p.dueDate < p.issuedDate){ alert("Dátum splatnosti nemôže byť skôr ako dátum vystavenia."); return false; }
+  return true;
+}
+async function saveInvoiceCloud(p){
+  const res = await apiFetchJson("/api/invoices", { method:"POST", body:JSON.stringify({ ...p, companyId: state.activeCompanyId }) });
+  const saved = res?.invoice || p; if(!state.invoicesByCompany[state.activeCompanyId]) state.invoicesByCompany[state.activeCompanyId] = [];
+  const list = state.invoicesByCompany[state.activeCompanyId]; const idx = list.findIndex(x => x.id === saved.id); if(idx >= 0) list[idx] = saved; else list.unshift(saved);
+  state.lastPreviewDoc = { type:"invoice", data:saved }; clearDraft(); return saved;
+}
+async function deleteInvoice(id){
+  await apiFetchJson(`/api/invoices/${encodeURIComponent(id)}`, { method:"DELETE" });
+  state.invoicesByCompany[state.activeCompanyId] = (state.invoicesByCompany[state.activeCompanyId] || []).filter(x => x.id !== id); renderAll();
+}
+
+async function saveDeliveryCloud(doc){
+  const res = await apiFetchJson("/api/deliveries", { method:"POST", body:JSON.stringify({ ...doc, companyId: state.activeCompanyId }) });
+  const saved = res?.delivery || doc; if(!state.deliveriesByCompany[state.activeCompanyId]) state.deliveriesByCompany[state.activeCompanyId] = [];
+  const list = state.deliveriesByCompany[state.activeCompanyId]; const idx = list.findIndex(x => x.id === saved.id); if(idx >= 0) list[idx] = saved; else list.unshift(saved);
+  state.lastPreviewDoc = { type:"delivery", data:saved }; return saved;
+}
+async function deleteDelivery(id){
+  await apiFetchJson(`/api/deliveries/${encodeURIComponent(id)}`, { method:"DELETE" });
+  state.deliveriesByCompany[state.activeCompanyId] = (state.deliveriesByCompany[state.activeCompanyId] || []).filter(x => x.id !== id); renderAll();
+}
+async function saveCatalogItemCloud(item){
+  const res = await apiFetchJson("/api/catalog-items", { method:"POST", body:JSON.stringify(item) });
+  const saved = res?.item || item; const idx = state.catalogItems.findIndex(x => x.id === saved.id); if(idx >= 0) state.catalogItems[idx] = saved; else state.catalogItems.unshift(saved); return saved;
+}
+async function deleteCatalogItem(id){
+  await apiFetchJson(`/api/catalog-items/${encodeURIComponent(id)}`, { method:"DELETE" });
+  state.catalogItems = state.catalogItems.filter(x => x.id !== id); renderCatalog();
+}
+
+function clearDraft(){ if(state.activeCompanyId){ delete state.draftInvoiceByCompany[state.activeCompanyId]; saveLocalAux(); setSaveState("Draft zmazaný", "dark"); } }
+function saveDraft(){ if(state.activeCompanyId){ state.draftInvoiceByCompany[state.activeCompanyId] = collectInvoicePayload(true); saveLocalAux(); setSaveState("Draft uložený", "dark"); } }
+function debounceDraft(){ clearTimeout(state.saveTimer); setSaveState("Neuložené zmeny", "warn"); state.saveTimer = setTimeout(saveDraft, 400); }
+function applyInvoiceDraft(draft){
+  if(!draft) return; $("editingInvoiceId").value = draft.id || ""; $("editingInvoiceCreatedAt").value = draft.createdAt || ""; $("invoiceNumber").value = draft.number || ""; $("invoiceType").value = draft.type || "Faktúra"; $("invoiceVariable").value = draft.variable || ""; $("invoiceConstant").value = draft.constant || "";
+  $("invoiceIssuedDate").value = draft.issuedDate || todayISO(); $("invoiceDeliveryDate").value = draft.deliveryDate || todayISO(); $("invoiceDueDate").value = draft.dueDate || addDaysISO(todayISO(), state.settings.defaultDueDays || 14); $("invoiceOrderNumber").value = draft.orderNumber || ""; $("invoiceCurrency").value = draft.currency || "EUR"; $("invoicePayment").value = draft.payment || "peňažný prevod"; $("invoiceQr").value = draft.qr || state.settings.defaultQr || "epc"; $("invoicePaid").value = String(draft.paid || 0); $("invoiceDiscount").value = String(draft.discount || 0);
+  fillSupplier(draft.supplier || {}); fillInvoiceCustomerFields(draft.customer || {}); state.invoiceItems = Array.isArray(draft.items) && draft.items.length ? draft.items.map(i => ({...i})) : [createEmptyItem()]; renderInvoiceItems(); recalcInvoiceTotals();
+}
+function resetInvoiceForm(keepSupplier=false){
+  $("editingInvoiceId").value = ""; $("editingInvoiceCreatedAt").value = ""; ["invoiceNumber","invoiceVariable","invoiceConstant","invoiceOrderNumber"].forEach(id => $(id).value = "");
+  $("invoiceType").value = "Faktúra"; $("invoiceIssuedDate").value = todayISO(); $("invoiceDeliveryDate").value = todayISO(); $("invoiceDueDate").value = addDaysISO(todayISO(), state.settings.defaultDueDays || 14); $("invoiceCurrency").value = "EUR"; $("invoicePayment").value = "peňažný prevod"; $("invoiceQr").value = state.settings.defaultQr || "epc"; $("invoicePaid").value = "0"; $("invoiceDiscount").value = "0";
+  if(!keepSupplier) fillSupplierFromActiveCompany(); resetInvoiceCustomerFields(); state.invoiceItems = [createEmptyItem()]; renderInvoiceItems(); ensureInvoiceNumber(); recalcInvoiceTotals(); debounceDraft();
+}
+function loadInvoiceIntoForm(inv){
+  $("editingInvoiceId").value = inv.id || ""; $("editingInvoiceCreatedAt").value = inv.createdAt || ""; $("invoiceNumber").value = inv.number || ""; $("invoiceType").value = inv.type || "Faktúra"; $("invoiceVariable").value = inv.variable || ""; $("invoiceConstant").value = inv.constant || ""; $("invoiceIssuedDate").value = inv.issuedDate || todayISO(); $("invoiceDeliveryDate").value = inv.deliveryDate || todayISO(); $("invoiceDueDate").value = inv.dueDate || addDaysISO(todayISO(), state.settings.defaultDueDays || 14); $("invoiceOrderNumber").value = inv.orderNumber || ""; $("invoiceCurrency").value = inv.currency || "EUR"; $("invoicePayment").value = inv.payment || "peňažný prevod"; $("invoiceQr").value = inv.qr || state.settings.defaultQr || "epc"; $("invoicePaid").value = String(inv.paid || 0); $("invoiceDiscount").value = String(inv.discount || 0);
+  fillSupplier(inv.supplier || getActiveCompany() || {}); fillInvoiceCustomerFields(inv.customer || {}); renderInvoiceCustomerSelect(); if(inv.customer?.id) $("invoiceCustomerSelect").value = inv.customer.id;
+  state.invoiceItems = Array.isArray(inv.items) && inv.items.length ? inv.items.map(i => ({...i})) : [createEmptyItem()]; renderInvoiceItems(); recalcInvoiceTotals(); showScreen("screenInvoice");
+}
+
+function collectDeliveryPayload(){
+  const customer = getCustomers().find(c => c.id === $("deliveryCustomerSelect").value) || { id: uid("cust"), name:"", street:"", city:"", zip:"", country:"" };
+  return { id:$("editingDeliveryId").value || uid("del"), number:$("deliveryNumber").value.trim(), date:$("deliveryDate").value, note:$("deliveryNote").value.trim(), customer, items:(state.deliveryWorkingItems.length ? state.deliveryWorkingItems : state.invoiceItems).map(i => ({...i})), sourceInvoiceId:state.pendingDeliverySourceInvoiceId || "", sourceInvoiceNumber:$("deliverySourceInvoiceInfo").value.trim() };
+}
+function validateDelivery(doc){ if(!getActiveCompany()){ alert("Najprv si nastav aktívnu firmu."); return false; } if(!doc.number){ alert("Vyplň číslo dodacieho listu."); return false; } if(!doc.customer?.name){ alert("Vyber odberateľa."); return false; } if(!doc.items?.length || !doc.items.some(i => i.description?.trim())){ alert("Dodací list musí mať aspoň 1 položku."); return false; } return true; }
+function clearDeliveryForm(){ $("editingDeliveryId").value = ""; $("deliveryNumber").value = ""; $("deliveryDate").value = todayISO(); $("deliveryCustomerSelect").value = ""; $("deliverySourceInvoiceInfo").value = ""; $("deliveryNote").value = ""; state.deliveryWorkingItems = []; state.pendingDeliverySourceInvoiceId = ""; renderDeliveryItemsPreview(); }
+function loadDeliveryIntoForm(doc){ $("editingDeliveryId").value = doc.id || ""; $("deliveryNumber").value = doc.number || ""; $("deliveryDate").value = doc.date || todayISO(); $("deliveryNote").value = doc.note || ""; $("deliverySourceInvoiceInfo").value = doc.sourceInvoiceNumber || ""; state.pendingDeliverySourceInvoiceId = doc.sourceInvoiceId || ""; state.deliveryWorkingItems = Array.isArray(doc.items) ? doc.items.map(i => ({...i})) : []; renderDeliveryCustomerSelect(); if(doc.customer?.id) $("deliveryCustomerSelect").value = doc.customer.id; renderDeliveryItemsPreview(); showScreen("screenDelivery"); }
+function createDeliveryFromInvoice(inv){ state.pendingDeliverySourceInvoiceId = inv.id || ""; $("deliverySourceInvoiceInfo").value = inv.number || ""; $("editingDeliveryId").value = ""; $("deliveryNumber").value = ""; ensureDeliveryNumber(); $("deliveryDate").value = todayISO(); $("deliveryNote").value = `Vytvorené z faktúry ${inv.number || ""}`; renderDeliveryCustomerSelect(); if(inv.customer?.id) $("deliveryCustomerSelect").value = inv.customer.id; state.deliveryWorkingItems = Array.isArray(inv.items) ? inv.items.map(i => ({...i})) : []; renderDeliveryItemsPreview(); showScreen("screenDelivery"); }
+
+async function addSelectedCatalogItem(){
+  const id = $("savedItemSelect").value; if(!id){ alert("Najprv vyber položku z cenníka."); return; }
+  const cat = state.catalogItems.find(x => x.id === id); if(!cat){ alert("Položka z cenníka nebola nájdená."); return; }
+  state.invoiceItems.push({ id:uid("item"), description:cat.name || "", unit:cat.unit || state.settings.defaultUnit || "ks", quantity:1, price:Number(cat.price || 0), vatRate:Number(cat.vatRate || 0) });
+  renderInvoiceItems(); recalcInvoiceTotals(); debounceDraft();
+}
+async function saveCurrentItemToCatalog(){
+  const name = $("newCatalogName").value.trim() || (state.invoiceItems.find(i => i.description.trim())?.description || "").trim(); if(!name){ alert("Zadaj názov položky do cenníka."); return; }
+  const item = state.invoiceItems.find(i => i.description.trim()) || state.invoiceItems[0] || createEmptyItem();
+  const existing = state.catalogItems.find(x => x.name.toLowerCase() === name.toLowerCase());
+  const payload = { id: existing?.id || uid("cat"), name, unit:item.unit || state.settings.defaultUnit || "ks", price:Number(item.price || 0), vatRate:Number(item.vatRate || 0) };
+  try{ await saveCatalogItemCloud(payload); $("newCatalogName").value = ""; renderCatalog(); setSaveState("Cenník uložený", "dark"); }catch(e){ alert("Uloženie do cloud cenníka zlyhalo."); setCloudState("Cloud chyba", "bad"); }
+}
+
+function buildEpcQrPayload(inv){
+  const amount = Number(inv.totals?.due || 0).toFixed(2); const iban = normalizeIban(inv.supplier?.iban || ""); const bic = String(inv.supplier?.swift || "").trim().toUpperCase(); const name = String(inv.supplier?.name || "").trim().slice(0,70); const rem = (inv.variable ? `VS${inv.variable}` : inv.number || "").slice(0,35); const purpose = String(inv.type || "FAKT").slice(0,4).toUpperCase(); const due = inv.dueDate ? inv.dueDate.replaceAll("-", "") : "";
+  return ["BCD","002","1","SCT",bic,name,iban,`EUR${amount}`,"","",rem,"",purpose,due].join("\n");
+}
+function qrImageUrl(text){ return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(text)}`; }
+function renderPdfPreview(docWrap){
+  const wrap = $("pdfPreviewContainer"); if(!docWrap?.data){ wrap.innerHTML = "<p>Najprv ulož faktúru alebo dodací list.</p>"; return; }
+  if(docWrap.type === "invoice"){
+    const inv = docWrap.data; const t = inv.totals || { subtotal:0, discountValue:0, total:0, due:0 }; const qrPayload = inv.qr === "epc" && inv.payment !== "hotovosť" && inv.currency === "EUR" && inv.supplier?.iban && inv.supplier?.swift ? buildEpcQrPayload(inv) : "";
+    wrap.innerHTML = `<div class="pdf"><div class="pdf-header"><div class="pdf-box"><h1 style="margin:0 0 10px">${escapeHtml(inv.type || "Faktúra")}</h1><div>Číslo: <strong>${escapeHtml(inv.number || "-")}</strong></div><div>VS: <strong>${escapeHtml(inv.variable || "-")}</strong></div><div>Dátum vystavenia: <strong>${escapeHtml(inv.issuedDate || "-")}</strong></div><div>Dátum dodania: <strong>${escapeHtml(inv.deliveryDate || "-")}</strong></div><div>Dátum splatnosti: <strong>${escapeHtml(inv.dueDate || "-")}</strong></div></div><div class="pdf-box"><h3 style="margin:0 0 10px">Dodávateľ</h3><div><strong>${escapeHtml(inv.supplier?.name || "-")}</strong></div><div>${escapeHtml([inv.supplier?.street,inv.supplier?.city,inv.supplier?.zip,inv.supplier?.country].filter(Boolean).join(", "))}</div><div>IČO: ${escapeHtml(inv.supplier?.ico || "-")} • DIČ: ${escapeHtml(inv.supplier?.dic || "-")}</div><div>IBAN: ${escapeHtml(inv.supplier?.iban || "-")}</div><div>SWIFT: ${escapeHtml(inv.supplier?.swift || "-")}</div></div></div><div class="pdf-header"><div class="pdf-box"><h3 style="margin:0 0 10px">Odberateľ</h3><div><strong>${escapeHtml(inv.customer?.name || "-")}</strong></div><div>${escapeHtml([inv.customer?.street,inv.customer?.city,inv.customer?.zip,inv.customer?.country].filter(Boolean).join(", "))}</div><div>IČO: ${escapeHtml(inv.customer?.ico || "-")} • DIČ: ${escapeHtml(inv.customer?.dic || "-")}</div></div><div class="pdf-box"><div>Forma úhrady: <strong>${escapeHtml(inv.payment || "-")}</strong></div><div>Mena: <strong>${escapeHtml(inv.currency || "EUR")}</strong></div><div>Objednávka: <strong>${escapeHtml(inv.orderNumber || "-")}</strong></div></div></div><table class="pdf-table"><thead><tr><th>#</th><th>Popis</th><th>Množstvo</th><th>Jednotka</th><th>Cena</th><th>Spolu</th></tr></thead><tbody>${(inv.items || []).map((item, idx) => `<tr><td>${idx+1}</td><td>${escapeHtml(item.description || "")}</td><td>${Number(item.quantity || 0)}</td><td>${escapeHtml(item.unit || "")}</td><td>${currencyFormat(item.price || 0, inv.currency || "EUR")}</td><td>${currencyFormat(Number(item.quantity || 0) * Number(item.price || 0), inv.currency || "EUR")}</td></tr>`).join("")}</tbody></table><div class="pdf-foot"><div class="pdf-box"><div>Medzisúčet: <strong>${currencyFormat(t.subtotal, inv.currency || "EUR")}</strong></div><div>Zľava: <strong>${currencyFormat(t.discountValue, inv.currency || "EUR")}</strong></div><div>Spolu: <strong>${currencyFormat(t.total, inv.currency || "EUR")}</strong></div><div>K úhrade: <strong style="font-size:22px">${currencyFormat(t.due, inv.currency || "EUR")}</strong></div>${Number(inv.paid || 0) > 0 ? `<div style="margin-top:10px">${escapeHtml(state.settings.paidLabel || "UŽ UHRADENÉ")}: ${currencyFormat(inv.paid, inv.currency || "EUR")}</div>` : ""}</div><div class="pdf-box qr-wrap">${qrPayload ? `<img alt="QR platba" src="${qrImageUrl(qrPayload)}"><div style="font-size:11px;margin-top:8px">SEPA / EPC QR platba</div>` : `<div>QR sa nezobrazil. Skontroluj IBAN, SWIFT, EUR a bezhotovostnú platbu.</div>`}</div></div></div>`;
+  } else {
+    const doc = docWrap.data;
+    wrap.innerHTML = `<div class="pdf"><div class="pdf-header"><div class="pdf-box"><h1 style="margin:0 0 10px">Dodací list</h1><div>Číslo: <strong>${escapeHtml(doc.number || "-")}</strong></div><div>Dátum: <strong>${escapeHtml(doc.date || "-")}</strong></div><div>Zdrojová faktúra: <strong>${escapeHtml(doc.sourceInvoiceNumber || "-")}</strong></div></div><div class="pdf-box"><h3 style="margin:0 0 10px">Odberateľ</h3><div><strong>${escapeHtml(doc.customer?.name || "-")}</strong></div><div>${escapeHtml([doc.customer?.street,doc.customer?.city,doc.customer?.zip,doc.customer?.country].filter(Boolean).join(", "))}</div></div></div><table class="pdf-table"><thead><tr><th>#</th><th>Popis</th><th>Množstvo</th><th>Jednotka</th></tr></thead><tbody>${(doc.items || []).map((item, idx) => `<tr><td>${idx+1}</td><td>${escapeHtml(item.description || "")}</td><td>${Number(item.quantity || 0)}</td><td>${escapeHtml(item.unit || "")}</td></tr>`).join("")}</tbody></table>${doc.note ? `<div class="pdf-box" style="margin-top:12px">${escapeHtml(doc.note)}</div>` : ""}</div>`;
+  }
+}
+
+function bindAutosave(){
+  [
+    "invoiceNumber","invoiceType","invoiceVariable","invoiceConstant","invoiceIssuedDate","invoiceDeliveryDate","invoiceDueDate","invoiceOrderNumber","invoiceCurrency","invoicePayment","invoiceQr","invoicePaid","invoiceDiscount",
+    "supplierName","supplierStreet","supplierCity","supplierZip","supplierCountry","supplierIco","supplierDic","supplierVat","supplierEmail","supplierPhone","supplierBank","supplierIban","supplierSwift","supplierWeb","supplierNote",
+    "customerName","customerStreet","customerCity","customerZip","customerCountry","customerIco","customerDic","customerVat","customerEmail","customerPhone","customerNote"
+  ].forEach(id => { $(id).addEventListener("input", () => { recalcInvoiceTotals(); debounceDraft(); }); $(id).addEventListener("change", () => { recalcInvoiceTotals(); debounceDraft(); }); });
+}
+
+function bindEvents(){
+  $("saveCompanyBtn").addEventListener("click", async () => {
+    const payload = collectCompanyPayload(); if(!validateCompany(payload)) return;
+    try{ const saved = await saveCompanyCloud(payload); if(!state.activeCompanyId || state.activeCompanyId === saved.id) state.activeCompanyId = saved.id; setSaveState("Firma uložená", "dark"); fillSupplierFromActiveCompany(); ensureInvoiceNumber(); ensureDeliveryNumber(); renderAll(); }catch(e){ alert("Uloženie firmy do cloud zlyhalo."); setCloudState("Cloud chyba", "bad"); }
+  });
+  $("resetCompanyBtn").addEventListener("click", () => { $("companyId").value=""; ["companyName","companyStreet","companyCity","companyZip","companyIco","companyDic","companyVat","companyEmail","companyPhone","companyWeb","companyBank","companyIban","companySwift","companyInvoicePrefix","companyDeliveryPrefix","companyNote"].forEach(id => $(id).value=""); $("companyCountry").value="Slovensko"; $("companyInvoiceCounter").value=0; $("companyDeliveryCounter").value=0; });
+
+  $("saveCustomerBtn2").addEventListener("click", async () => {
+    const payload = collectCustomerForm("customerForm"); if(!validateCustomer(payload)) return;
+    try{ await saveCustomerCloud(payload); setSaveState("Klient uložený", "dark"); $("customerId").value=""; ["customerFormName","customerFormStreet","customerFormCity","customerFormZip","customerFormIco","customerFormDic","customerFormVat","customerFormEmail","customerFormPhone","customerFormNote"].forEach(id => $(id).value=""); $("customerFormCountry").value="Slovensko"; renderAll(); }catch(e){ alert("Uloženie klienta do cloud zlyhalo."); setCloudState("Cloud chyba", "bad"); }
+  });
+  $("resetCustomerBtn2").addEventListener("click", () => { $("customerId").value=""; ["customerFormName","customerFormStreet","customerFormCity","customerFormZip","customerFormIco","customerFormDic","customerFormVat","customerFormEmail","customerFormPhone","customerFormNote"].forEach(id => $(id).value=""); $("customerFormCountry").value="Slovensko"; });
+
+  $("invoiceCustomerSelect").addEventListener("change", () => { const c=getCustomers().find(x => x.id === $("invoiceCustomerSelect").value); if(c) fillInvoiceCustomerFields(c); debounceDraft(); });
+  $("saveCustomerFromInvoiceBtn").addEventListener("click", async () => {
+    const payload = collectCustomerForm("customer"); if(!validateCustomer(payload)) return;
+    try{ const saved = await saveCustomerCloud(payload); renderInvoiceCustomerSelect(); $("invoiceCustomerSelect").value = saved.id; fillInvoiceCustomerFields(saved); setSaveState("Klient uložený", "dark"); }catch(e){ alert("Uloženie klienta do cloud zlyhalo."); setCloudState("Cloud chyba", "bad"); }
+  });
+  $("clearCustomerFromInvoiceBtn").addEventListener("click", () => { resetInvoiceCustomerFields(); debounceDraft(); });
+
+  $("addInvoiceItemBtn").addEventListener("click", () => { state.invoiceItems.push(createEmptyItem()); renderInvoiceItems(); recalcInvoiceTotals(); debounceDraft(); });
+  $("addSelectedCatalogItemBtn").addEventListener("click", addSelectedCatalogItem);
+  $("addCatalogItemBtn").addEventListener("click", saveCurrentItemToCatalog);
+  $("recalcInvoiceBtn").addEventListener("click", () => { recalcInvoiceTotals(); debounceDraft(); });
+  $("clearInvoiceBtn").addEventListener("click", () => resetInvoiceForm(false));
+  $("clearDraftBtn").addEventListener("click", clearDraft);
+
+  $("saveInvoiceBtn").addEventListener("click", async () => {
+    ensureInvoiceNumber(); const payload = collectInvoicePayload(false); if(!validateInvoice(payload)) return;
+    try{ const saved = await saveInvoiceCloud(payload); const company = getActiveCompany(); if(saved && company && payload.number === `${company.invoicePrefix || ""}${Number(company.invoiceCounter || 0)+1}`){ company.invoiceCounter = Number(company.invoiceCounter || 0)+1; await saveCompanyCloud(company); } setSaveState("Faktúra uložená", "dark"); renderAll(); showScreen("screenInvoices"); }catch(e){ alert("Uloženie faktúry do cloud zlyhalo."); setCloudState("Cloud chyba", "bad"); }
+  });
+  $("previewInvoiceBtn").addEventListener("click", async () => {
+    ensureInvoiceNumber(); const payload = collectInvoicePayload(false); if(!validateInvoice(payload)) return;
+    try{ const saved = await saveInvoiceCloud(payload); const company = getActiveCompany(); if(saved && company && payload.number === `${company.invoicePrefix || ""}${Number(company.invoiceCounter || 0)+1}`){ company.invoiceCounter = Number(company.invoiceCounter || 0)+1; await saveCompanyCloud(company); } setSaveState("Faktúra uložená", "dark"); renderAll(); state.lastPreviewDoc = { type:"invoice", data:saved }; renderPdfPreview(state.lastPreviewDoc); showScreen("screenPdf"); }catch(e){ alert("Uloženie faktúry do cloud zlyhalo."); setCloudState("Cloud chyba", "bad"); }
+  });
+  $("createDeliveryFromInvoiceBtn").addEventListener("click", () => { ensureInvoiceNumber(); const payload = collectInvoicePayload(true); if(!validateInvoice(payload)) return; createDeliveryFromInvoice(payload); });
+
+  $("loadInvoiceItemsToDeliveryBtn").addEventListener("click", () => { state.deliveryWorkingItems = state.invoiceItems.map(i => ({...i})); $("deliveryItemsInfo").textContent = "Položky boli načítané z aktuálnej faktúry."; renderDeliveryItemsPreview(); });
+  $("saveDeliveryBtn").addEventListener("click", async () => {
+    ensureDeliveryNumber(); const doc = collectDeliveryPayload(); if(!validateDelivery(doc)) return;
+    try{ const saved = await saveDeliveryCloud(doc); const company = getActiveCompany(); if(saved && company && doc.number === `${company.deliveryPrefix || ""}${Number(company.deliveryCounter || 0)+1}`){ company.deliveryCounter = Number(company.deliveryCounter || 0)+1; await saveCompanyCloud(company); } setSaveState("Dodací list uložený", "dark"); clearDeliveryForm(); renderAll(); }catch(e){ alert("Uloženie dodacieho listu do cloud zlyhalo.\nSkontroluj, či Worker podporuje /api/deliveries."); setCloudState("Cloud chyba", "bad"); }
+  });
+  $("clearDeliveryFormBtn").addEventListener("click", clearDeliveryForm);
+
+  $("invoiceSearchInput").addEventListener("input", renderInvoices); $("invoiceFilterDateFrom").addEventListener("change", renderInvoices); $("invoiceFilterDateTo").addEventListener("change", renderInvoices);
+  $("clearInvoiceFiltersBtn").addEventListener("click", () => { $("invoiceSearchInput").value=""; $("invoiceFilterDateFrom").value=""; $("invoiceFilterDateTo").value=""; renderInvoices(); });
+
+  $("saveSettingsBtn").addEventListener("click", () => { state.settings.defaultUnit = $("defaultUnitInput").value.trim() || "ks"; state.settings.defaultDueDays = Number($("defaultDueDaysInput").value || 14); state.settings.defaultQr = $("defaultQrInput").value || "epc"; state.settings.paidLabel = $("paidLabelInput").value.trim() || "UŽ UHRADENÉ"; saveLocalAux(); ensureDefaults(); setSaveState("Nastavenia uložené", "dark"); });
+  $("refreshCloudBtn").addEventListener("click", async () => { try{ await refreshAllFromCloud(); fillSupplierFromActiveCompany(); ensureInvoiceNumber(); ensureDeliveryNumber(); renderAll(); }catch(e){ alert("Obnova z cloudu zlyhala."); setCloudState("Cloud chyba", "bad"); } });
+  $("exportJsonBtn").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify({ companies:state.companies, customersByCompany:state.customersByCompany, invoicesByCompany:state.invoicesByCompany, deliveriesByCompany:state.deliveriesByCompany, catalogItems:state.catalogItems, activeCompanyId:state.activeCompanyId }, null, 2)], { type:"application/json" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `platinum-lech-cloudfirst-${todayISO()}.json`; a.click(); URL.revokeObjectURL(a.href);
+  });
+  $("showApiHelpBtn").addEventListener("click", () => $("apiHelpBox").classList.toggle("hidden"));
+  $("printPdfBtn").addEventListener("click", () => window.print());
+
+  bindAutosave();
+}
+
+async function loadState(){
+  loadLocalAux(); ensureDefaults(); state.invoiceItems = [createEmptyItem()];
+  try{ await refreshAllFromCloud(); }catch(e){ setCloudState("Cloud chyba", "bad"); console.error(e); }
+  fillSupplierFromActiveCompany(); ensureInvoiceNumber(); ensureDeliveryNumber(); const draft=getDraft(); if(draft) applyInvoiceDraft(draft); renderAll(); setSaveState("Pripravené", "dark");
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  bindNavigation(); bindEvents(); await loadState();
+});
+</script>
+</body>
+</html>
